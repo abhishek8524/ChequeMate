@@ -1,0 +1,7 @@
+<environment_context>
+  <cwd>C:\SAVLEEN\DATATHON\ChequeMate</cwd>
+  <shell>powershell</shell>
+  <current_date>2026-11-08</current_date>
+  <timezone>America/Toronto</timezone>
+  <filesystem><workspace_roots><root>C:\SAVLEEN\DATATHON\ChequeMate</root></workspace_roots><permission_profile type="managed"><file_system type="restricted"><entry access="read"><special>:root</special></entry></file_system></permission_profile></filesystem>
+</environment_context>
