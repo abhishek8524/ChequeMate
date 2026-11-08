@@ -1,5 +1,5 @@
 /* ChequeMate — financial resilience engine (static, no backend).
-   Runway math follows the Tangerine track judges' definitions exactly. */
+   Runway math follows the standard runway definitions exactly. */
 (() => {
 'use strict';
 
@@ -61,7 +61,7 @@ const status = v => v < 3 ? 'crit' : v < 6 ? 'warn' : 'good';
 let DATA = window.CM_ACCOUNTS || {};
 const BUILTIN = DATA;
 const INS = window.CM_INSIGHTS || {};
-let SRC = { kind: 'builtin', label: 'Tangerine track sample' };
+let SRC = { kind: 'builtin', label: 'bank sample' };
 let IDS = [], POP = null;
 const st = {
   id: null,
@@ -157,19 +157,39 @@ const shadePlugin = { id: 'shade', beforeDatasetsDraw(c, _a, o) {
   ctx.restore(); } };
 const moneyTick = v => Math.abs(v) >= 1000 ? (v < 0 ? '-' : '') + '$' + Math.round(Math.abs(v) / 1000) + 'k' : money(v);
 
+/* money in rises, money out falls, the line is what's left over */
+function drawFlow(a) {
+  const n = st.flowN || 12, k = n >= a.n ? 0 : a.n - n, L = monthLabels(a).slice(k), ins = a.in.slice(k), outs = a.out.slice(k), net = ins.map((v, i) => v - outs[i]);
+  const s1 = V('--s1'), s2 = V('--s2'), good = V('--good'), crit = V('--crit');
+  const grad = (col, down) => c => { const { ctx, chartArea } = c.chart; if (!chartArea) return col; const g = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom); g.addColorStop(down ? 1 : 0, col); g.addColorStop(.5, alpha(col, .55)); return g; };
+  const thin = n > 24;
+  chart('flowChart', { data: { labels: L, datasets: [
+    { type: 'bar', label: 'Money in', data: ins, backgroundColor: grad(s1), borderRadius: thin ? 3 : 7, borderSkipped: false, stack: 'f', maxBarThickness: 26, order: 2 },
+    { type: 'bar', label: 'Money out', data: outs.map(v => -v), backgroundColor: grad(s2, true), borderRadius: thin ? 3 : 7, borderSkipped: false, stack: 'f', maxBarThickness: 26, order: 2 },
+    { type: 'line', label: 'Left over', data: net, borderColor: V('--ink'), borderWidth: 2, tension: .35, order: 1,
+      pointRadius: thin ? 0 : 4, pointHoverRadius: 6, pointBackgroundColor: net.map(v => v >= 0 ? good : crit), pointBorderColor: V('--surface'), pointBorderWidth: 2 },
+  ] }, options: baseOpts({ scales: { x: { stacked: true }, y: { stacked: true, ticks: { callback: v => moneyTick(Math.abs(v)) } } },
+    plugins: { tooltip: { callbacks: { label: i => ` ${i.dataset.label}: ${i.dataset.label === 'Left over' ? (i.raw < 0 ? '−' : '+') : ''}${money(Math.abs(i.raw))}` } } } }) });
+  const avgIn = ins.reduce((s, v) => s + v, 0) / (ins.length || 1), avgOut = outs.reduce((s, v) => s + v, 0) / (outs.length || 1), red = net.filter(v => v < 0).length;
+  const sum = $('#flowSum'); if (sum) sum.innerHTML = `<span><i style="background:${s1}"></i>In ${money(avgIn)}<small>/mo</small></span><span><i style="background:${s2}"></i>Out ${money(avgOut)}<small>/mo</small></span><span class="${red > n / 3 ? 'bad' : ''}"><i class="dot"></i>${red} of ${ins.length} months in the red</span>`;
+}
+
 /* ---------------- runway strip (signature) ---------------- */
 function strip(r, o = {}) {
   const max = o.max || 24, v = r.v, inf = v === Infinity, over = inf || v > max;
   const w = over ? 100 : (v / max) * 100;
   const s = o.fill || (inf ? 'good' : status(v));
   const ticks = [0, 6, 12, 18, 24, 36, 48].filter(t => t <= max);
-  const marks = (o.marks || []).filter(m => m.at > 0 && m.at <= max).map(m => `<div class="strip-mark${m.cls ? ' ' + m.cls : ''}" style="left:${m.at / max * 100}%"><span>${esc(m.label)}</span></div>`).join('');
+  const FLAG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 21V4M6 4h11l-2.5 4L17 12H6"/></svg>';
+  const marks = (o.marks || []).filter(m => m.at > 0 && m.at <= max).map(m => `<div class="mb-flag${m.cls ? ' ' + m.cls : ''}" style="left:${m.at / max * 100}%">${FLAG}<span>${esc(m.label)}</span></div>`).join('');
+  const fillTo = v === 0 ? 0 : over ? max : v;
+  const cells = Array.from({ length: max }, (_, i) => { const f = Math.max(0, Math.min(1, fillTo - i)); return `<span class="mb" style="--f:${f.toFixed(2)};--d:${Math.min(i, 30) * 28}ms"></span>`; }).join('');
   return `<div class="strip${o.compact ? ' compact' : ''}">
     <div class="strip-top">
       <div class="strip-big"><span class="n" data-to="${inf ? 'inf' : v}">${inf ? '120+' : '0.0'}</span><span class="u">${inf ? 'months, no shortfall' : 'months'}</span></div>
       ${o.pill ? `<span class="pill ${o.pill[0]}">${esc(o.pill[1])}</span>` : ''}
     </div>
-    <div class="strip-track" style="--tick:${100 / max}%"><div class="strip-fill${v === 0 ? ' zero' : ''}" data-w="${w}" style="--fill-c:var(--${s})"></div>${marks}</div>
+    <div class="mblocks" role="img" aria-label="${inf ? 'Never runs out' : v + ' of ' + max + ' months'}" style="--n:${max};--fill-c:var(--${s})">${cells}${marks}</div>
     <div class="strip-scale">${ticks.map(t => `<span style="left:${t / max * 100}%">${t}${t === max ? (over && !inf ? '+' : '') + ' mo' : ''}</span>`).join('')}</div>
     ${o.note ? `<p class="strip-note">${o.note}</p>` : ''}
   </div>`;
@@ -186,7 +206,7 @@ function ringsSVG(items, size = 188) {
   return h + '</svg>';
 }
 function animateRings(root) { $$('.rings .arc', root).forEach(a => { requestAnimationFrame(() => requestAnimationFrame(() => a.style.strokeDashoffset = a.dataset.off)); }); }
-const LOGO = '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 19h8M9.2 16.6h5.6l-.8-5h-4zM9.6 11.6C8.2 10.8 7.8 9.2 8.7 8c.8-1 2.3-1.3 3.3-.4.9-.9 2.4-.6 3.3.4.9 1.2.5 2.8-.9 3.6"/></svg>';
+const LOGO = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.8 8.4 7.4 15.6h9.2l3.6-7.2-4.5 3.4L12 5.2l-3.7 6.6z" fill="#fff"/><rect x="7.2" y="16.7" width="9.6" height="2.5" rx="1.25" fill="#fff"/></svg>';
 function tone(v) { return v === Infinity || v >= 6 ? 'good' : v >= 3 ? 'warn' : 'crit'; }
 function walletCard(o) {
   return `<div class="wcard ${o.tone}" data-tilt>
@@ -203,15 +223,29 @@ function bindTilt(root) {
   });
 }
 function animateStrips(root) {
+  $$('.mblocks', root).forEach(m => { m.classList.remove('go'); requestAnimationFrame(() => requestAnimationFrame(() => m.classList.add('go'))); });
   $$('.strip-fill', root).forEach(f => { f.style.width = '0'; requestAnimationFrame(() => requestAnimationFrame(() => { f.style.width = f.dataset.w + '%'; })); });
   $$('.strip-big .n', root).forEach(n => { const t = n.dataset.to; if (t === 'inf') return; tween(n, +t, x => x.toFixed(1), 900); });
 }
 
 /* ---------------- shell: account bar, router, theme ---------------- */
-function initials(p, id) {
-  if (!p.name || /^Customer \d+$/.test(p.name)) return '<svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="4"/><path d="M4 21c1.3-4.2 4.4-6.2 8-6.2s6.7 2 8 6.2z"/></svg>';
-  return esc(p.name.split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase());
+/* Every customer gets their own chess-piece avatar: piece, colours and expression come from the account number. */
+const AV_PAL = [['#6CBBFF', '#3A2FD6'], ['#FFC56B', '#FF5E62'], ['#7BE495', '#0A8C6A'], ['#E3B0FF', '#6A2BD0'], ['#FF9DB0', '#D6205A'], ['#8EF5EE', '#0A8C9A'], ['#FFE07A', '#E07A00'], ['#B7C4FF', '#4B4FD8']];
+const AV_PIECE = [
+  'M12 4.2a2.9 2.9 0 1 1 0 5.8 2.9 2.9 0 0 1 0-5.8zM9.6 11h4.8l1.1 6.4H8.5zM7.4 17.8h9.2a1 1 0 0 1 1 1V20H6.4v-1.2a1 1 0 0 1 1-1z',
+  'M7.2 4.5h2v1.6h1.8V4.5h2v1.6h1.8V4.5h2V9l-1.6 1.2.8 7.2H8l.8-7.2L7.2 9zM6.4 18h11.2v2H6.4z',
+  'M9 19.2c0-3 1.6-4.4 2.2-6.4-1.5.8-3 .6-4-.3l2.2-4.3c1-1.9 2.4-3.2 4.4-3.6l.6-1.4 1 1.8c2 1 3 3.4 3 6.6v7.6zM6.6 18.4h10.8v1.8H6.6z',
+  'M12 3.4c.8 0 1.4.6 1.4 1.4 0 .3-.1.6-.3.8 1.9 1.2 3 3 3 5 0 1.4-.7 2.6-1.8 3.3l.8 3.6H8.9l.8-3.6c-1.1-.7-1.8-1.9-1.8-3.3 0-2 1.1-3.8 3-5a1.4 1.4 0 0 1 1.1-2.2zM6.8 18h10.4v2H6.8z',
+  'M5.2 7.6a1.3 1.3 0 1 1 1.2 1.6L8 14l2-6.2a1.3 1.3 0 1 1 2 0 1.3 1.3 0 1 1 2 0L16 14l1.6-4.8a1.3 1.3 0 1 1 1.2-1.6L16.6 17H7.4zM7 17.6h10V20H7z',
+];
+function avatarSVG(id) {
+  let h = 2166136261; for (const ch of String(id)) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); } h >>>= 0;
+  const [c1, c2] = AV_PAL[h % AV_PAL.length], piece = AV_PIECE[(h >>> 4) % AV_PIECE.length], g = 'av' + id, face = (h >>> 9) % 3;
+  const eyeY = [7.2, 7.4, 8.4, 9.2, 13][(h >>> 4) % AV_PIECE.length];
+  const mouth = ['M10.6 ' + (eyeY + 1.5) + 'q1.4 1.1 2.8 0', 'M10.8 ' + (eyeY + 1.6) + 'h2.4', 'M10.6 ' + (eyeY + 1.9) + 'q1.4-1 2.8 0'][face];
+  return `<svg viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="${g}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></linearGradient></defs><circle cx="12" cy="12" r="12" fill="url(#${g})"/><circle cx="18.4" cy="5.4" r="1" fill="#fff" opacity=".7"/><path d="${piece}" fill="#fff"/><circle cx="10.9" cy="${eyeY}" r=".55" fill="${c2}"/><circle cx="13.1" cy="${eyeY}" r=".55" fill="${c2}"/><path d="${mouth}" stroke="${c2}" stroke-width=".6" fill="none" stroke-linecap="round"/></svg>`;
 }
+function initials(p, id) { return avatarSVG(id); }
 function micrHTML(a) {
   const p = profile(a.id);
   const ei = runway(a.B, a.I, a.S, { mult: .55 });
@@ -228,14 +262,16 @@ function micrHTML(a) {
 }
 function renderMicr() { const a = acc(); if (!a) return; const h = micrHTML(a); $$('[data-micr]').forEach(el => el.innerHTML = h); const p = profile(a.id); $('#tbAcct').innerHTML = `<span class="avatar sm">${initials(p, a.id)}</span><span>${esc(p.name)}</span>`; }
 
-const TITLES = { paradox: 'The paradox', customer: 'Customer', shock: 'Shock lab', plan: 'Plan', budget: 'Budget', invest: 'Investing', coach: 'Coach', data: 'Your data', resources: 'Resources', profile: 'Profile', arena: 'Quests', play: 'Play' };
+const TITLES = { paradox: 'The paradox', customer: 'Customer', shock: 'Shock lab', plan: 'Plan', budget: 'Budget', invest: 'Investing', coach: 'Coach', data: 'Your data', resources: 'Resources', profile: 'Profile', arena: 'Quests', play: 'Play', overview: 'Overview', investing: 'Investing', yourdata: 'Your money', situations: 'Situations', saving: 'Saving plan', paradox: 'Findings' };
 function openSheet() { $('#sheet').hidden = false; $('#sheetBg').hidden = false; }
 function closeSheet() { const s = $('#sheet'); if (s) { s.hidden = true; $('#sheetBg').hidden = true; } }
-const VIEWS = ['paradox', 'customer', 'shock', 'plan', 'budget', 'invest', 'coach', 'data', 'resources', 'profile', 'arena', 'play'];
+const VIEWS = ['paradox', 'customer', 'shock', 'plan', 'budget', 'invest', 'coach', 'data', 'resources', 'profile', 'arena', 'play', 'overview', 'investing', 'yourdata', 'situations', 'saving'];
 const RENDER = {};
 let currentView = null;
 function route() {
-  let v = location.hash.slice(1); if (!VIEWS.includes(v)) v = 'paradox';
+  let v = location.hash.slice(1); const ios = document.documentElement.getAttribute('data-ui') !== 'rr';
+  if (ios) v = ({ overview: 'customer', situations: 'shock', saving: 'plan', yourdata: 'data', investing: 'invest' })[v] || v;
+  if (!VIEWS.includes(v)) v = ios ? 'customer' : 'overview';
   currentView = v;
   $$('.view').forEach(s => s.hidden = s.dataset.view !== v);
   $$('#nav a, #tabbar a').forEach(a => { if (a.getAttribute('href') === '#' + v) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
@@ -381,13 +417,23 @@ RENDER.customer = () => {
       <div><span class="t" style="color:var(--ring3)">Saving</span><span class="v">${Math.round(Math.max(sr0, 0) * 100)}<small>/20%</small></span><span class="s">Share of income left each month</span></div>
     </div></div>`;
   animateRings($('#rings'));
+  const IC = {
+    in: '<path d="M12 3v11M7.5 9.5 12 14l4.5-4.5"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/>',
+    out: '<path d="M12 14V3M7.5 7.5 12 3l4.5 4.5"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/>',
+    fixed: '<path d="M4 11 12 4l8 7"/><path d="M6 9.5V20h12V9.5"/><path d="M10 20v-5h4v5"/>',
+    buffer: '<path d="M19 10.5c0-3-3-5.5-7-5.5-4.4 0-7.5 2.6-7.5 6 0 1.8.9 3.3 2.3 4.4L6 19h3l.7-1.6c.7.2 1.5.3 2.3.3s1.6-.1 2.3-.3L15 19h3l-.5-3c.9-.6 1.6-1.4 2-2.3H21v-3h-2z"/><path d="M10 7.5h3"/><circle cx="15.5" cy="10" r=".6" fill="currentColor"/>',
+    loan: '<rect x="3.5" y="6" width="17" height="12" rx="2.5"/><path d="M3.5 10h17M7 14.5h4"/>',
+    runway: '<path d="M7 3h10M7 21h10M8 3c0 4 8 5 8 9s-8 5-8 9M16 3c0 4-8 5-8 9s8 5 8 9"/>',
+  };
+  const card = (ic, c, l, v, s) => `<div style="--kc:${c}"><span class="k"><i class="lic">${'<svg viewBox="0 0 24 24">' + IC[ic] + '</svg>'}</i>${l}</span><span class="v" title="${esc(v)}">${v}</span><span class="s">${s}</span></div>`;
   $('#ledger').innerHTML = [
-    ['I', 'Money in', money(a.I), 'Typical month'],
-    ['F', 'Fixed costs', money(a.F), 'Bills, insurance, loan'],
-    ['S', 'Spending', money(a.S), `${a.I > 0 ? pct(a.S / a.I) : '—'} of money in`],
-    ['B', 'Buffer', money(a.B), 'Avg balance, last 6 months'],
-    ['', 'Runway today', base.v === Infinity ? 'No shortfall' : rwText(base) + ' mo', base.v === Infinity ? 'Money in covers spending' : 'Already spending more than comes in'],
-  ].map(([k, l, v, s]) => `<div><span class="k">${k ? `<b>${k}</b>` : ''}${l}</span><span class="v" title="${esc(v)}">${v}</span><span class="s">${s}</span></div>`).join('');
+    card('in', 'var(--s1)', 'Money in', money(a.I), 'Typical month'),
+    card('out', 'var(--warn)', 'Money out', money(a.S), `${a.I > 0 ? pct(a.S / a.I) : '—'} of money in`),
+    card('fixed', 'var(--purple)', 'Fixed costs', money(a.F), 'Bills, insurance, loan'),
+    card('buffer', 'var(--good)', 'Savings buffer', money(a.B), 'Avg balance, last 6 months'),
+    card('loan', 'var(--indigo)', 'Loan payment', a.P > 0 ? money(a.P) : 'None', a.P > 0 ? 'Every month, still running' : 'No running loan'),
+    card('runway', base.v === Infinity || base.v >= 6 ? 'var(--teal)' : 'var(--crit)', 'Runway today', base.v === Infinity ? 'No shortfall' : rwText(base) + ' mo', base.v === Infinity ? 'Money in covers spending' : 'Already spending more than comes in'),
+  ].join('');
 
   const ei = runway(a.B, a.I, a.S, { mult: .55 });
   const p = eiPercentile(ei.v);
@@ -417,10 +463,8 @@ RENDER.customer = () => {
 
   // flow chart
   const L = monthLabels(a), s1 = V('--s1'), s2 = V('--s2');
-  chart('flowChart', { type: 'line', data: { labels: L, datasets: [
-    { label: 'Money in', data: a.in, borderColor: s1, backgroundColor: s1, borderWidth: 2.5, pointRadius: 0, pointHoverRadius: 5, tension: .35 },
-    { label: 'Money out', data: a.out, borderColor: s2, backgroundColor: s2, borderWidth: 2.5, pointRadius: 0, pointHoverRadius: 5, tension: .35 },
-  ] }, options: baseOpts({ scales: { y: { ticks: { callback: moneyTick } } }, plugins: { tooltip: { callbacks: { label: i => ` ${i.dataset.label}: ${money(i.raw)}` } } } }) });
+  drawFlow(a);
+  $$('#flowRange button').forEach(b => { b.setAttribute('aria-pressed', String(+b.dataset.n === (st.flowN || 12))); b.onclick = () => { st.flowN = +b.dataset.n; $$('#flowRange button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); drawFlow(a); }; });
   chart('balChart', { type: 'line', data: { labels: L, datasets: [
     { label: 'Average balance', data: a.bal, borderColor: s1, backgroundColor: areaFill(s1), fill: 'origin', borderWidth: 2.5, pointRadius: 0, pointHoverRadius: 5, tension: .35 },
   ] }, plugins: [shadePlugin], options: baseOpts({ scales: { y: { ticks: { callback: moneyTick } } },
@@ -830,8 +874,11 @@ function bindInvest() {
 }
 
 /* ================= VIEW: COACH ================= */
-function aiCfg() { const c = Object.assign({ key: '', model: 'gemini-2.5-flash' }, store.get('cm.ai', {})); if (c.model === 'gemini-flash-latest') c.model = 'gemini-2.5-flash'; return c; }
+/* No provider keys in the browser: Gemini runs server-side. Purge any key saved by older builds. */
+(() => { const c = store.get('cm.ai', null); if (c && c.key) { delete c.key; store.set('cm.ai', c); } })();
+function aiCfg() { const c = Object.assign({ model: 'gemini-2.5-flash' }, store.get('cm.ai', {})); if (c.model === 'gemini-flash-latest') c.model = 'gemini-2.5-flash'; c.key = ''; return c; }
 function contextText() {
+  const live = window.CMLive && window.CMLive.contextText && window.CMLive.contextText(); if (live) return live;
   const a = acc(), pf = profile(), sh = st.shock, P = shockParams(a, sh), r = runway(a.B, a.I, a.S, P);
   const ei = runway(a.B, a.I, a.S, { mult: .55 }), base = runway(a.B, a.I, a.S);
   const { list } = levers(a); const act = actuals(a, a.I);
@@ -850,7 +897,7 @@ function contextText() {
     `Bank-wide facts: high-income customers spend ~96% of income vs 69% for low-income, so they run out faster on EI (68% vs 4% within 6 months). Runway predicts real defaults better than income (AUC 0.72 vs 0.62). Joint accounts: 0 of 145 loans defaulted. January spending is ~45% above an average month.`,
   ].join('\n');
 }
-const SYS = `You are ChequeMate Coach, a financial resilience coach inside a Canadian bank's tool. You explain one customer's numbers to a bank employee or the customer.
+const SYS = `You are Rookie, ChequeMate's coach, a cheerful little chess rook (upbeat, a little witty, never silly about money), a financial resilience coach inside a Canadian bank's tool. You explain one customer's numbers to a bank employee or the customer.
 Rules: Use only the numbers in the context; if you calculate, show the short arithmetic. Amounts are Canadian dollars. Be concise: under 170 words, plain language, short paragraphs or up to 5 bullets, bold the key number once. Give concrete next steps tied to their numbers. Mention official resources (EI on canada.ca, FCAC, Credit Counselling Canada) when relevant. Never recommend specific stocks or funds.
 Refer to the customer by their name or as "they"; don't restate their age, sex or province unless the question is about them. Answer the question asked first, in the first sentence, then support it. Backup-plan runways stack: never present a later step's runway as if that step worked alone. Don't add disclaimers about being an advisor unless asked for specific investment picks.`;
 function mdLite(t) {
@@ -938,9 +985,9 @@ async function send(q) {
   catch (e) {
     console.warn('[coach] Gemini failed:', e.message);
     pending.text = offlineAnswer(q); pending.offline = true;
-    pending.src = e.message === 'nokey' ? 'Built-in coach. Start the site with server.py, or add a Gemini key in Profile, for open-ended answers.'
-      : /fetch|network|Failed/i.test(e.message) ? "Built-in coach. Gemini couldn't be reached from here. Check the connection and ask again."
-      : `Built-in coach, because Gemini said: ${e.message}`;
+    pending.src = e.message === 'nokey' ? 'Rookie (built-in answers). Start the site with server.py, or add a Gemini key in Profile, for open-ended answers.'
+      : /fetch|network|Failed/i.test(e.message) ? "Rookie (built-in answers). Gemini couldn't be reached from here. Check the connection and ask again."
+      : `Rookie (built-in answers), because Gemini said: ${e.message}`;
   }
   pending.typing = false; renderMsgs();
   renderChips(q);
@@ -1011,7 +1058,7 @@ function renderPrompts() {
 }
 RENDER.coach = () => {
   const a = acc(); if (!a) return; const pf = profile();
-  if (!st.chat.length) st.chat.push({ role: 'model', text: `Hi. I'm looking at **${pf.name}** (account ${a.id}). Ask me what their numbers mean, whether they survive a shock, or what to do next.`, src: 'ChequeMate Coach' });
+  if (!st.chat.length) st.chat.push({ role: 'model', text: `Hi. I'm looking at **${pf.name}** (account ${a.id}). Ask me what their numbers mean, whether they survive a shock, or what to do next.`, src: 'Rookie' });
   renderMsgs();
   renderPrompts();
   const lastUser = [...st.chat].reverse().find(m => m.role === 'user');
@@ -1034,10 +1081,10 @@ RENDER.data = () => {
   const out6 = POP.ei.filter(v => v < 6).length / n;
   $('#dataStatus').innerHTML = SRC.kind === 'upload'
     ? `<div class="verdict good">${ICON.check}<div><strong>Using ${esc(SRC.label)}</strong><p>${n.toLocaleString()} accounts loaded. Every page now reads from this file. <button class="btn ghost" type="button" id="backBuiltin">Switch back to the Tangerine sample</button></p></div></div>`
-    : `<div class="callout">Showing the <strong>Tangerine track sample</strong>: ${n.toLocaleString()} accounts, 2020 to 2025. Upload a file to analyse your own.</div>`;
+    : `<div class="callout">Showing the <strong>bank sample</strong>: ${n.toLocaleString()} accounts, 2020 to 2025. Upload a file to analyse your own.</div>`;
   const bb = $('#backBuiltin'); if (bb) bb.onclick = () => useBuiltin();
   $('#portLedger').innerHTML = [
-    ['Accounts', n.toLocaleString(), SRC.kind === 'upload' ? 'From your file' : 'Tangerine sample'],
+    ['Accounts', n.toLocaleString(), SRC.kind === 'upload' ? 'From your file' : 'Bank sample'],
     ['Median money in', money(median(accs.map(x => x.I))), 'Per month'],
     ['Median buffer', money(median(accs.map(x => x.B))), 'Avg balance, last 6 months'],
     ['Out within 6 months', pct(out6), 'If laid off on EI at 55%'],
@@ -1063,10 +1110,10 @@ RENDER.data = () => {
   $('#seasonNote').textContent = `Spending peaks in ${MONTHS[top[0][1]]} (${pct(top[0][0] - 1)} above average) and ${MONTHS[top[1][1]]} (${pct(top[1][0] - 1)}). Money in peaks in ${MONTHS[se.in.indexOf(Math.max(...se.in))]}.`;
 };
 function useBuiltin(quiet) {
-  DATA = BUILTIN; SRC = { kind: 'builtin', label: 'Tangerine track sample' }; prepDataset();
-  $('#srcLabel').textContent = 'Data: Tangerine track sample, 4,500 accounts';
+  DATA = BUILTIN; SRC = { kind: 'builtin', label: 'bank sample' }; prepDataset();
+  $('#srcLabel').textContent = 'Data: 4,500 real, anonymized accounts';
   setAccount(store.get('cm.last.builtin', 28754) in DATA ? store.get('cm.last.builtin', 28754) : 28754, true);
-  if (!quiet) { toast('Switched back to the Tangerine sample'); route(); }
+  if (!quiet) { toast('Switched back to the bank sample'); route(); }
 }
 function parseCSV(file) { return new Promise((res, rej) => Papa.parse(file, { header: true, dynamicTyping: true, skipEmptyLines: true, complete: r => res(r), error: rej })); }
 async function handleFiles(files) {
@@ -1147,7 +1194,7 @@ const RES = [
     ['Average weekly earnings', 'Table 14-10-0223-01.', 'https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410022301'],
   ]],
   ['About the data', [
-    ['PKDD\'99 Financial dataset', 'Real anonymized bank data from the CTU Prague Relational Dataset Repository, relabelled to CAD for the Tangerine track.', 'https://relational.fel.cvut.cz/dataset/Financial'],
+    ['PKDD\'99 Financial dataset', 'Real anonymized bank data from the CTU Prague Relational Dataset Repository, relabelled to CAD.', 'https://relational.fel.cvut.cz/dataset/Financial'],
     ['TFSA limit holds at $7,000 for 2026', 'Investment Executive, on the CRA announcement.', 'https://www.investmentexecutive.com/news/tfsa-dollar-limit-to-hold-steady-in-2026'],
   ]],
 ];
@@ -1199,7 +1246,7 @@ function boot() {
   $('#acctForm').onsubmit = e => {
     e.preventDefault(); const v = $('#acctInput').value.replace(/\D/g, '');
     if (!setAccount(v)) { $('#acctInput').setAttribute('aria-invalid', 'true'); const er = $('#acctErr'); er.hidden = false; er.textContent = v ? `No account ${v} in this data. IDs run from ${IDS[0]} to ${IDS[IDS.length - 1]}.` : 'Type an account number.'; }
-    else if (currentView === 'paradox' || currentView === 'data' || currentView === 'resources') go('customer');
+    else if (['paradox', 'data', 'resources'].includes(currentView)) go('customer');
   };
   $('#acctRandom').onclick = () => { setAccount(IDS[Math.floor(Math.random() * IDS.length)]); if (['paradox', 'data', 'resources'].includes(currentView)) go('customer'); };
   $$('[data-theme-set]').forEach(b => b.onclick = () => applyTheme(b.dataset.themeSet));
@@ -1217,6 +1264,6 @@ function boot() {
 }
 // expose engine for testing in the console
 window.ChequeMate = { runway, get data() { return DATA; }, get builtin() { return BUILTIN; }, get ids() { return IDS; }, get src() { return SRC; }, get view() { return currentView; },
-  st, acc, profile, shockParams, SHOCKS, money, pct, esc, toast, go, setAccount, applyPreset, rwText, rwLong, status, tone, eiPercentile, levers, isNoShock, ICON, reduceMotion, store };
+  st, acc, profile, shockParams, SHOCKS, send, mdLite, actuals, RULES, projection, get ins() { return INS; }, money, pct, esc, toast, go, setAccount, applyPreset, rwText, rwLong, status, tone, eiPercentile, levers, isNoShock, ICON, reduceMotion, store };
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
 })();

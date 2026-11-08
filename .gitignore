@@ -6,10 +6,12 @@
 # Credentials
 .env
 .env.*
+!.env.example
 *.pem
 *.key
 *credentials*.json
 *service-account*.json
+.pytest_cache/
 # Temporary files
 *.log
 __pycache__/
@@ -17,3 +19,4 @@ __pycache__/
 node_modules/
 .DS_Store
 artifact/
+.claude/settings.local.json

@@ -13,7 +13,7 @@ const isDark = () => { const t = root.getAttribute('data-theme'); return t ? t =
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 
 /* ---------------- style switch (Glass / Solid) ---------------- */
-let style = store.get('cm.style', 'glass');
+let style = store.get('cm.style', 'solid');
 function applyStyle(s) {
   style = s === 'solid' ? 'solid' : 'glass';
   root.setAttribute('data-style', style); store.set('cm.style', style);

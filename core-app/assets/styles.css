@@ -672,3 +672,79 @@ input[type="range"]:disabled { opacity: .4; }
   *, *::before, *::after { transition: none !important; animation: none !important; }
   .wcard { transform: none !important; }
 }
+
+/* live server check (iOS UI) */
+.live-check { display: flex; align-items: center; gap: 12px; margin: 12px 0; padding: 12px 16px; border-radius: var(--r-m); background: var(--surface); box-shadow: var(--shadow-s); border: 1px solid var(--line); font-size: 13px; }
+.live-check > div { display: grid; gap: 2px; min-width: 0; flex: 1; } .live-check b { font-weight: 600; font-size: 14px; } .live-check span:not(.lc-dot) { color: var(--ink-2); }
+.live-check em { font: 600 11px var(--font); font-style: normal; color: var(--muted); background: var(--fill-2); padding: 3px 8px; border-radius: 999px; white-space: nowrap; }
+.lc-dot { width: 10px; height: 10px; border-radius: 5px; flex: none; background: var(--muted); }
+.live-check.ok .lc-dot { background: var(--good); box-shadow: 0 0 0 4px var(--good-soft); } .live-check.ok b { color: var(--good-t); }
+.live-check.warn .lc-dot { background: var(--warn); box-shadow: 0 0 0 4px var(--warn-soft); } .live-check.warn b { color: var(--warn-t); }
+.live-check.off .lc-dot { background: var(--crit); }
+.live-check.wait .lc-dot { animation: lcpulse 1s ease-in-out infinite alternate; } @keyframes lcpulse { to { opacity: .3; } }
+@media (max-width: 600px) { .live-check { flex-wrap: wrap; } .live-check em { margin-left: 22px; } }
+
+/* ===== focus pass: one idea per card, less on screen ===== */
+section[data-view="paradox"] .panel:has(#scatter), section[data-view="paradox"] .panel:has(#whyTable), section[data-view="paradox"] #findings,
+section[data-view="customer"] .panel:has(#rings), section[data-view="customer"] .panel:has(#custInsights), section[data-view="customer"] #custStrips2,
+section[data-view="customer"] .sankey-panel, section[data-view="customer"] .panel:has(#balChart), section[data-view="customer"] .panel:has(#outBars),
+section[data-view="shock"] .coin-panel, section[data-view="shock"] .panel:has(#heat),
+section[data-view="plan"] .panel:has(#leverBars) { display: none !important; }
+section[data-view="paradox"] .g-main:has(#whyTable), section[data-view="customer"] .g-main:has(#custInsights) { grid-template-columns: minmax(0, 1fr); }
+section[data-view="customer"] .cust-hero { grid-template-columns: minmax(0, 1fr); max-width: 560px; }
+/* avatars and logo */
+.avatar { background: none !important; padding: 0; overflow: hidden; box-shadow: 0 4px 12px -4px rgba(0, 0, 0, .3); }
+.avatar svg { width: 100% !important; height: 100% !important; fill: initial; }
+.app-icon { background: linear-gradient(135deg, #FFB347, #FF2D55) !important; box-shadow: 0 3px 10px rgba(255, 45, 85, .35); }
+.app-icon svg { width: 74%; height: 74%; }
+
+/* customer hero: card + layoff answer side by side */
+section[data-view="customer"] .cust-hero { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr) !important; max-width: none !important; align-items: stretch; }
+section[data-view="customer"] .cust-hero .laid-off { display: flex; flex-direction: column; justify-content: center; }
+@media (max-width: 900px) { section[data-view="customer"] .cust-hero { grid-template-columns: minmax(0, 1fr) !important; } }
+#ledger { margin-top: 16px; }
+/* calmer live banner on phones */
+@media (max-width: 700px) { .rr-live > span:not(.dot) { display: none; } .rr-live { padding: 8px 16px !important; } }
+.live-check { padding: 10px 14px; } .live-check > div b { font-size: 14px; }
+/* coach has a tip: soft pulse instead of a popup */
+.mate-dock.nudge { animation: nudge 1.4s ease-in-out 2; }
+@keyframes nudge { 0%, 100% { transform: scale(1); } 40% { transform: scale(1.12) rotate(-6deg); } 70% { transform: scale(1.04) rotate(4deg); } }
+@media (prefers-reduced-motion: reduce) { .mate-dock.nudge { animation: none; } }
+
+/* ===== customer page polish ===== */
+.ledger { grid-template-columns: repeat(6, minmax(0, 1fr)) !important; }
+@media (max-width: 1200px) { .ledger { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; } }
+@media (max-width: 600px) { .ledger { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; } .ledger .v { font-size: 22px; } }
+.ledger > div { transition: transform .2s; } .ledger > div:hover { transform: translateY(-2px); }
+.ledger .k { color: var(--ink-2) !important; gap: 8px; }
+.ledger .lic { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; flex: none; color: #fff;
+  background: linear-gradient(160deg, color-mix(in srgb, var(--kc) 70%, #fff), var(--kc)); box-shadow: 0 4px 10px -4px var(--kc); }
+.ledger .lic svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.ledger .v { margin-top: 8px; }
+
+/* runway as month blocks */
+.mblocks { position: relative; display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 3px; height: 22px; margin-top: 40px; }
+.strip.compact .mblocks { height: 14px; margin-top: 30px; gap: 2px; }
+.mb { position: relative; border-radius: 5px; background: var(--fill); overflow: hidden; }
+.mb::after { content: ""; position: absolute; inset: 0 auto 0 0; width: calc(var(--f) * 100%); border-radius: inherit;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--fill-c) 70%, #fff), var(--fill-c)); transform: scaleY(0); transform-origin: bottom; transition: transform .35s cubic-bezier(.2, .8, .2, 1) var(--d); }
+.mblocks.go .mb::after { transform: scaleY(1); }
+.mb-flag { position: absolute; bottom: calc(100% + 8px); transform: translateX(-50%); display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px 3px 7px; border-radius: 999px;
+  background: var(--ink); color: var(--surface); font-size: 11.5px; font-weight: 600; white-space: nowrap; box-shadow: var(--shadow-m); }
+.mb-flag svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.mb-flag::after { content: ""; position: absolute; left: 50%; top: 100%; transform: translateX(-50%); border: 5px solid transparent; border-top-color: var(--ink); }
+.strip-scale { margin-top: 8px; }
+@media (prefers-reduced-motion: reduce) { .mb::after { transition: none; } }
+
+/* score parts as rings */
+.score-rings { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 14px; align-content: center; }
+.sr { display: grid; grid-template-columns: 46px 1fr; grid-template-rows: auto auto; column-gap: 10px; align-items: center; }
+.sr svg { grid-row: span 2; width: 46px; height: 46px; } .sr .bg { fill: none; stroke: var(--fill); stroke-width: 5; }
+.sr .fg { fill: none; stroke: var(--c); stroke-width: 5; stroke-linecap: round; transition: stroke-dashoffset 1s cubic-bezier(.2, .8, .2, 1); }
+.sr b { font: 700 17px var(--font-r); align-self: end; } .sr b small { font-size: 11px; color: var(--muted); font-weight: 600; } .sr span { font-size: 12px; color: var(--ink-2); align-self: start; }
+
+/* money in/out summary */
+.flow-sum { display: flex; flex-wrap: wrap; gap: 8px; margin: -4px 0 10px; }
+.flow-sum span { display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; border-radius: 999px; background: var(--fill-2); font-size: 12.5px; font-weight: 600; }
+.flow-sum small { color: var(--muted); font-weight: 500; } .flow-sum i { width: 9px; height: 9px; border-radius: 3px; } .flow-sum i.dot { border-radius: 50%; background: var(--good); }
+.flow-sum .bad { color: var(--crit-t); } .flow-sum .bad i.dot { background: var(--crit); }
