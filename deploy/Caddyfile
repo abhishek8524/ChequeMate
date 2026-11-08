@@ -1,0 +1,9 @@
+# Replace example.com with your domain (A record -> the Vultr server IP).
+# No domain yet? Use ":80" instead of the domain to serve plain HTTP on the IP.
+example.com {
+	encode gzip
+	reverse_proxy 127.0.0.1:8000 {
+		# server.py rate-limits per visitor using this header
+		header_up CF-Connecting-IP {remote_host}
+	}
+}

@@ -1,0 +1,16 @@
+[Unit]
+Description=ChequeMate web server (static app + Gemini proxy)
+After=network.target chequemate-api.service
+
+[Service]
+User=chequemate
+WorkingDirectory=/opt/chequemate/core-app
+EnvironmentFile=/opt/chequemate/.env
+Environment=PORT=8000
+Environment=BACKEND_URL=http://127.0.0.1:8001
+ExecStart=/opt/chequemate/.venv/bin/python server.py
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
