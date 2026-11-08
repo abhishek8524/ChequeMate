@@ -36,3 +36,34 @@ def fetch_account(account_id: int):
 def check_health():
     with connect() as connection:
         connection.execute("SELECT 1").fetchone()
+
+
+def fetch_history(account_id: int):
+    with connect() as connection:
+        return connection.execute(
+            'SELECT month, money_in, money_out, avg_daily_balance, days_below_zero '
+            'FROM public.gold_account_monthly_history WHERE account_id = %s ORDER BY month',
+            (account_id,),
+        ).fetchall()
+
+
+def fetch_profile(account_id: int):
+    with connect() as connection:
+        return connection.execute(
+            'SELECT district_id, district_name, region, linked_clients, owner_count, '
+            'card_count, standing_order_count, standing_order_total '
+            'FROM public.gold_account_profiles WHERE account_id = %s', (account_id,),
+        ).fetchone()
+
+
+def fetch_lookalikes(account_id: int, inflow, buffer):
+    """Descriptive nearest neighbours in normalized inflow and buffer space."""
+    with connect() as connection:
+        return connection.execute(
+            'SELECT account_id, "I", "S", "F", "H", "B", "P", '
+            '(abs("I" - %s) / greatest(abs(%s), 1) + '
+            'abs("B" - %s) / greatest(abs(%s), 1)) AS distance '
+            'FROM public.gold_account_metrics WHERE account_id <> %s '
+            'ORDER BY distance, account_id LIMIT 5',
+            (inflow, inflow, buffer, buffer, account_id),
+        ).fetchall()

@@ -1,5 +1,8 @@
 # ChequeMate API
 
+See [HANDOFF.md](HANDOFF.md) for the score methodology, insights, temporary support,
+planner, quests, Gemini boundary, new endpoints and remaining live checks.
+
 Run from the repository root with Python 3.10+:
 
 ```powershell
