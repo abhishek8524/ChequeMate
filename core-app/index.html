@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ChequeMate</title>
+<meta name="description" content="ChequeMate: financial resilience engine. Runway, shocks, plans, budgets and investing for any bank customer.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" aria-label="ChequeMate">
+    <a class="brand" href="#paradox" aria-label="ChequeMate home">
+      <span class="app-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 19h8M9.2 16.6h5.6l-.8-5h-4zM9.6 11.6C8.2 10.8 7.8 9.2 8.7 8c.8-1 2.3-1.3 3.3-.4.9-.9 2.4-.6 3.3.4.9 1.2.5 2.8-.9 3.6"/></svg></span>
+      <span class="brand-name">ChequeMate</span>
+    </a>
+    <nav class="nav" id="nav">
+      <div class="side-sec"><span>Overview</span>
+        <a href="#paradox"><span class="sf" style="--c:var(--indigo)"><svg viewBox="0 0 24 24"><path d="M5 19V11M12 19V5M19 19v-6"/></svg></span>The paradox</a>
+        <a href="#data"><span class="sf" style="--c:var(--teal)"><svg viewBox="0 0 24 24"><path d="M12 15V4M7.5 8.5 12 4l4.5 4.5M5 15v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3"/></svg></span>Your data</a>
+      </div>
+      <div class="side-sec"><span>This customer</span>
+        <a href="#customer"><span class="sf" style="--c:var(--accent)"><svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c1.2-3.6 3.8-5.3 7-5.3s5.8 1.7 7 5.3"/></svg></span>Customer</a>
+        <a href="#shock"><span class="sf" style="--c:var(--warn)"><svg viewBox="0 0 24 24"><path d="M13 3 5 13.5h6.5L10.5 21 19 10.5h-6.5z"/></svg></span>Shock lab</a>
+        <a href="#plan"><span class="sf" style="--c:var(--good)"><svg viewBox="0 0 24 24"><path d="M4.5 12.5 9.5 17.5 19.5 6.5"/></svg></span>Plan</a>
+        <a href="#budget"><span class="sf" style="--c:var(--purple)"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9h-9z"/><path d="M15 3.5A9 9 0 0 1 20.5 9H15z"/></svg></span>Budget</a>
+        <a href="#invest"><span class="sf" style="--c:var(--mint)"><svg viewBox="0 0 24 24"><path d="M4 17 10 11l4 4 6-7M15 8h5v5"/></svg></span>Investing</a>
+      </div>
+      <div class="side-sec"><span>Tools</span>
+        <a href="#coach"><span class="sf" style="--c:var(--good)"><svg viewBox="0 0 24 24"><path d="M20 11.5c0 4.1-3.6 7.5-8 7.5-1.2 0-2.3-.2-3.3-.7L4 19.5l1.2-3.6A7.2 7.2 0 0 1 4 11.5C4 7.4 7.6 4 12 4s8 3.4 8 7.5z"/></svg></span>Coach</a>
+        <a href="#resources"><span class="sf" style="--c:var(--pink)"><svg viewBox="0 0 24 24"><path d="M5 4.5h5a2 2 0 0 1 2 2V20a1.5 1.5 0 0 0-1.5-1.5H5zM19 4.5h-5a2 2 0 0 0-2 2V20a1.5 1.5 0 0 1 1.5-1.5H19z"/></svg></span>Resources</a>
+        <a href="#profile"><span class="sf" style="--c:var(--gray)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M5.5 18.5l1.7-1.7M16.8 7.2l1.7-1.7"/></svg></span>Profile</a>
+      </div>
+    </nav>
+    <div class="side-foot">
+      <div class="seg theme-switch" role="group" aria-label="Appearance">
+        <button type="button" data-theme-set="system">Auto</button>
+        <button type="button" data-theme-set="light">Light</button>
+        <button type="button" data-theme-set="dark">Dark</button>
+      </div>
+      <span id="srcLabel">Data: Tangerine track sample, 4,500 accounts</span>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="toolbar">
+      <span class="tb-title" id="tbTitle">The paradox</span>
+      <span class="tb-space"></span>
+      <form class="search" id="acctForm" autocomplete="off" role="search">
+        <div class="search-field">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg>
+          <input id="acctInput" inputmode="numeric" placeholder="Account number" aria-label="Account number" aria-describedby="acctErr">
+        </div>
+        <button class="icon-btn" type="button" id="acctRandom" title="Open a random account" aria-label="Open a random account">
+          <svg viewBox="0 0 24 24"><path d="M3 7h3.5c2 0 3.2 1 4.3 2.6l2.4 3.8C14.3 15 15.5 16 17.5 16H21M3 16h3.5c1.4 0 2.4-.5 3.2-1.4M21 7h-3.5c-1.4 0-2.4.5-3.2 1.4M18.5 4.5 21 7l-2.5 2.5M18.5 13.5 21 16l-2.5 2.5"/></svg>
+        </button>
+        <div class="acct-err" id="acctErr" hidden></div>
+      </form>
+      <a class="tb-acct" id="tbAcct" href="#profile"></a>
+    </header>
+
+    <main class="content" id="main">
+      <div class="loading" id="loading">Loading 4,500 accounts…</div>
+
+      <!-- THE PARADOX -->
+      <section class="view" data-view="paradox" hidden>
+        <div class="hero" id="hero">
+          <div class="head" style="padding:0">
+            <span class="eyebrow">The Paycheque Paradox</span>
+            <h1>A bigger paycheque doesn't buy more time.</h1>
+            <p class="lede">We laid off every one of the bank's 4,500 customers on paper, with EI paying 55% of their income. The people with the most money coming in ran out first. Income tells you how much flows through an account. Runway tells you how long someone lasts.</p>
+          </div>
+          <div class="pair" id="pair"></div>
+        </div>
+
+        <div class="grid g-main">
+          <div class="panel">
+            <div class="panel-head"><h2>Out of money within 6 months of a layoff</h2><p>EI at 55%, by income quarter</p></div>
+            <div class="bars" id="quartBars"></div>
+            <p class="note" id="quartNote"></p>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><h2>Why it happens</h2></div>
+            <div class="table-wrap"><table class="cmp" id="whyTable"></table></div>
+            <p class="note">High earners spend almost everything that comes in, so EI at 55% leaves a large monthly hole and the buffer covers less than two months of spending.</p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h2>Income against layoff runway</h2><p>900 customers. Runway capped at 36 months for display. Select a dot to open it.</p></div>
+          <div class="legend"><span><i style="background:var(--s1)"></i>Customer</span><span><i class="line" style="background:var(--crit)"></i>6-month line</span></div>
+          <div class="chart-box tall"><canvas id="scatter" aria-label="Scatter of monthly income versus layoff runway"></canvas></div>
+        </div>
+
+        <div class="findings" id="findings"></div>
+
+        <div class="panel">
+          <div class="panel-head"><h2>Runway predicts real defaults better than income</h2><p>682 loans, 76 defaults. 0.5 is a coin flip, 1.0 is perfect.</p></div>
+          <div class="bars" id="aucBars"></div>
+          <p class="note">High earners do default less in real life (4.7% against 17.5% for the lowest quarter). The paradox is about what happens if the shock hits. Runway is the better measure either way.</p>
+        </div>
+      </section>
+
+      <!-- CUSTOMER -->
+      <section class="view" data-view="customer" hidden>
+        <div class="head"><h1>Customer</h1><p>Typical month, savings buffer and runway, from this account's own history. Numbers use the judges' definitions.</p></div>
+        <div class="cust-hero">
+          <div id="wcard"></div>
+          <div class="panel">
+            <div class="panel-head"><h2>Resilience</h2><p>Each ring closes when the goal is met</p></div>
+            <div id="rings"></div>
+          </div>
+        </div>
+        <div class="ledger" id="ledger"></div>
+        <div class="grid g-main">
+          <div class="panel">
+            <div class="panel-head"><h2>If laid off tomorrow</h2><p id="rwSub"></p></div>
+            <div id="custStrip"></div>
+            <div class="grid g-2" id="custStrips2"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><h2>What stands out</h2></div>
+            <div class="insights" id="custInsights"></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h2>Money in and out</h2><div class="legend"><span><i class="line" style="background:var(--s1)"></i>Money in</span><span><i class="line" style="background:var(--s2)"></i>Money out</span></div></div>
+          <div class="chart-box"><canvas id="flowChart" aria-label="Monthly money in and money out"></canvas></div>
+        </div>
+        <div class="grid g-2">
+          <div class="panel">
+            <div class="panel-head"><h2>Average balance</h2><p>Shaded months set the buffer</p></div>
+            <div class="chart-box short"><canvas id="balChart" aria-label="Average daily balance by month"></canvas></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><h2>Where a typical month goes</h2><p>Average per month</p></div>
+            <div class="bars" id="outBars"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SHOCK LAB -->
+      <section class="view" data-view="shock" hidden>
+        <div class="head"><h1>Shock lab</h1><p>Pick a scenario or size your own. Runway recalculates with the judges' formula, and every step of the math is shown.</p></div>
+        <div class="micr" data-micr></div>
+        <div class="twists" id="twists"></div>
+        <div class="grid g-main">
+          <div class="panel">
+            <div id="shockStrip"></div>
+            <div id="verdict"></div>
+            <div class="formula" id="formula"></div>
+          </div>
+          <div class="panel">
+            <h2>Size the shock</h2>
+            <div class="field"><label for="sInc">Income kept <output id="oInc"></output></label><input type="range" id="sInc" min="0" max="100" step="5"><span class="hint">EI regular benefits pay 55% of insurable earnings, up to $729 a week in 2026.</span></div>
+            <div class="field"><label for="sEi">How long EI pays <output id="oEi"></output></label><input type="range" id="sEi" min="1" max="12" step="1"></div>
+            <div class="field"><label for="sBills">Household bills change <output id="oBills"></output></label><input type="range" id="sBills" min="-20" max="60" step="5"></div>
+            <div class="field"><label for="sExtra">New monthly cost <output id="oExtra"></output></label><input type="range" id="sExtra" min="0" max="2500" step="50"><span class="hint">A rent hike, a car payment, childcare.</span></div>
+            <div class="field"><label for="sOne">One-off cost <output id="oOne"></output></label><input type="range" id="sOne" min="0" max="40000" step="250">
+              <div class="seg" id="oneQuick"><button type="button" data-m="0.5">½ month</button><button type="button" data-m="1">1 month</button><button type="button" data-m="2">2 months</button></div></div>
+            <div class="field"><span class="lab">After EI ends</span><div class="seg" id="afterSeg"><button type="button" data-v="back">Back at work</button><button type="button" data-v="none">Still no job</button></div></div>
+            <button class="btn" type="button" id="shockReset" style="justify-self:start">Clear the shock</button>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h2>Balance month by month</h2><p id="projSub"></p></div>
+          <div class="legend"><span><i class="line" style="background:var(--s1)"></i>With the shock</span><span><i class="line" style="background:var(--muted)"></i>No shock</span></div>
+          <div class="chart-box"><canvas id="projChart" aria-label="Projected balance by month"></canvas></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h2>Stress grid</h2><p>Months of runway for every mix of income cut and bill increase. Select a cell to load it.</p></div>
+          <div class="table-wrap"><div class="heat" id="heat"></div></div>
+        </div>
+      </section>
+
+      <!-- PLAN -->
+      <section class="view" data-view="plan" hidden>
+        <div class="head"><h1>Plan</h1><p>A goal plan to build the emergency fund now, and a backup plan for the day the shock lands. Both use this customer's own numbers.</p></div>
+        <div class="micr" data-micr></div>
+        <div class="grid g-2">
+          <div class="panel">
+            <div class="panel-head"><h2>Emergency fund</h2><span id="goalPill"></span></div>
+            <div class="field"><span class="lab">Target</span><div class="seg" id="goalSeg"><button type="button" data-v="3">3 months</button><button type="button" data-v="6">6 months</button><button type="button" data-v="9">9 months</button></div></div>
+            <div class="field"><label for="pSave">Set aside each month <output id="oSave"></output></label><input type="range" id="pSave" min="0" max="3000" step="25"><span class="hint" id="saveHint"></span></div>
+            <div class="ledger plain" style="grid-template-columns:repeat(3,minmax(0,1fr))" id="goalLedger"></div>
+            <div class="chart-box short"><canvas id="goalChart" aria-label="Emergency fund growth"></canvas></div>
+            <div id="goalText" class="callout"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><h2>If the shock hits</h2><p id="backupSub"></p></div>
+            <div class="field"><label for="pCut">Cut everyday spending by <output id="oCut"></output></label><input type="range" id="pCut" min="0" max="40" step="5"></div>
+            <div class="field"><label for="pSide">Side income <output id="oSide"></output></label><input type="range" id="pSide" min="0" max="2000" step="50"></div>
+            <div class="steps" id="backupSteps"></div>
+            <div id="backupResult"></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h2>Runway after each move</h2><p>Each bar adds one action on top of the last</p></div>
+          <div class="bars" id="leverBars"></div>
+        </div>
+      </section>
+
+      <!-- BUDGET -->
+      <section class="view" data-view="budget" hidden>
+        <div class="head"><h1>Budget</h1><p>Six well-known rules, measured against how this customer actually spends. Change the income to plan for any paycheque.</p></div>
+        <div class="micr" data-micr></div>
+        <div class="grid g-main">
+          <div class="panel">
+            <div class="field"><label for="bInc">Monthly take-home</label><div class="money-in" style="max-width:280px"><input class="input" id="bInc" inputmode="decimal"></div><span class="hint">Starts at this customer's typical money in.</span></div>
+            <div class="seg" id="ruleSeg"></div>
+            <p class="ink2" id="ruleWhy"></p>
+            <div id="ruleCompare" class="grid"></div>
+            <div id="ruleAdvice" class="callout"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><h2>Which rule fits</h2><p>Money to move each month</p></div>
+            <div class="table-wrap"><table class="cmp" id="ruleTable"></table></div>
+          </div>
+        </div>
+        <div class="panel" id="zbPanel">
+          <div class="panel-head"><h2>Zero-based budget</h2><p>Give every dollar a job. Starts from this account's typical month.</p></div>
+          <div class="grid g-2">
+            <div class="zb" id="zbRows"></div>
+            <div class="grid" style="align-content:start">
+              <div class="zb-left"><span>Left to assign</span><span class="v" id="zbLeft"></span></div>
+              <div class="split"><div class="split-bar" id="zbBar"></div></div>
+              <p class="note">Aim for zero. A negative number means the plan spends more than comes in.</p>
+              <button class="btn" type="button" id="zbReset" style="justify-self:start">Reset to this account's typical month</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- INVEST -->
+      <section class="view" data-view="invest" hidden>
+        <div class="head"><h1>Investing</h1><p>Where money goes once the safety net is in place, in the order that usually makes sense in Canada. General education, not personal financial advice.</p></div>
+        <div class="micr" data-micr></div>
+        <div class="grid g-main">
+          <div class="panel">
+            <div class="panel-head"><h2>The order to fill things</h2><span id="ladderPill"></span></div>
+            <div class="steps" id="ladder"></div>
+          </div>
+          <div class="panel">
+            <h2>Growth calculator</h2>
+            <div class="field"><label for="iMo">Monthly contribution <output id="oMo"></output></label><input type="range" id="iMo" min="0" max="3000" step="25"></div>
+            <div class="field"><label for="iYrs">Years <output id="oYrs"></output></label><input type="range" id="iYrs" min="1" max="40" step="1"></div>
+            <div class="seg" id="mixSeg"><button type="button" data-r="3">Cautious 3%</button><button type="button" data-r="5">Balanced 5%</button><button type="button" data-r="7">Growth 7%</button></div>
+            <div class="ledger plain" style="grid-template-columns:repeat(3,minmax(0,1fr))" id="growLedger"></div>
+            <div class="legend"><span><i style="background:var(--s1)"></i>What you put in</span><span><i style="background:var(--s3)"></i>Growth</span></div>
+            <div class="chart-box short"><canvas id="growChart" aria-label="Investment growth over time"></canvas></div>
+            <p class="note">Returns are assumptions for illustration, before fees and inflation.</p>
+          </div>
+        </div>
+        <div class="acct-cards" id="acctCards"></div>
+      </section>
+
+      <!-- COACH -->
+      <section class="view" data-view="coach" hidden>
+        <div class="head"><h1>Coach</h1><p>Ask about this customer's numbers. With a Gemini key in Profile, answers come from Gemini with the account and shock attached. Without one, the built-in coach answers from the same numbers.</p></div>
+        <div class="coach">
+          <div class="chat">
+            <div class="msgs" id="msgs" aria-live="polite"></div>
+            <form class="composer" id="composer">
+              <textarea class="input" id="ask" rows="1" placeholder="Message" aria-label="Message the coach"></textarea>
+              <button class="send" type="submit" aria-label="Send"><svg viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
+            </form>
+          </div>
+          <div class="grid" style="align-content:start">
+            <div class="panel">
+              <h3>Try asking</h3>
+              <div class="prompts" id="prompts"></div>
+            </div>
+            <div class="panel">
+              <h3>Coach status</h3>
+              <p class="small ink2" id="coachStatus"></p>
+              <a class="btn sm" href="#profile" style="justify-self:start">Set Gemini key</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- DATA -->
+      <section class="view" data-view="data" hidden>
+        <div class="head"><h1>Your data</h1><p>Drop in a monthly_summary.csv with any number of accounts and, if you have it, loans.csv. ChequeMate computes every account in your browser. Nothing leaves this page.</p></div>
+        <label class="drop" id="drop" for="fileIn">
+          <span class="sf" style="--c:var(--teal)"><svg viewBox="0 0 24 24"><path d="M12 15V4M7.5 8.5 12 4l4.5 4.5M5 15v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3"/></svg></span>
+          <strong>Drop CSV files here, or choose files</strong>
+          <span class="small muted">monthly_summary.csv format. Add loans.csv to include loan payments.</span>
+          <input type="file" id="fileIn" accept=".csv,text/csv" multiple hidden>
+        </label>
+        <div id="dataStatus"></div>
+        <div class="ledger" id="portLedger"></div>
+        <div class="grid g-main">
+          <div class="panel">
+            <div class="panel-head"><h2>Layoff runway across the portfolio</h2><p>EI at 55%, months until the buffer runs out</p></div>
+            <div class="chart-box"><canvas id="histChart" aria-label="Distribution of layoff runway"></canvas></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><h2>Most fragile</h2><p id="fragileSub">Shortest layoff runway</p></div>
+            <div class="list-acc" id="fragileList"></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h2>Seasonal pattern</h2><p>Each month against the yearly average (1.0)</p></div>
+          <div class="legend"><span><i style="background:var(--s1)"></i>Money in</span><span><i style="background:var(--s2)"></i>Money out</span></div>
+          <div class="chart-box short"><canvas id="seasonChart" aria-label="Seasonal money in and out"></canvas></div>
+          <p class="note" id="seasonNote"></p>
+        </div>
+      </section>
+
+      <!-- RESOURCES -->
+      <section class="view" data-view="resources" hidden>
+        <div class="head"><h1>Resources</h1><p>Official Canadian sources for the moments in this plan, and the data behind ChequeMate.</p></div>
+        <div class="grid g-2" id="resGrid"></div>
+      </section>
+
+      <!-- PROFILE -->
+      <section class="view" data-view="profile" hidden>
+        <div class="head"><h1>Profile</h1><p>Details the bank's data can't know. They shape the plan, the budget and the coach for this customer, and stay in this browser.</p></div>
+        <div class="micr" data-micr></div>
+        <div class="grid g-2">
+          <form class="panel" id="profForm">
+            <h2>About this customer</h2>
+            <div class="grid g-2">
+              <div class="field"><label for="pfName">Name to show</label><input class="input" id="pfName"></div>
+              <div class="field"><label for="pfProv">Province</label><select class="input" id="pfProv"></select></div>
+              <div class="field"><label for="pfHouse">People in household</label><input class="input" id="pfHouse" type="number" min="1" max="12"></div>
+              <div class="field"><label for="pfHome">Housing</label><select class="input" id="pfHome"><option value="rent">Renting</option><option value="own">Own with mortgage</option><option value="family">Living with family</option></select></div>
+              <div class="field"><label for="pfGoal">Main goal</label><select class="input" id="pfGoal"><option value="fund">Build an emergency fund</option><option value="debt">Pay off the loan</option><option value="home">Save for a home</option><option value="invest">Start investing</option></select></div>
+              <div class="field"><label for="pfRisk">Comfort with risk</label><select class="input" id="pfRisk"><option value="3">Cautious</option><option value="5">Balanced</option><option value="7">Growth</option></select></div>
+              <div class="field"><label for="pfTarget">Emergency fund target</label><select class="input" id="pfTarget"><option value="3">3 months</option><option value="6">6 months</option><option value="9">9 months</option></select></div>
+              <div class="field"><label for="pfJob">Job stability</label><select class="input" id="pfJob"><option value="steady">Steady</option><option value="seasonal">Seasonal or contract</option><option value="self">Self-employed</option></select></div>
+            </div>
+            <div class="field"><label for="pfNotes">Notes for the coach</label><textarea class="input" id="pfNotes" rows="3" placeholder="e.g. Car lease ends in March. Wants to move to Ottawa."></textarea></div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" type="submit">Save profile</button><button class="btn" type="button" id="pfClear">Reset</button></div>
+          </form>
+          <div class="grid" style="align-content:start">
+            <form class="panel" id="aiForm">
+              <h2>Gemini coach</h2>
+              <div class="field"><label for="aiKey">API key</label><input class="input" id="aiKey" type="password" placeholder="Paste a Google AI Studio key"><span class="hint">Stored only in this browser. Get a key at aistudio.google.com. Never commit keys to the repo.</span></div>
+              <div class="field"><label for="aiModel">Model</label><input class="input" id="aiModel" list="aiModels"><datalist id="aiModels"><option value="gemini-flash-latest"></option><option value="gemini-2.5-flash"></option><option value="gemini-2.5-pro"></option><option value="gemini-2.5-flash-lite"></option></datalist></div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" type="submit">Save</button><button class="btn" type="button" id="aiTest">Test connection</button><button class="btn" type="button" id="aiClear">Remove key</button></div>
+              <p class="small" id="aiMsg"></p>
+            </form>
+            <div class="panel">
+              <h2>What the bank's data says</h2>
+              <div class="insights" id="profFacts"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <nav class="tabbar" id="tabbar" aria-label="Sections">
+    <a href="#paradox"><svg viewBox="0 0 24 24"><path d="M5 19V11M12 19V5M19 19v-6"/></svg>Paradox</a>
+    <a href="#customer"><svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c1.2-3.6 3.8-5.3 7-5.3s5.8 1.7 7 5.3"/></svg>Customer</a>
+    <a href="#shock"><svg viewBox="0 0 24 24"><path d="M13 3 5 13.5h6.5L10.5 21 19 10.5h-6.5z"/></svg>Shock</a>
+    <a href="#plan"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="m8.5 12.3 2.4 2.4 4.7-5"/></svg>Plan</a>
+    <a href="#budget"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9h-9z"/><path d="M15 3.5A9 9 0 0 1 20.5 9H15z"/></svg>Budget</a>
+    <button type="button" id="moreBtn" aria-haspopup="dialog"><svg viewBox="0 0 24 24"><circle cx="5.5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="18.5" cy="12" r="1.3"/></svg>More</button>
+  </nav>
+  <div class="sheet-bg" id="sheetBg" hidden></div>
+  <div class="sheet" id="sheet" role="dialog" aria-label="More sections" hidden>
+    <div class="grab"></div>
+    <h3>More</h3>
+    <div class="list">
+      <a href="#invest"><span class="sf" style="--c:var(--mint)"><svg viewBox="0 0 24 24"><path d="M4 17 10 11l4 4 6-7M15 8h5v5"/></svg></span>Investing</a>
+      <a href="#coach"><span class="sf" style="--c:var(--good)"><svg viewBox="0 0 24 24"><path d="M20 11.5c0 4.1-3.6 7.5-8 7.5-1.2 0-2.3-.2-3.3-.7L4 19.5l1.2-3.6A7.2 7.2 0 0 1 4 11.5C4 7.4 7.6 4 12 4s8 3.4 8 7.5z"/></svg></span>Coach</a>
+      <a href="#data"><span class="sf" style="--c:var(--teal)"><svg viewBox="0 0 24 24"><path d="M12 15V4M7.5 8.5 12 4l4.5 4.5M5 15v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3"/></svg></span>Your data</a>
+      <a href="#resources"><span class="sf" style="--c:var(--pink)"><svg viewBox="0 0 24 24"><path d="M5 4.5h5a2 2 0 0 1 2 2V20a1.5 1.5 0 0 0-1.5-1.5H5zM19 4.5h-5a2 2 0 0 0-2 2V20a1.5 1.5 0 0 1 1.5-1.5H19z"/></svg></span>Resources</a>
+      <a href="#profile"><span class="sf" style="--c:var(--gray)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M5.5 18.5l1.7-1.7M16.8 7.2l1.7-1.7"/></svg></span>Profile</a>
+    </div>
+    <div class="seg theme-switch" role="group" aria-label="Appearance" style="justify-self:center">
+      <button type="button" data-theme-set="system">Auto</button>
+      <button type="button" data-theme-set="light">Light</button>
+      <button type="button" data-theme-set="dark">Dark</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="assets/vendor/chart.umd.min.js"></script>
+<script src="assets/vendor/papaparse.min.js"></script>
+<script src="data/insights.js"></script>
+<script src="data/accounts.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
