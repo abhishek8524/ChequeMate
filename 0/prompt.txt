@@ -1,0 +1,33 @@
+# Context from my IDE setup:
+
+## Active file: tests/test_simulator.py
+
+## Open tabs:
+- test_simulator.py: tests/test_simulator.py
+
+## My request:
+Review the existing Python financial simulator in `backend/simulator.py` and its tests in `tests/test_simulator.py`.
+
+This project is the Cashflow Paradox Financial Resilience Engine for Sheridan Datathon 2026.
+
+The official runway rules are:
+
+- buffer_left = B - one_off_costs
+- gap = spending_after_shock - income_after_shock
+- If buffer_left <= 0, runway = 0.
+- If gap <= 0, return "No shortfall (120+)".
+- Otherwise runway = min(buffer_left / gap, 120), displayed to one decimal place.
+- Job loss retains 55% of typical inflows.
+- Household bills increasing by 15% adds 0.15 × H to monthly outflows.
+
+Please:
+
+1. Review the existing implementation.
+2. Run the automated tests.
+3. Identify calculation errors and missing edge cases.
+4. Make only necessary changes to the backend and tests.
+5. Explain any changes you make.
+
+Do not modify `core-app/`, `data-engineering/`, or the official Gold datasets. Do not access or expose secrets.
+
+We will use Entire to capture this development session.
