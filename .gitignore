@@ -18,3 +18,4 @@ __pycache__/
 node_modules/
 .DS_Store
 artifact/
+.claude/settings.local.json
