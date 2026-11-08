@@ -22,7 +22,7 @@ let breathCut = store.get('cm.rr.cut', 500);
 /* ---------------- banner ---------------- */
 function banner() {
   let b = $('#rrLive');
-  if (!b) { b = document.createElement('div'); b.id = 'rrLive'; b.className = 'rr-live'; b.setAttribute('role', 'status'); $('#rrJump').after(b); }
+  if (!b) { b = document.createElement('div'); b.id = 'rrLive'; b.className = 'rr-live'; b.setAttribute('role', 'status'); ($('header.toolbar') || $('#rrJump')).after(b); }
   const live = L.mode === 'live';
   root().setAttribute('data-src', live ? 'live' : 'offline');
   b.className = 'rr-live ' + (live ? 'ok' : L.mode === 'checking' ? 'wait' : 'off');

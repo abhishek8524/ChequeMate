@@ -55,8 +55,8 @@ let bg = null;
 function palette() {
   const d = isDark();
   return d
-    ? { bg: '#050508', c: ['#0A3DFF', '#6E2BD9', '#00A3A3', '#B0127A', '#0F6BD6'], dark: 1 }
-    : { bg: '#EEF0F7', c: ['#8EC5FF', '#C9B6FF', '#9FF0E4', '#FFC2D6', '#FFE3A3'], dark: 0 };
+    ? { bg: '#120C33', c: ['#2B1F7A', '#5B4CF0', '#FF2D55', '#F2A93B', '#FF7A1A'], dark: 1 }
+    : { bg: '#F1EFFA', c: ['#C9C3F2', '#FFD36B', '#FFC2D6', '#FFD1AE', '#FFE3C2'], dark: 0 };
 }
 function startBg() {
   if (bg || !window.THREE) { if (bg) { bg.cv.hidden = false; bg.run = true; } return; }

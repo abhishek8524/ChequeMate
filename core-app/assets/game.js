@@ -1,4 +1,4 @@
-/* ChequeMate Quests: XP, chess ranks, badges, missions, resilience score, and Mate the coach.
+/* ChequeMate Quests: points, chess ranks, badges, missions, resilience score, and Mate the coach.
    Listens to cm:* events from app.js. Progress lives in this browser only. */
 (() => {
 'use strict';
@@ -13,7 +13,7 @@ const V = n => getComputedStyle(document.documentElement).getPropertyValue(n).tr
 
 /* ---------------- ranks, badges, missions ---------------- */
 const RANKS = [
-  { id: 'pawn', name: 'Pawn', xp: 0, pal: 'accent', line: 'Every grandmaster starts as a pawn. Explore a customer to earn your first XP.' },
+  { id: 'pawn', name: 'Pawn', xp: 0, pal: 'accent', line: 'Every grandmaster starts as a pawn. Explore a customer to earn your first points.' },
   { id: 'knight', name: 'Knight', xp: 100, pal: 'mint', line: 'You can jump over problems now. Try every shock card.' },
   { id: 'bishop', name: 'Bishop', xp: 250, pal: 'purple', line: 'You see the long diagonals. Build plans that outlast EI.' },
   { id: 'rook', name: 'Rook', xp: 450, pal: 'warn', line: 'Solid as a castle wall. Close a few cases.' },
@@ -50,7 +50,7 @@ const BADGES = [
   B('night', 'Night shift', 'Switch to dark mode.', 10, 'indigo', '<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>'),
   B('streak3', 'On a roll', 'Come back three days in a row.', 40, 'warn', '<path d="M12 21c-3.6 0-6-2.4-6-5.6 0-3.4 3-5.4 3.6-9.4 2.4 1.6 3 3.6 3 5 1-.6 1.6-1.8 1.8-3 1.8 1.6 3.6 4.2 3.6 7.4 0 3.2-2.4 5.6-6 5.6z"/>'),
   B('survivor', 'Survivor', 'Get a customer through all 12 months of Runway Run.', 50, 'good', '<path d="M12 3 4.5 6v5.5c0 4.6 3.2 8.2 7.5 9.5 4.3-1.3 7.5-4.9 7.5-9.5V6z"/><path d="m8.5 12 2.5 2.5 4.5-5"/>'),
-  B('underdog', 'Underdog', 'Win Runway Run with a customer whose layoff runway is under 3 months.', 60, 'crit', '<path d="M12 21c-3.6 0-6-2.4-6-5.6 0-3.4 3-5.4 3.6-9.4 2.4 1.6 3 3.6 3 5 1-.6 1.6-1.8 1.8-3 1.8 1.6 3.6 4.2 3.6 7.4 0 3.2-2.4 5.6-6 5.6z"/>'),
+  B('underdog', 'Underdog', 'Win Runway Run with a customer whose savings would last under 3 months after losing their job.', 60, 'crit', '<path d="M12 21c-3.6 0-6-2.4-6-5.6 0-3.4 3-5.4 3.6-9.4 2.4 1.6 3 3.6 3 5 1-.6 1.6-1.8 1.8-3 1.8 1.6 3.6 4.2 3.6 7.4 0 3.2-2.4 5.6-6 5.6z"/>'),
   B('clutch', 'Clutch', 'Win Runway Run with less than 10% of the starting buffer left.', 40, 'warn', '<circle cx="12" cy="13" r="7.5"/><path d="M12 9.5V13l2.5 2M9.5 3h5M12 3v2.5"/>'),
   B('reader', 'Runway reader', 'Get 5 right in a row in Who lasts longer?', 30, 'teal', '<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/>'),
   B('oracle', 'Oracle', 'Get 10 right in a row in Who lasts longer?', 60, 'purple', '<circle cx="12" cy="11" r="7"/><path d="M8 21h8M9.5 18h5M9 9.5a3.5 3.5 0 0 1 3-2"/>'),
@@ -58,7 +58,7 @@ const BADGES = [
 ];
 const BADGE = Object.fromEntries(BADGES.map(b => [b.id, b]));
 const MISSIONS = [
-  { id: 'layoff', name: 'Run the layoff', desc: 'Apply the "Laid off, EI at 55%" card in the Shock lab.', go: 'shock', preset: 'layoff' },
+  { id: 'layoff', name: 'Run the layoff', desc: 'Apply the "Laid off, EI at 55%" card in Plan ahead.', go: 'shock', preset: 'layoff' },
   { id: 'stress', name: 'Stress test three ways', desc: 'Try three different shock cards on this customer.', go: 'shock' },
   { id: 'rescue', name: 'Write the rescue plan', desc: 'On the Plan page, stack moves until runway clears the EI period.', go: 'plan' },
   { id: 'fit', name: 'Find the right budget', desc: 'Select the rule marked "Closest fit" on the Budget page.', go: 'budget' },
@@ -147,13 +147,13 @@ function speak(text) {
   speechSynthesis.cancel(); speechSynthesis.speak(u); return true;
 }
 
-/* ---------------- XP, badges, missions ---------------- */
+/* ---------------- points, badges, missions ---------------- */
 let popSum = 0, popT;
 function addXP(n, why) {
   if (!n) return;
   const before = rankIdx(G.xp); G.xp += n; save();
   popSum += n; clearTimeout(popT);
-  const pop = $('#xpPop'); pop.textContent = `+${popSum} XP`; pop.classList.remove('on'); void pop.offsetWidth; pop.classList.add('on');
+  const pop = $('#xpPop'); pop.textContent = `+${popSum} points`; pop.classList.remove('on'); void pop.offsetWidth; pop.classList.add('on');
   popT = setTimeout(() => { popSum = 0; }, 1400);
   sfx('xp');
   const hud = $('#tbXp'); if (hud) { hud.classList.remove('bump'); void hud.offsetWidth; hud.classList.add('bump'); }
@@ -229,8 +229,9 @@ function burst(n = 120) {
 function hudRender() {
   const i = rankIdx(G.xp), r = RANKS[i], nx = RANKS[i + 1];
   const p = nx ? (G.xp - r.xp) / (nx.xp - r.xp) : 1;
-  const tb = $('#tbXp'); if (tb) tb.innerHTML = `${pieceImg(r.id, 'sm')}<span class="tbx-t"><b>${r.name}</b><span>${G.xp} XP</span></span><span class="tbx-ring" style="--p:${(p * 100).toFixed(1)}"></span>`;
-  const sp = $('#sidePlayer'); if (sp) sp.innerHTML = `${pieceImg(r.id, 'md')}<span class="spl-t"><b>${r.name}</b><span>${nx ? `${nx.xp - G.xp} XP to ${nx.name}` : 'Top rank reached'}</span><span class="spl-bar"><i style="width:${(p * 100).toFixed(1)}%"></i></span></span>`;
+  const tb = $('#tbXp'); if (tb) { tb.innerHTML = `<span class="tbx-fill" style="width:${(p * 100).toFixed(1)}%" aria-hidden="true"></span>${pieceImg(r.id, 'sm')}<span class="tbx-t"><b>${r.name}</b><span>${G.xp} points</span></span>`;
+    tb.setAttribute('aria-label', `${r.name}, ${G.xp} points. ${nx ? `${Math.round(p * 100)}% of the way to ${nx.name}` : 'Top rank reached'}. Open quests and ranks`); }
+  const sp = $('#sidePlayer'); if (sp) sp.innerHTML = `${pieceImg(r.id, 'md')}<span class="spl-t"><b>${r.name}</b><span>${nx ? `${nx.xp - G.xp} points to ${nx.name}` : 'Top rank reached'}</span><span class="spl-bar"><i style="width:${(p * 100).toFixed(1)}%"></i></span></span>`;
 }
 
 /* ---------------- Mate: floating dock, bubble, coach page ---------------- */
@@ -340,7 +341,7 @@ function renderArena() {
   const p = nx ? (G.xp - r.xp) / (nx.xp - r.xp) : 1;
   $('#xpFill').style.width = '0'; requestAnimationFrame(() => requestAnimationFrame(() => $('#xpFill').style.width = (p * 100).toFixed(1) + '%'));
   $('#xpBarWrap').setAttribute('aria-valuenow', Math.round(p * 100));
-  $('#xpNow').textContent = `${G.xp} XP`; $('#xpNext').textContent = nx ? `${nx.xp - G.xp} XP to ${nx.name}` : 'Top rank';
+  $('#xpNow').textContent = `${G.xp} points`; $('#xpNext').textContent = nx ? `${nx.xp - G.xp} points to ${nx.name}` : 'Top rank';
   const nb = Object.keys(G.badges).length;
   $('#rankStats').innerHTML = [['Badges', `${nb}/${BADGES.length}`], ['Customers opened', G.accts.length], ['Questions asked', G.asked], ['Day streak', G.streak]]
     .map(([k, v]) => `<div><span class="v">${v}</span><span class="k">${k}</span></div>`).join('');
@@ -350,13 +351,13 @@ function renderArena() {
   $('#missions').innerHTML = MISSIONS.map(x => `<div class="mission${m[x.id] ? ' done' : ''}"><span class="ms-check">${m[x.id] ? '<svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>' : ''}</span><div><h3>${x.name}</h3><p>${x.desc}</p></div>${m[x.id] ? '<span class="ms-xp">+20</span>' : `<button class="btn sm" type="button" data-go="${x.go}" data-preset="${x.preset || ''}">Go</button>`}</div>`).join('');
   $$('#missions [data-go]').forEach(b => b.onclick = () => { if (b.dataset.preset) CM.applyPreset(b.dataset.preset); CM.go(b.dataset.go); });
 
-  $('#rankLadder').innerHTML = RANKS.map((x, k) => `<div class="rung ${k < i ? 'past' : k === i ? 'now' : 'next'}">${pieceImg(x.id, 'md')}<div><strong>${x.name}</strong><span>${x.xp} XP</span></div>${k < i ? '<span class="pill good">Earned</span>' : k === i ? '<span class="pill info">You are here</span>' : ''}</div>`).join('');
+  $('#rankLadder').innerHTML = RANKS.map((x, k) => `<div class="rung ${k < i ? 'past' : k === i ? 'now' : 'next'}">${pieceImg(x.id, 'md')}<div><strong>${x.name}</strong><span>${x.xp} points</span></div>${k < i ? '<span class="pill good">Earned</span>' : k === i ? '<span class="pill info">You are here</span>' : ''}</div>`).join('');
 
   const cur = skin();
   $('#skins').innerHTML = SKINS.map(k => { const open = i >= k.rank; return `<button type="button" class="skin${cur === k.id ? ' on' : ''}" data-s="${k.id}"${open ? '' : ' disabled'} aria-pressed="${cur === k.id}">${IMG['mate-' + k.id] ? `<img src="${IMG['mate-' + k.id]}" alt="">` : pieceImg('pawn', 'lg')}<strong>${k.name}</strong><span>${open ? (cur === k.id ? 'Wearing it' : 'Tap to wear') : k.desc}</span>${open ? '' : '<span class="lock">Locked</span>'}</button>`; }).join('');
   $$('#skins .skin:not(:disabled)').forEach(b => b.onclick = () => { G.skin = b.dataset.s; save(); applySkin(); sfx('badge'); mates.forEach(m => m.celebrate()); renderArena(); });
   $('#badgeSub').textContent = `${nb} of ${BADGES.length} unlocked`;
-  $('#badges').innerHTML = BADGES.map(b => { const got = G.badges[b.id]; return `<div class="badge${got ? ' got' : ''}" title="${esc(b.desc)}"><span class="bdg-ic" style="--bc:var(--${b.c})"><svg viewBox="0 0 24 24">${got ? b.ic : '<rect x="6" y="11" width="12" height="9" rx="2"/><path d="M8.5 11V8a3.5 3.5 0 0 1 7 0v3"/>'}</svg></span><strong>${b.name}</strong><span>${b.desc}</span>${b.xp ? `<em>+${b.xp} XP</em>` : ''}</div>`; }).join('');
+  $('#badges').innerHTML = BADGES.map(b => { const got = G.badges[b.id]; return `<div class="badge${got ? ' got' : ''}" title="${esc(b.desc)}"><span class="bdg-ic" style="--bc:var(--${b.c})"><svg viewBox="0 0 24 24">${got ? b.ic : '<rect x="6" y="11" width="12" height="9" rx="2"/><path d="M8.5 11V8a3.5 3.5 0 0 1 7 0v3"/>'}</svg></span><strong>${b.name}</strong><span>${b.desc}</span>${b.xp ? `<em>+${b.xp} points</em>` : ''}</div>`; }).join('');
 
   const sc = scores(), sorted = sc.list.slice().sort((x, y) => y.s - x.s || x.id - y.id);
   const row = (x, k) => { const t = tierOf(x.s); return `<button type="button" data-id="${x.id}"><span class="lb-n">${k + 1}</span><span class="lb-id">Account ${x.id}</span><span class="lb-bar"><i style="width:${x.s}%;background:var(--${t.tone === 'info' ? 'accent' : t.tone})"></i></span><span class="pill ${t.tone}">${x.s}</span></button>`; };
@@ -366,7 +367,7 @@ function renderArena() {
 
   $('#xpRules').innerHTML = [['New page visited', 10], ['New customer opened', 5], ['New shock card tried', 15], ['New budget rule tried', 5], ['Rescue plan that clears EI', 25], ['Question for Rookie', 5], ['Mission completed', 20], ['Daily check-in', 20]]
     .map(([k, v]) => `<div><span>${k}</span><b>+${v}</b></div>`).join('');
-  $('#gameReset').onclick = () => { if (!confirm('Reset your XP, badges and missions? This only affects this browser.')) return; G = fresh(); save(); hudRender(); renderArena(); CM.toast('Progress reset'); };
+  $('#gameReset').onclick = () => { if (!confirm('Reset your points, badges and missions? This only affects this browser.')) return; G = fresh(); save(); hudRender(); renderArena(); CM.toast('Progress reset'); };
 }
 
 /* ---------------- init + event wiring ---------------- */

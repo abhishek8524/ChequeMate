@@ -1,0 +1,42 @@
+/* Landing-page footer (team Datasparks), reused under every app view. Copied from home.css, adapted for the app. */
+footer.ds-foot { position: relative; display: block; overflow: hidden; padding: 0 0 28px; border-radius: 44px 44px 0 0; z-index: 1;
+  background: radial-gradient(110% 120% at 50% 0%, #2B1F7A 0%, #170F4A 45%, #0B0722 100%); color: #C9C3F2; }
+:root[data-ui="rr"] footer.app-foot { display: none; }
+.ds-foot svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.ds-checker { height: 16px; opacity: .22; margin-top: 30px; background: repeating-conic-gradient(#fff 0 25%, transparent 0 50%) 0 0 / 32px 32px; }
+@media (prefers-reduced-motion: no-preference) { .ds-checker { animation: dscheck 6s linear infinite; } }
+@keyframes dscheck { to { background-position: 64px 0; } }
+.ds-sparks { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.ds-sparks i { position: absolute; bottom: -12px; left: var(--x); width: var(--s); height: var(--s); border-radius: 50%; background: var(--c); box-shadow: 0 0 10px 2px var(--c); opacity: 0; }
+@media (prefers-reduced-motion: no-preference) { .ds-sparks i { animation: dsrise var(--t) ease-in var(--d) infinite; } }
+@keyframes dsrise { 0% { transform: translate(0, 0) scale(.5); opacity: 0; } 12% { opacity: 1; } 100% { transform: translate(var(--dx), -340px) scale(1.3); opacity: 0; } }
+.ds-in { position: relative; z-index: 1; max-width: 1240px; margin: 0 auto; padding: 44px 24px 18px; display: grid; grid-template-columns: auto 1fr auto; gap: 24px 40px; align-items: center; }
+.ds-brand { display: flex; align-items: center; gap: 18px; }
+.ds-logo { position: relative; width: 84px; height: 84px; border: 0; padding: 0; background: none; cursor: pointer; border-radius: 24px; filter: drop-shadow(0 10px 24px rgba(255, 94, 98, .55)); transition: transform .25s cubic-bezier(.2, 1.4, .3, 1); }
+.ds-logo:hover { transform: scale(1.08) rotate(-4deg); } .ds-logo:active { transform: scale(.94); }
+.ds-logo:focus-visible, .ds-top:focus-visible { outline: 3px solid #FFD36B; outline-offset: 3px; }
+.ds-logo svg { width: 100%; height: 100%; stroke: none; overflow: visible; }
+.ds-logo .star, .ds-logo .orb { transform-origin: 32px 32px; }
+@media (prefers-reduced-motion: no-preference) { .ds-logo .star { animation: dsstar 2.6s ease-in-out infinite; } .ds-logo .orb { animation: dsorb 7s linear infinite; } .ds-logo .bars { animation: dsbars 2.6s ease-in-out infinite; transform-origin: 32px 50px; } }
+@keyframes dsstar { 0%, 100% { transform: scale(1) rotate(-8deg); } 50% { transform: scale(1.16) rotate(10deg); } }
+@keyframes dsorb { to { transform: rotate(360deg); } } @keyframes dsbars { 50% { transform: scaleY(1.25); } }
+.ds-txt small { display: block; font: 600 14px var(--font); letter-spacing: .04em; color: #A39CDD; }
+.ds-name { display: block; font: 800 clamp(40px, 5.4vw, 66px)/1 var(--font); letter-spacing: -.04em; white-space: nowrap; }
+.ds-name > span > span { display: inline-block; transition: transform .25s cubic-bezier(.2, 1.6, .3, 1); color: #fff; }
+.ds-name .w2 > span { color: #FFD36B; }
+.ds-name > span > span:hover { transform: translateY(-10px) rotate(-7deg) scale(1.12); }
+@media (prefers-reduced-motion: no-preference) { .ds-name > span > span { animation: dsglint 4.2s ease-in-out infinite; animation-delay: calc(var(--i) * 110ms); } }
+@keyframes dsglint { 0%, 70%, 100% { transform: none; filter: none; } 80% { transform: translateY(-7px); filter: drop-shadow(0 0 14px #FFD36B) brightness(1.25); } 90% { transform: none; } }
+.ds-line { margin: 0; font: 700 clamp(17px, 1.6vw, 21px)/1.3 var(--font); color: #E6E1FF; justify-self: center; text-align: center; max-width: 18em; }
+.ds-top { display: inline-flex; align-items: center; gap: 8px; padding: 12px 18px; border-radius: 999px; background: rgba(255, 255, 255, .1); color: #fff; font: 700 14px var(--font); text-decoration: none; border: 1px solid rgba(255, 255, 255, .18); transition: background .2s, transform .2s; white-space: nowrap; }
+.ds-top:hover { background: rgba(255, 255, 255, .2); transform: translateY(-2px); } .ds-top svg { width: 18px; height: 18px; }
+.dsburst { position: absolute; left: 50%; top: 50%; width: 9px; height: 9px; margin: -4.5px; border-radius: 50%; pointer-events: none; z-index: 5; }
+.ds-heart { width: 15px; height: 15px; vertical-align: -2px; margin: 0 2px; }
+@media (prefers-reduced-motion: no-preference) { .ds-heart { animation: dsbeat 1.3s ease-in-out infinite; } }
+@keyframes dsbeat { 0%, 100% { transform: scale(1); } 20% { transform: scale(1.3); } 40% { transform: scale(1); } 55% { transform: scale(1.18); } }
+@media (max-width: 900px) {
+  .ds-in { grid-template-columns: minmax(0, 1fr); justify-items: center; text-align: center; } .ds-brand { flex-direction: column; gap: 12px; }
+  /* clear the bottom tab bar on phones and tablets */
+  footer.ds-foot { padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)); border-radius: 32px 32px 0 0; }
+}
+@media (max-width: 560px) { .ds-logo { width: 72px; height: 72px; } .ds-name { font-size: 44px; } }

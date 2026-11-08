@@ -616,3 +616,155 @@ section[data-view="customer"] .cust-hero .laid-off { display: flex; flex-directi
 
 /* the "Live data" banner is hidden when everything is fine; the Sample data warning still shows if the server is unreachable */
 .rr-live.ok { display: none !important; }
+
+/* ===== plan page bento: emergency fund 8/12, "If the shock hits" 4/12 ===== */
+.plan-bento { display: grid; gap: 16px; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); align-items: start; margin-bottom: 16px; }
+.plan-bento .b-col { display: grid; gap: 16px; align-content: start; min-width: 0; }
+.plan-bento .b-col > * { min-width: 0; }
+/* the goal ledger becomes three bento tiles of its own */
+.plan-bento #goalLedger { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 16px; }
+.plan-bento #goalLedger > div { background: var(--surface); box-shadow: var(--shadow-s); border-radius: var(--r-l); padding: 14px 16px; gap: 2px; align-content: start; }
+.plan-bento #goalLedger .v { margin-top: 4px; }
+.plan-bento #goalLedger > div:nth-child(1) { --kc: var(--s1); } .plan-bento #goalLedger > div:nth-child(2) { --kc: var(--s3); } .plan-bento #goalLedger > div:nth-child(3) { --kc: var(--s2); }
+.plan-bento #goalLedger .k { color: var(--kc) !important; }
+/* let values and captions wrap instead of being cut off with an ellipsis */
+#goalLedger .v { white-space: normal; overflow: visible; text-overflow: clip; overflow-wrap: anywhere; font-size: clamp(20px, 2.1vw, 28px); }
+#goalLedger .k, #goalLedger .s { white-space: normal; overflow-wrap: anywhere; }
+.b-fund-chart .chart-box.short { height: 240px; }
+.b-fund-chart #goalText { font-size: 14.5px; line-height: 1.55; }
+/* compact shock tiles */
+.plan-shock { padding: 18px; gap: 12px; }
+.plan-shock .panel-head h2 { font-size: 17px; }
+.plan-shock .panel-head p, .plan-shock .field label, .plan-shock .steps { font-size: 13px; }
+/* tablet and phone: one column, fund tiles first */
+@media (max-width: 1000px) { .plan-bento { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 700px) { .plan-bento #goalLedger { grid-template-columns: minmax(0, 1fr) !important; } }
+
+/* ===== landing-page palette (home.css), orange accent: lavender by day, indigo night by dark ===== */
+:root {
+  --bg: #F1EFFA; --surface: #FFFFFF; --surface-2: #ECE9F8; --elev: #FFFFFF;
+  --fill: rgba(43, 31, 122, .08); --fill-2: rgba(43, 31, 122, .05);
+  --ink: #1D1B2E; --ink-2: #5E5A78; --muted: #8A86A3;
+  --line: rgba(29, 27, 46, .12); --line-2: rgba(29, 27, 46, .22);
+  --accent: #E25A00; --accent-ink: #FFFFFF; --accent-soft: rgba(255, 122, 26, .14); --accent-t: #A84A00;
+  --good: #0FA37F; --good-t: #0B7A5F; --good-soft: rgba(15, 163, 127, .14);
+  --warn: #E0A100; --warn-t: #8A5A00; --warn-soft: rgba(242, 169, 59, .18);
+  --crit: #E5383B; --crit-t: #C21F2A; --crit-soft: rgba(229, 56, 59, .12);
+  --pink: #FF2D55; --mint: #0FA37F; --indigo: #2B1F7A; --purple: #7A5CFA; --teal: #1FB6A0; --yellow: #FFD36B; --gray: #8A86A3;
+  --s1: #FF7A1A; --s2: #5B4CF0; --s3: #0FA37F; --s4: #FF2D55;
+  --ring1: #FF2D55; --ring2: #0FA37F; --ring3: #F2A93B;
+  --bar: rgba(255, 255, 255, .72); --side: rgba(241, 239, 250, .86); --seg-on: #FFFFFF; --bubble: #E6E3F5;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #120C33; --surface: #1C1547; --surface-2: #2A2166; --elev: #2A2166;
+    --fill: rgba(185, 179, 230, .16); --fill-2: rgba(185, 179, 230, .10);
+    --ink: #F4F2FF; --ink-2: #B9B3E6; --muted: #8F88C2;
+    --line: rgba(185, 179, 230, .18); --line-2: rgba(185, 179, 230, .30);
+    --accent: #FF8A33; --accent-ink: #1A0F02; --accent-soft: rgba(255, 138, 51, .2); --accent-t: #FFB37A;
+    --good: #2BD4A4; --good-t: #4FE0B6; --good-soft: rgba(43, 212, 164, .18);
+    --warn: #FFD36B; --warn-t: #FFD36B; --warn-soft: rgba(255, 211, 107, .18);
+    --crit: #FF5E62; --crit-t: #FF8285; --crit-soft: rgba(255, 94, 98, .2);
+    --pink: #FF4D73; --mint: #2BD4A4; --indigo: #8B7FFF; --purple: #A78BFF; --teal: #3FD0C0; --yellow: #FFD36B; --gray: #8F88C2;
+    --s1: #FF9A4D; --s2: #8B7FFF; --s3: #2BD4A4; --s4: #FF4D73;
+    --ring1: #FF4D73; --ring2: #2BD4A4; --ring3: #FFD36B;
+    --bar: rgba(18, 12, 51, .72); --side: rgba(18, 12, 51, .86); --seg-on: #3A2F85; --bubble: #2A2166;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #120C33; --surface: #1C1547; --surface-2: #2A2166; --elev: #2A2166;
+  --fill: rgba(185, 179, 230, .16); --fill-2: rgba(185, 179, 230, .10);
+  --ink: #F4F2FF; --ink-2: #B9B3E6; --muted: #8F88C2;
+  --line: rgba(185, 179, 230, .18); --line-2: rgba(185, 179, 230, .30);
+  --accent: #FF8A33; --accent-ink: #1A0F02; --accent-soft: rgba(255, 138, 51, .2); --accent-t: #FFB37A;
+  --good: #2BD4A4; --good-t: #4FE0B6; --good-soft: rgba(43, 212, 164, .18);
+  --warn: #FFD36B; --warn-t: #FFD36B; --warn-soft: rgba(255, 211, 107, .18);
+  --crit: #FF5E62; --crit-t: #FF8285; --crit-soft: rgba(255, 94, 98, .2);
+  --pink: #FF4D73; --mint: #2BD4A4; --indigo: #8B7FFF; --purple: #A78BFF; --teal: #3FD0C0; --yellow: #FFD36B; --gray: #8F88C2;
+  --s1: #FF9A4D; --s2: #8B7FFF; --s3: #2BD4A4; --s4: #FF4D73;
+  --ring1: #FF4D73; --ring2: #2BD4A4; --ring3: #FFD36B;
+  --bar: rgba(18, 12, 51, .72); --side: rgba(18, 12, 51, .86); --seg-on: #3A2F85; --bubble: #2A2166;
+}
+/* wallet-style status cards use the landing gradients too */
+.wcard.good { --c0: #0B7A5F; --c1: #0FA37F; --c2: #2BD4A4; --c3: #5B4CF0; --glow: rgba(15, 163, 127, .5); }
+.wcard.warn { --c0: #8A5A00; --c1: #FFD36B; --c2: #F2A93B; --c3: #FF7A1A; --glow: rgba(255, 122, 26, .5); }
+.wcard.crit { --c0: #C21F2A; --c1: #FF7A1A; --c2: #FF2D55; --c3: #5B4CF0; --glow: rgba(255, 45, 85, .5); }
+
+/* ===== type: Manrope everywhere, bolder headings ===== */
+:root {
+  --font: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-d: var(--font);
+  --font-r: var(--font);
+}
+:root:not([data-ui="rr"]) :is(h1, h2) { font-weight: 800; }
+:root:not([data-ui="rr"]) :is(h3, h4) { font-weight: 700; }
+
+/* ===== number spacing: proportional figures for display numbers (Manrope's tabular "1" leaves big gaps);
+   tables, leaderboards, formula/bar columns, inputs and account numbers stay tabular so columns line up ===== */
+:root:not([data-ui="rr"]) :is(.num, .micr-who span, .ledger .v, .wc-mid strong, .ring-legend .v, .strip-big .n, .finding .big,
+  .field > label output, .field > .lab output, .zb-left .v, .acct-card .lim, .insight b,
+  .rr-stats .v, .quiz-score b, .g-num .n, .sp-v, .rank-stats .v, .tbx-t span) {
+  font-variant-numeric: proportional-nums lining-nums;
+  font-feature-settings: "pnum" 1, "tnum" 0;
+}
+
+/* plan page: "with EI" and "with no EI" verdicts stacked */
+.verdict-pair { display: grid; gap: 10px; }
+.verdict-pair .verdict strong { display: block; font-size: 14px; line-height: 1.35; }
+.verdict-pair .verdict p { margin: 4px 0 0; font-size: 13px; }
+
+/* step-by-step: deep indigo number badges and gain figures so they stand out */
+:root { --step-badge: #2B1F7A; --step-badge-ink: #FFFFFF; --step-gain: #2B1F7A; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --step-badge: #5B4CF0; --step-badge-ink: #FFFFFF; --step-gain: #C9C3FF; } }
+:root[data-theme="dark"] { --step-badge: #5B4CF0; --step-badge-ink: #FFFFFF; --step-gain: #C9C3FF; }
+:root:not([data-ui="rr"]) .step .no { background: var(--step-badge); color: var(--step-badge-ink); font-weight: 800; box-shadow: 0 2px 6px -2px rgba(43, 31, 122, .5); }
+:root:not([data-ui="rr"]) .step .gain { color: var(--step-gain); font-weight: 800; }
+
+/* plan page: custom emergency fund target */
+.goal-custom { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin-top: 10px; }
+.goal-custom label { font-size: 13px; font-weight: 600; color: var(--ink-2); }
+.goal-custom .input { width: 84px; height: 36px; text-align: center; font-weight: 700; }
+.goal-custom > span:not(.hint) { font-size: 13px; color: var(--ink-2); }
+.goal-custom .hint { flex-basis: 100%; }
+
+/* ===== accessibility: contrast fixes (WCAG AA: 4.5:1 text, 3:1 UI shapes) and a solid focus ring ===== */
+:root {
+  --muted: #6A6684; --gray: #6A6684;
+  --accent: #C74B00;                       /* white text 4.74:1 */
+  --good: #0C8F6F; --good-t: #0A6E56;      /* shape 3.4:1, text 5.2:1 */
+  --warn: #A87800;                         /* shape 3.28:1 */
+  --focus: #A84A00;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --muted: #9A94CC; --gray: #9A94CC; --focus: #FFB37A; } }
+:root[data-theme="dark"] { --muted: #9A94CC; --gray: #9A94CC; --focus: #FFB37A; }
+:root:not([data-ui="rr"]) :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.skip-link { position: absolute; left: -9999px; top: 8px; z-index: 1000; padding: 10px 14px; border-radius: 10px; background: var(--ink); color: var(--bg); font-weight: 700; text-decoration: none; }
+.skip-link:focus { left: 12px; }
+
+/* ===== icon colour scheme: one indigo family everywhere, orange for "you are here" ===== */
+:root { --ico-bg: #E6E2F7; --ico-ink: #2B1F7A; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --ico-bg: #2F2670; --ico-ink: #D6D1FF; } }
+:root[data-theme="dark"] { --ico-bg: #2F2670; --ico-ink: #D6D1FF; }
+:root:not([data-ui="rr"]) .sf { background: var(--ico-bg); box-shadow: none; transition: background .2s; }
+:root:not([data-ui="rr"]) .sf svg { stroke: var(--ico-ink); }
+:root:not([data-ui="rr"]) .nav a[aria-current="page"] { background: var(--accent-soft); color: var(--accent-t); }
+:root:not([data-ui="rr"]) .nav a[aria-current="page"] .sf { background: var(--accent); }
+:root:not([data-ui="rr"]) .nav a[aria-current="page"] .sf svg { stroke: var(--accent-ink); }
+:root:not([data-ui="rr"]) .nav a:hover .sf { background: color-mix(in srgb, var(--ico-bg) 70%, var(--ico-ink) 12%); }
+#main:focus { outline: none; } /* programmatic focus target for the skip link only */
+
+/* ===== decorative greens become orange (status "good" stays green) ===== */
+:root { --s3: #B4540A; --mint: #E8833A; --teal: #F2A65A; --ring2: #F26A0F; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --s3: #FFB37A; --mint: #FF9A4D; --teal: #FFC48F; --ring2: #FF9A4D; } }
+:root[data-theme="dark"] { --s3: #FFB37A; --mint: #FF9A4D; --teal: #FFC48F; --ring2: #FF9A4D; }
+.wcard.good { --c0: #A84A00; --c1: #E25A00; --c2: #FF9A4D; --c3: #5B4CF0; --glow: rgba(226, 90, 0, .5); }
+/* plan page: "good" reads as orange; only the "Saved now" heading keeps a green */
+:root { --saved-green: #0A6E56; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --saved-green: #4FE0B6; } }
+:root[data-theme="dark"] { --saved-green: #4FE0B6; }
+.view[data-view="plan"] { --good: var(--accent); --good-t: var(--accent-t); --good-soft: var(--accent-soft); }
+.plan-bento #goalLedger > div:nth-child(2) { --kc: var(--saved-green); }
+
+/* sample-data banner sits under the toolbar, aligned with the content column */
+:root:not([data-ui="rr"]) .rr-live { margin: 12px max(28px, env(safe-area-inset-right, 0px)) 0 max(28px, env(safe-area-inset-left, 0px)); font-family: var(--font); }
+@media (max-width: 900px) { :root:not([data-ui="rr"]) .rr-live { margin: 10px 16px 0; } }

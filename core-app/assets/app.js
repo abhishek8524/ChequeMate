@@ -255,14 +255,14 @@ function micrHTML(a) {
   if (a.joint) chips.push('<span class="chip">Joint</span>');
   if (a.card) chips.push(`<span class="chip">${a.card[0].toUpperCase() + a.card.slice(1)} card</span>`);
   if (a.loan) { const L = { A: ['good', 'Loan repaid'], B: ['crit', 'Loan defaulted'], C: ['info', 'Loan on track'], D: ['crit', 'Loan in arrears'] }[a.loan.status]; chips.push(`<span class="pill ${L[0]}">${L[1]}</span>`); }
-  chips.push(`<span class="pill ${tone(ei.v)}">Layoff runway ${rwText(ei)} mo</span>`);
+  chips.push(`<span class="pill ${tone(ei.v)}">Lasts ${rwText(ei)} mo if job lost</span>`);
   return `<span class="avatar">${initials(p, a.id)}</span>
     <div class="micr-who"><strong>${esc(p.name)}</strong><span>Account ${a.id}${SRC.kind === 'upload' ? ', uploaded' : a.opened ? ', since ' + esc(a.opened.slice(0, 4)) : ''}</span></div>
     <div class="micr-chips">${chips.join('')}</div>`;
 }
 function renderMicr() { const a = acc(); if (!a) return; const h = micrHTML(a); $$('[data-micr]').forEach(el => el.innerHTML = h); const p = profile(a.id); $('#tbAcct').innerHTML = `<span class="avatar sm">${initials(p, a.id)}</span><span>${esc(p.name)}</span>`; }
 
-const TITLES = { paradox: 'The paradox', customer: 'Customer', shock: 'Shock lab', plan: 'Plan', budget: 'Budget', invest: 'Investing', coach: 'Coach', data: 'Your data', resources: 'Resources', profile: 'Profile', arena: 'Quests', play: 'Play', overview: 'Overview', investing: 'Investing', yourdata: 'Your money', situations: 'Situations', saving: 'Saving plan', paradox: 'Findings' };
+const TITLES = { paradox: 'The paradox', customer: 'Customer', shock: 'Plan ahead', plan: 'Plan', budget: 'Budget', invest: 'Investing', coach: 'Coach', data: 'Your data', resources: 'Resources', profile: 'Profile', arena: 'Quests', play: 'Play', overview: 'Overview', investing: 'Investing', yourdata: 'Your money', situations: 'Situations', saving: 'Saving plan', paradox: 'Findings' };
 function openSheet() { $('#sheet').hidden = false; $('#sheetBg').hidden = false; }
 function closeSheet() { const s = $('#sheet'); if (s) { s.hidden = true; $('#sheetBg').hidden = true; } }
 const VIEWS = ['paradox', 'customer', 'shock', 'plan', 'budget', 'invest', 'coach', 'data', 'resources', 'profile', 'arena', 'play', 'overview', 'investing', 'yourdata', 'situations', 'saving'];
@@ -339,7 +339,7 @@ RENDER.paradox = () => {
   $('#pair').innerHTML = pair.map(id => {
     const a = Object.assign({ id }, BUILTIN[id]); const r = runway(a.B, a.I, a.S, { mult: .55 }); const t = r.v >= 6 ? 'good' : 'crit';
     return `<div class="pair-col">
-      ${walletCard({ tone: t, badge: r.v >= 6 ? 'Outlasts EI' : 'Out before EI ends', midLabel: 'Money in each month', mid: money(a.I), name: `Account ${id}`, id, rwLabel: 'Lasts on EI', rw: rwText(r) + ' mo' })}
+      ${walletCard({ tone: t, badge: r.v >= 6 ? 'Outlasts EI' : 'Out before EI ends', midLabel: 'Money in each month', mid: money(a.I), name: `Account ${id}`, id, rwLabel: 'Lasts if job lost', rw: rwText(r) + ' mo' })}
       ${strip(r, { max: 24, compact: true, fill: r.v >= 6 ? 'good' : 'crit', marks: [{ at: 6, label: 'EI ends' }] })}
       <div class="pair-cap"><span class="small ink2">Spends ${pct(a.S / a.I)} of it. Buffer ${money(a.B)}.</span><button class="btn sm" type="button" data-open="${id}">Run the layoff</button></div>
     </div>`;
@@ -365,7 +365,7 @@ RENDER.paradox = () => {
     interaction: { mode: 'nearest', intersect: true },
     plugins: { tooltip: { filter: i => i.datasetIndex === 0, callbacks: { title: i => `Account ${i[0].raw.id}`, label: i => `${money(i.raw.x)} a month, ${i.raw.raw >= 120 ? 'no shortfall' : i.raw.raw.toFixed(1) + ' months'}` } } },
     scales: { x: { type: 'linear', min: 0, max: 45000, ticks: { callback: moneyTick }, title: { display: true, text: 'Typical money in per month', color: V('--muted'), font: { family: FONT, size: 11 } } },
-      y: { min: 0, max: 36, ticks: { stepSize: 6, callback: v => v === 36 ? '36+' : v }, title: { display: true, text: 'Months of runway after layoff', color: V('--muted'), font: { family: FONT, size: 11 } } } },
+      y: { min: 0, max: 36, ticks: { stepSize: 6, callback: v => v === 36 ? '36+' : v }, title: { display: true, text: "Months they'd last after losing their job", color: V('--muted'), font: { family: FONT, size: 11 } } } },
     onClick: (_e, els) => { const el = els.find(x => x.datasetIndex === 0); if (el) openWithShock(pts[el.index].id, 'layoff'); },
   }) });
 
@@ -374,7 +374,7 @@ RENDER.paradox = () => {
   const jd = INS.jointDefault || { joint: [0, 0], solo: [0, 0] };
   const se = INS.season || { out: [] };
   const F = [
-    [`${Math.round((INS.fragileDefault || 0) / (INS.sturdyDefault || 1))}×`, `Borrowers whose layoff runway is under 6 months defaulted at ${pct(INS.fragileDefault || 0, 1)}, against ${pct(INS.sturdyDefault || 0, 1)} for everyone else.`],
+    [`${Math.round((INS.fragileDefault || 0) / (INS.sturdyDefault || 1))}×`, `Borrowers whose savings would last under 6 months after losing their job defaulted at ${pct(INS.fragileDefault || 0, 1)}, against ${pct(INS.sturdyDefault || 0, 1)} for everyone else.`],
     [`${jd.joint[0]} of ${jd.joint[1]}`, `Joint accounts with a loan that defaulted. Single-owner accounts: ${jd.solo[0]} of ${jd.solo[1]} (${pct(jd.solo[0] / (jd.solo[1] || 1), 1)}).`],
     [`+${Math.round(((se.out[0] || 1) - 1) * 100)}%`, `January spending against an average month, across every account. June runs +${Math.round(((se.out[5] || 1) - 1) * 100)}%. A buffer has to survive the winter bills.`],
     [`${q[3] ? pct(q[3].spendRatio) : ''}`, `Share of income the highest-income quarter spends. The lowest quarter spends ${q[0] ? pct(q[0].spendRatio) : ''}, which is what keeps them afloat.`],
@@ -390,7 +390,7 @@ RENDER.paradox = () => {
   $('#findings').innerHTML = F.map(([b, t], i) => `<div class="finding" style="--fc:${FH[i][1]}"><span class="fh"><svg viewBox="0 0 24 24">${FH[i][2]}</svg>${FH[i][0]}</span><span class="big">${b}</span><p>${t}</p></div>`).join('');
 
   const au = INS.auc || {};
-  const rows = [['Income', au.income, 's2'], ['Layoff runway', au.runway, 's1'], ['Loan payment as share of income', au.paymentShare, 's1'], ['How much income swings', au.volatility, 's1']];
+  const rows = [['Income', au.income, 's2'], ["Months they'd last without a job", au.runway, 's1'], ['Loan payment as share of income', au.paymentShare, 's1'], ['How much income swings', au.volatility, 's1']];
   $('#aucBars').innerHTML = rows.map(([l, v, c]) => `<div class="bar-row"><div class="lab">${l}</div><div class="track"><div class="fill" data-w="${(v - .5) / .5 * 100}" style="--c:var(--${c})"></div></div><div class="val">${(v || 0).toFixed(2)}</div></div>`).join('') +
     '<p class="note">Bars start at coin flip (0.5) and end at perfect (1.0).</p>';
   animBars('#aucBars');
@@ -405,7 +405,7 @@ RENDER.customer = () => {
   const base = runway(a.B, a.I, a.S);
   const pf = profile(), ei0 = runway(a.B, a.I, a.S, { mult: .55 }), tm = +pf.target || 3;
   const bm0 = a.S > 0 ? a.B / a.S : 0, sr0 = a.I > 0 ? (a.I - a.S) / a.I : 0;
-  $('#wcard').innerHTML = walletCard({ tone: tone(ei0.v), badge: ei0.v >= 6 ? 'Resilient' : ei0.v >= 3 ? 'Tight' : 'Fragile', midLabel: 'Savings buffer', mid: money(a.B), name: pf.name, id: a.id, rwLabel: 'Layoff runway', rw: rwText(ei0) + ' mo' });
+  $('#wcard').innerHTML = walletCard({ tone: tone(ei0.v), badge: ei0.v >= 6 ? 'Resilient' : ei0.v >= 3 ? 'Tight' : 'Fragile', midLabel: 'Savings buffer', mid: money(a.B), name: pf.name, id: a.id, rwLabel: 'Lasts if job lost', rw: rwText(ei0) + ' mo' });
   bindTilt($('#wcard'));
   $('#rings').innerHTML = `<div class="rings-wrap">${ringsSVG([
       { p: ei0.v === Infinity ? 2 : ei0.v / 6, color: 'var(--ring1)', label: 'Runway' },
@@ -437,7 +437,7 @@ RENDER.customer = () => {
 
   const ei = runway(a.B, a.I, a.S, { mult: .55 });
   const p = eiPercentile(ei.v);
-  $('#rwSub').textContent = 'EI pays 55% of usual income';
+  $('#rwSub').textContent = 'How long savings last on Employment Insurance (EI), which pays 55% of usual income';
   $('#custStrip').innerHTML = strip(ei, { max: 24, fill: ei.v >= 6 ? 'good' : 'crit', marks: [{ at: 6, label: 'EI ends at 6 mo' }],
     pill: ei.v === Infinity || ei.v >= 6 ? ['good', 'Makes it through EI'] : ['crit', 'Runs out before EI ends'],
     note: `Lasts longer than ${pct(p)} of the bank's customers. Monthly gap on EI: ${money(Math.max(ei.gap, 0))}.` });
@@ -477,7 +477,7 @@ RENDER.customer = () => {
   animBars('#outBars');
 };
 
-/* ================= VIEW: SHOCK LAB ================= */
+/* ================= VIEW: PLAN AHEAD ================= */
 function applyPreset(id) {
   const p = SHOCKS.find(s => s.id === id) || SHOCKS[0];
   st.shock = Object.assign({ inc: 100, ei: 6, bills: 0, extra: 0, one: 0, oneMult: null, after: st.shock.after || 'back', preset: p.id }, p.set);
@@ -581,8 +581,8 @@ function bindShock() {
 
 /* ================= VIEW: PLAN ================= */
 function planShock() { return isNoShock(st.shock) ? Object.assign({}, st.shock, { inc: 55, ei: 6, preset: 'layoff' }) : st.shock; }
-function levers(a) {
-  const sh = planShock(), P = shockParams(a, sh), disc = Math.max(a.S - a.F, 0);
+function levers(a, shOver) {
+  const sh = shOver || planShock(), P = shockParams(a, sh), disc = Math.max(a.S - a.F, 0);
   const out = []; let extra = P.extra, mult = P.mult, side = 0;
   const calc = () => runway(a.B, a.I, a.S, { mult, extra: extra - side, oneOff: P.oneOff }); // side income offsets spending
   out.push({ key: 'shock', name: 'The shock as set', r: calc(), desc: shockLabel(sh, a) });
@@ -594,6 +594,7 @@ function levers(a) {
   if (st.plan.side > 0) { side = st.plan.side; out.push({ key: 'side', name: `Side income of ${money(side)}`, r: calc(), save: side, desc: 'Part-time or gig work. EI lets you earn some income; check the rules before you start.' }); }
   return { sh, list: out };
 }
+const GOAL_PRESETS = [3, 6, 9, 12];
 RENDER.plan = () => {
   const a = acc(); if (!a) return; const pf = profile();
   const months = +pf.target || 3; const target = months * a.S; const have = Math.max(a.B, 0); const need = Math.max(0, target - have);
@@ -603,7 +604,10 @@ RENDER.plan = () => {
   const ps = $('#pSave'); ps.max = smax; ps.value = st.plan.save; setRangeFill(ps); $('#oSave').textContent = money(st.plan.save);
   $('#saveHint').textContent = surplus > 0 ? `Money in beats spending by ${money(surplus)} in a typical month. Half of that is ${money(r25(surplus * .5))}.`
     : `Spending already matches income, so this has to come from cuts. Trimming everyday spending 10% frees ${money(.1 * disc)}.`;
-  $$('#goalSeg button').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.v === months)));
+  const isCustom = st.plan.customOpen || !GOAL_PRESETS.includes(months);
+  $$('#goalSeg button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === 'custom' ? isCustom : !isCustom && +b.dataset.v === months)));
+  $('#goalCustomWrap').hidden = !isCustom;
+  if (document.activeElement !== $('#goalCustom')) $('#goalCustom').value = months;
   const mtg = need === 0 ? 0 : st.plan.save > 0 ? need / st.plan.save : Infinity;
   $('#goalPill').innerHTML = need === 0 ? '<span class="pill good">Goal reached</span>' : mtg <= 12 ? `<span class="pill info">${Math.ceil(mtg)} months away</span>` : `<span class="pill warn">${isFinite(mtg) ? Math.ceil(mtg) + ' months away' : 'Needs a monthly amount'}</span>`;
   $('#goalLedger').innerHTML = [['Target', money(target), `${months} months of spending`], ['Saved now', money(have), `${a.S > 0 ? (have / a.S).toFixed(1) : '—'} months`], ['Still to save', money(need), need ? (isFinite(mtg) ? `${Math.ceil(mtg)} months at this pace` : 'Set an amount') : 'Done']]
@@ -613,7 +617,7 @@ RENDER.plan = () => {
   const s1 = V('--s1'), good = V('--good');
   chart('goalChart', { type: 'line', data: { labels: fund.map((_, k) => k === 0 ? 'Now' : 'M' + k), datasets: [
     { label: 'Emergency fund', data: fund.map(Math.round), borderColor: s1, backgroundColor: areaFill(s1, .22), fill: 'origin', borderWidth: 3, pointRadius: 0, pointHoverRadius: 4 },
-    { label: 'Target', data: fund.map(() => Math.round(target)), borderColor: good, borderDash: [6, 4], borderWidth: 2, pointRadius: 0, pointHoverRadius: 0 },
+    { label: 'Target', data: fund.map(() => Math.round(target)), borderColor: V('--accent-t'), borderDash: [6, 4], borderWidth: 2, pointRadius: 0, pointHoverRadius: 0 },
   ] }, options: baseOpts({ scales: { y: { min: 0, ticks: { callback: moneyTick } } }, plugins: { tooltip: { callbacks: { label: i => ` ${i.dataset.label}: ${money(i.raw)}` } } } }) });
   $('#goalText').innerHTML = need === 0
     ? `<strong>The buffer already covers ${months} months.</strong> Keep it in a high-interest savings account or GIC, and send new savings to the next step on the Investing page.`
@@ -624,7 +628,7 @@ RENDER.plan = () => {
   const pc = $('#pCut'); pc.value = st.plan.cut; setRangeFill(pc); $('#oCut').textContent = st.plan.cut + '%';
   const sd = $('#pSide'); sd.value = st.plan.side; setRangeFill(sd); $('#oSide').textContent = money(st.plan.side);
   const { sh, list } = levers(a);
-  $('#backupSub').textContent = isNoShock(st.shock) ? 'No shock is set, so this assumes a layoff with EI at 55%.' : 'Using the shock from the Shock lab.';
+  $('#backupSub').textContent = 'If you lost your job, with and without Employment Insurance (EI).' + (isNoShock(st.shock) ? '' : ' Includes the other changes you set in Plan ahead.');
   const eiStep = sh.inc < 100 ? `<div class="step"><span class="no"></span><div><h3>Apply for EI the week the job ends</h3><p>Apply even before the record of employment arrives. Waiting more than 4 weeks after the last day of work can cost benefits.</p></div><div class="gain">${sh.inc}%<small>of income back</small></div></div>` : '';
   $('#backupSteps').innerHTML = eiStep + list.slice(1).map((l, i) => {
     const prev = list[i].r, now = l.r; const gain = now.v === Infinity ? 'No gap left' : `${rwText(prev)} → ${rwText(now)} mo`;
@@ -633,7 +637,16 @@ RENDER.plan = () => {
   const first = list[0].r, last = list[list.length - 1].r;
   const needM = sh.inc < 100 ? sh.ei : 6;
   const ok = last.v === Infinity || last.v >= needM;
-  $('#backupResult').innerHTML = `<div class="verdict ${ok ? 'good' : 'crit'}">${ok ? ICON.check : ICON.alert}<div><strong>Runway goes from ${rwLong(first)} to ${rwLong(last)}</strong><p>${ok ? `That carries them past the ${needM}-month mark${sh.inc < 100 ? ' when EI ends' : ''}.` : `Still short of ${needM} months. They'd need ${money(Math.max(0, last.gap * needM - last.left))} more, from a larger cut, side income or family support.`}</p></div></div>`;
+  // two job-loss cases: with EI (55% of income for the EI period) and with no EI (no income at all)
+  const jobCase = (inc, title, note) => {
+    const ls = levers(a, Object.assign({}, sh, { inc, preset: inc ? 'layoff' : 'zero' })).list;
+    const f = ls[0].r, l = ls[ls.length - 1].r, target = inc ? (sh.inc > 0 && sh.inc < 100 ? sh.ei : 6) : 6;
+    const good = l.v === Infinity || l.v >= target;
+    const tail = good ? `That carries you past ${target} months${inc ? ', when EI ends' : ''}.`
+      : `Still short of ${target} months. You'd need ${money(Math.max(0, l.gap * target - l.left))} more, from a larger cut, side income or family support.`;
+    return `<div class="verdict ${good ? 'good' : 'crit'}">${good ? ICON.check : ICON.alert}<div><strong>${title}: emergency fund goes from ${rwLong(f)} to ${rwLong(l)}</strong><p>${note} ${tail}</p></div></div>`;
+  };
+  $('#backupResult').innerHTML = `<div class="verdict-pair">${jobCase(55, 'With EI', 'EI pays 55% of your usual income.')}${jobCase(0, 'With no EI', 'No income comes in at all.')}</div>`;
   const mx = 24;
   $('#leverBars').innerHTML = list.map((l, i) => `<div class="bar-row"><div class="lab">${i === 0 ? 'Shock only' : '+ ' + esc(l.name.replace(/^(Cut|Ask|Trim|Side)/, m => m.toLowerCase()))}</div>
     <div class="track"><div class="fill" data-w="${l.r.v === Infinity ? 100 : Math.min(100, l.r.v / mx * 100)}" style="--c:var(--${l.r.v === Infinity ? 'good' : status(l.r.v)})"></div>${needM <= mx ? `<div class="base" style="left:${needM / mx * 100}%"></div>` : ''}</div>
@@ -646,7 +659,14 @@ function bindPlan() {
   $('#pSave').oninput = e => { st.plan.save = +e.target.value; RENDER.plan(); };
   $('#pCut').oninput = e => { st.plan.cut = +e.target.value; RENDER.plan(); };
   $('#pSide').oninput = e => { st.plan.side = +e.target.value; RENDER.plan(); };
-  $$('#goalSeg button').forEach(b => b.onclick = () => { const p = profile(); p.target = b.dataset.v; store.set('cm.p.' + st.id, p); RENDER.plan(); });
+  const setTarget = m => { const p = profile(); p.target = String(m); store.set('cm.p.' + st.id, p); RENDER.plan(); };
+  $$('#goalSeg button').forEach(b => b.onclick = () => {
+    if (b.dataset.v === 'custom') { st.plan.customOpen = true; RENDER.plan(); $('#goalCustom').focus(); $('#goalCustom').select(); return; }
+    st.plan.customOpen = false; setTarget(+b.dataset.v);
+  });
+  const gc = $('#goalCustom');
+  gc.oninput = () => { const v = Math.round(+gc.value); if (gc.value !== '' && v >= 1 && v <= 36) setTarget(v); };
+  gc.onchange = () => { const v = clamp(Math.round(+gc.value) || 3, 1, 36); gc.value = v; setTarget(v); };
 }
 
 /* ================= VIEW: BUDGET ================= */
@@ -995,7 +1015,7 @@ RENDER.data = () => {
       scales: { x: { title: { display: true, text: 'Months of runway', color: V('--muted'), font: { family: FONT, size: 11 } } } } }) });
   const all = IDS.map((id, k) => [id, POP.ei[k]]); const noBuf = all.filter(x => x[1] === 0).length;
   const frag = all.filter(x => x[1] > 0).sort((x, y) => x[1] - y[1]).slice(0, 8);
-  $('#fragileSub').textContent = noBuf ? `Shortest layoff runway. ${noBuf} more have no buffer at all.` : 'Shortest layoff runway';
+  $('#fragileSub').textContent = noBuf ? `Savings would run out soonest after a job loss. ${noBuf} more have no savings at all.` : 'Savings would run out soonest after a job loss';
   $('#fragileList').innerHTML = frag.map(([id, v]) => { const x = DATA[id]; return `<button type="button" data-id="${id}"><span class="avatar sm">${String(id).slice(-2)}</span><span>${id}</span><span class="muted">${money(x.I)} in, ${money(x.B)} buffer</span><span class="pill ${status(v)}">${v.toFixed(1)} mo</span></button>`; }).join('');
   $$('#fragileList button').forEach(b => b.onclick = () => { setAccount(+b.dataset.id, true); go('customer'); });
   const se = POP.season;
@@ -1106,6 +1126,8 @@ const PF_FIELDS = { pfName: 'name', pfProv: 'prov', pfHouse: 'house', pfHome: 'h
 RENDER.profile = () => {
   const a = acc(); if (!a) return; const p = profile();
   if (!$('#pfProv').options.length) $('#pfProv').innerHTML = PROVS.map(([c, n]) => `<option value="${c}">${n}</option>`).join('');
+  const ts = $('#pfTarget'); ts.querySelectorAll('option[data-custom]').forEach(o => ts.removeChild(o));
+  if (p.target && ![...ts.options].some(o => o.value === String(p.target))) ts.insertAdjacentHTML('beforeend', `<option value="${esc(String(p.target))}" data-custom>${esc(String(p.target))} months (custom)</option>`);
   for (const [id, k] of Object.entries(PF_FIELDS)) $('#' + id).value = p[k];
   const c = aiCfg(); $('#aiKey').value = c.key ? '••••••••' + c.key.slice(-4) : ''; $('#aiModel').value = c.model;
   const facts = [];

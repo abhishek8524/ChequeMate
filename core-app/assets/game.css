@@ -151,7 +151,7 @@ body[data-view="coach"] .mate-dock-wrap { display: none; }
 .achv-t .k { font-size: 11.5px; font-weight: 700; color: #FFD60A; text-transform: uppercase; letter-spacing: .06em; }
 .achv-t strong { font-size: 16px; letter-spacing: -0.015em; }
 .achv-t .s { font-size: 12.5px; color: rgba(255, 255, 255, .7); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.achv-xp { font-family: var(--font-r); font-weight: 700; font-size: 15px; color: #30D158; }
+.achv-xp { font-family: var(--font-r); font-weight: 700; font-size: 15px; color: #FF9A4D; }
 .xp-pop { position: fixed; top: 64px; right: 140px; z-index: 65; pointer-events: none; font-family: var(--font-r); font-weight: 800; font-size: 15px; color: var(--warn-t); opacity: 0; text-shadow: 0 1px 0 var(--surface); }
 .xp-pop.on { animation: xpup 1.3s cubic-bezier(.2, .8, .2, 1) both; }
 @keyframes xpup { 0% { opacity: 0; transform: translateY(8px) scale(.8); } 15% { opacity: 1; transform: translateY(0) scale(1.1); } 70% { opacity: 1; } 100% { opacity: 0; transform: translateY(-18px) scale(1); } }
@@ -272,3 +272,11 @@ body[data-view="coach"] .mate-dock-wrap { display: none; }
 .prompt-tabs button { height: 28px; padding: 0 10px; font-size: 12.5px; }
 .prompts button.asked { color: var(--muted); }
 .prompts button.asked::after { content: "Asked"; float: right; font-size: 11px; font-weight: 600; color: var(--good-t); }
+
+/* toolbar pill: progress fills the pill from left to right instead of tracing the border */
+.tb-xp { overflow: hidden; isolation: isolate; background: var(--fill); }
+.tb-xp > :not(.tbx-fill) { position: relative; z-index: 1; }
+.tbx-fill { position: absolute; inset: 0 auto 0 0; z-index: 0; border-radius: inherit; pointer-events: none;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 18%, transparent), color-mix(in srgb, var(--accent) 34%, transparent));
+  transition: width .8s cubic-bezier(.2, .8, .2, 1); }
+@media (prefers-reduced-motion: reduce) { .tbx-fill { transition: none; } }

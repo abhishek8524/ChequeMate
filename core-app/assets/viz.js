@@ -1,5 +1,5 @@
 /* ChequeMate special graphs: a money-flow Sankey (income sources -> account -> where it goes)
-   and the 3D runway terrain for the Shock lab stress grid. */
+   and the 3D runway terrain for Plan ahead stress grid. */
 (() => {
 'use strict';
 const CM = window.ChequeMate, D3 = window.CM3D || {};

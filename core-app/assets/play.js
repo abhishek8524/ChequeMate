@@ -1,5 +1,5 @@
 /* ChequeMate Play: Runway Run (a year of life, one month at a time), Who lasts longer? (the paradox as a quiz),
-   and the 3D coin tower in the Shock lab. Uses the same engine and numbers as every other page. */
+   and the 3D coin tower in Plan ahead. Uses the same engine and numbers as every other page. */
 (() => {
 'use strict';
 const CM = window.ChequeMate, D3 = window.CM3D || {};
@@ -208,7 +208,7 @@ function renderOver() {
   const worst = R.hist.slice().sort((x, y) => x.delta - y.delta)[0];
   o.hidden = false;
   o.innerHTML = `<div class="ro-in ${grade[2]}"><span class="ro-ic">${svg(win ? 'star' : 'x')}</span><h2>${grade[0]}</h2><p>${grade[1]}</p>
-    <div class="ro-stats"><div><b>${survived}/12</b><span>Months survived</span></div><div><b>${money(R.bal)}</b><span>Final balance</span></div><div><b>+${Math.min(120, survived * 10)}</b><span>XP earned</span></div></div>
+    <div class="ro-stats"><div><b>${survived}/12</b><span>Months survived</span></div><div><b>${money(R.bal)}</b><span>Final balance</span></div><div><b>+${Math.min(120, survived * 10)}</b><span>Points earned</span></div></div>
     ${worst ? `<p class="small ink2">Hardest month: ${MON[(R.start + worst.m) % 12]}, ${worst.income === 0 ? 'EI had run out and no paycheque came in' : worst.one < 0 ? EV[worst.ev].name.toLowerCase() : 'spending ran ahead of income'} (${sgn(worst.delta)}).</p>` : ''}
     <div class="ro-act"><button class="btn primary" type="button" id="rrAgain">Play again</button><button class="btn" type="button" id="rrNew">Random customer</button><button class="btn" type="button" id="rrPlan">Build their plan</button></div></div>`;
   $('#rrAgain').onclick = () => newRun();
@@ -306,7 +306,7 @@ on('view', ({ view }) => {
 });
 on('account', () => { if (CM.view === 'play' || R) setTimeout(() => { newRun(); }, 0); });
 
-/* ================= COIN TOWER (Shock lab) ================= */
+/* ================= COIN TOWER (Plan ahead) ================= */
 let coins = null;
 on('shock', d => {
   if (CM.view !== 'shock' && !$('#coin3d')?.offsetParent) return;

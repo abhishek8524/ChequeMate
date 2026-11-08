@@ -98,8 +98,8 @@ function closeMenus(except) {
 
 /* ---------------- search (/ shortcut, grouped, keyboard) ---------------- */
 const PAGES = [['overview', 'Overview', 'Your accounts and resilience'], ['situations', 'Situations', 'Job loss, bills, repairs: test your runway'], ['saving', 'Saving plan', 'Safety-net savings and recovery options'], ['investing', 'Investing', 'Order to fill things, growth calculator'], ['yourdata', 'Your money', 'Score, history, compare, budget rule'],
-  ['paradox', 'Findings', 'The paycheque paradox across 4,500 customers'], ['customer', 'Customer deep-dive', 'Score, money flow'], ['shock', 'Shock lab', 'Situations and stress grid'], ['plan', 'Plan builder', 'Goal and backup plans'],
-  ['budget', 'Budget rules', '50/30/20 and more'], ['coach', 'Rookie', 'Ask the 3D coach'], ['arena', 'Quests', 'XP and badges'], ['play', 'Play', 'Runway Run, quiz'], ['data', 'Upload your data', 'CSV portfolio'], ['resources', 'Resources', 'Official sources'], ['profile', 'Profile', 'Your details']];
+  ['paradox', 'Findings', 'The paycheque paradox across 4,500 customers'], ['customer', 'Customer deep-dive', 'Score, money flow'], ['shock', 'Plan ahead', 'Situations and stress grid'], ['plan', 'Plan builder', 'Goal and backup plans'],
+  ['budget', 'Budget rules', '50/30/20 and more'], ['coach', 'Rookie', 'Ask the 3D coach'], ['arena', 'Quests', 'Points and badges'], ['play', 'Play', 'Runway Run, quiz'], ['data', 'Upload your data', 'CSV portfolio'], ['resources', 'Resources', 'Official sources'], ['profile', 'Profile', 'Your details']];
 const HELP = [['How do I apply for EI?', 'Apply the week your job ends, even before your record of employment arrives.'], ['What is my runway?', 'How many months your savings last if a situation hits.'],
   ['How much should my emergency fund be?', 'Three to six months of money out is a common target.'], ['TFSA or RRSP?', 'It depends on your tax rate now and later.'], ['Can my bank pause a loan payment?', 'Many lenders offer deferrals if you call before missing one.']];
 let sel = -1, results = [];
@@ -372,7 +372,7 @@ function settingsRender() {
     <div class="rr-sec"><h3>Demo · sample customers</h3><div class="rr-card">${Object.entries(PERSONAS).map(([k, p]) => `<button class="rr-rowx" type="button" data-persona="${k}"><span class="t"><b>${p.name}</b><span>${p.blurb} · account ${p.id}</span></span><span class="v">${per && per[0] === k ? 'Showing' : 'Switch ›'}</span></button>`).join('')}</div></div>
     <div class="rr-sec"><h3>Extras</h3><div class="rr-card">
       <div class="rr-rowx"><span class="t"><b>Glass effects</b><span>Aurora background and frosted cards on the extra pages</span></span>${tog('glass', window.CMFX && window.CMFX.style === 'glass')}</div>
-      <div class="rr-rowx"><span class="t"><b>Sound effects</b><span>Little sounds for XP and badges</span></span>${tog('sfx', store.get('cm.sfx', true))}</div>
+      <div class="rr-rowx"><span class="t"><b>Sound effects</b><span>Little sounds for points and badges</span></span>${tog('sfx', store.get('cm.sfx', true))}</div>
     </div></div>
     <button class="rr-signout" type="button" data-demo>Sign out</button>
   </div>`;

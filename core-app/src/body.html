@@ -1,3 +1,4 @@
+<a class="skip-link" href="#main">Skip to content</a>
 <div class="app">
   <aside class="sidebar" aria-label="ChequeMate">
     <a class="brand" href="#paradox" aria-label="ChequeMate home">
@@ -13,7 +14,7 @@
       </div>
       <div class="side-sec"><span>This customer</span>
         <a href="#customer"><span class="sf" style="--c:var(--accent)"><svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c1.2-3.6 3.8-5.3 7-5.3s5.8 1.7 7 5.3"/></svg></span>Customer</a>
-        <a href="#shock"><span class="sf" style="--c:var(--warn)"><svg viewBox="0 0 24 24"><path d="M13 3 5 13.5h6.5L10.5 21 19 10.5h-6.5z"/></svg></span>Shock lab</a>
+        <a href="#shock"><span class="sf" style="--c:var(--warn)"><svg viewBox="0 0 24 24"><path d="M13 3 5 13.5h6.5L10.5 21 19 10.5h-6.5z"/></svg></span>Plan ahead</a>
         <a href="#plan"><span class="sf" style="--c:var(--good)"><svg viewBox="0 0 24 24"><path d="M4.5 12.5 9.5 17.5 19.5 6.5"/></svg></span>Plan</a>
         <a href="#budget"><span class="sf" style="--c:var(--purple)"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9h-9z"/><path d="M15 3.5A9 9 0 0 1 20.5 9H15z"/></svg></span>Budget</a>
         <a href="#invest"><span class="sf" style="--c:var(--mint)"><svg viewBox="0 0 24 24"><path d="M4 17 10 11l4 4 6-7M15 8h5v5"/></svg></span>Investing</a>
@@ -25,7 +26,7 @@
       </div>
     </nav>
     <div class="side-foot">
-      <a class="side-player" id="sidePlayer" href="#arena" aria-label="Your rank and XP"></a>
+      <a class="side-player" id="sidePlayer" href="#arena" aria-label="Your rank and points"></a>
       <div class="seg style-switch" role="group" aria-label="Style"><button type="button" data-style-set="glass">Glass</button><button type="button" data-style-set="solid">Solid</button></div>
       <div class="seg theme-switch" role="group" aria-label="Appearance">
         <button type="button" data-theme-set="system">Auto</button>
@@ -60,7 +61,7 @@
       <a class="rr-tab" href="#investing" data-v="investing"><img class="rr-ico on" src="assets/rr/nav-investing-on.svg" width="18" height="18" alt=""><img class="rr-ico off" src="assets/rr/nav-investing-off.svg" width="18" height="18" alt="">Investing</a>
       <a class="rr-tab" href="#paradox" data-v="paradox">Findings</a>
       <div class="rr-more"><button class="rr-tab" type="button" id="rrMoreBtn" aria-haspopup="menu" aria-expanded="false" aria-controls="rrMenu">Extras <img class="rr-ico caret" src="assets/rr/arrow-down.svg" width="12" height="12" alt=""></button>
-        <div class="rr-menu" id="rrMenu" role="menu" hidden><h4>Extra features</h4><a href="#customer" role="menuitem" data-v="customer">Customer deep-dive<span>Score, rings, money flow and insights</span></a><a href="#shock" role="menuitem" data-v="shock">Shock lab<span>Every situation, boss rush, 3D terrain</span></a><a href="#plan" role="menuitem" data-v="plan">Plan builder<span>Goal and backup plans in detail</span></a><a href="#budget" role="menuitem" data-v="budget">Budget rules<span>Six rules and a zero-based planner</span></a><a href="#coach" role="menuitem" data-v="coach">Coach Mate<span>The 3D pawn coach</span></a><a href="#arena" role="menuitem" data-v="arena">Quests and ranks<span>XP, badges, missions, leaderboards</span></a><a href="#play" role="menuitem" data-v="play">Play<span>Runway Run and Who lasts longer?</span></a><a href="#data" role="menuitem" data-v="data">Upload your data<span>Score a whole CSV in your browser</span></a><a href="#resources" role="menuitem" data-v="resources">Resources<span>Official Canadian sources</span></a><a href="#profile" role="menuitem" data-v="profile">Profile<span>Details the bank data can’t know</span></a></div></div>
+        <div class="rr-menu" id="rrMenu" role="menu" hidden><h4>Extra features</h4><a href="#customer" role="menuitem" data-v="customer">Customer deep-dive<span>Score, rings, money flow and insights</span></a><a href="#shock" role="menuitem" data-v="shock">Plan ahead<span>Every situation, boss rush, 3D terrain</span></a><a href="#plan" role="menuitem" data-v="plan">Plan builder<span>Goal and backup plans in detail</span></a><a href="#budget" role="menuitem" data-v="budget">Budget rules<span>Six rules and a zero-based planner</span></a><a href="#coach" role="menuitem" data-v="coach">Coach Mate<span>The 3D pawn coach</span></a><a href="#arena" role="menuitem" data-v="arena">Quests and ranks<span>Points, badges, missions, leaderboards</span></a><a href="#play" role="menuitem" data-v="play">Play<span>Runway Run and Who lasts longer?</span></a><a href="#data" role="menuitem" data-v="data">Upload your data<span>Score a whole CSV in your browser</span></a><a href="#resources" role="menuitem" data-v="resources">Resources<span>Official Canadian sources</span></a><a href="#profile" role="menuitem" data-v="profile">Profile<span>Details the bank data can’t know</span></a></div></div>
       <span class="rr-spacer"></span>
       <div class="rr-search" id="rrSearchBox"><img class="rr-ico" src="assets/rr/search.svg" width="18" height="18" alt=""><input id="rrSearch" type="search" placeholder="Search accounts, payments, help…" aria-label="Search accounts, payments, plans and help" aria-controls="rrResults" aria-expanded="false" autocomplete="off"><kbd>/</kbd><div class="rr-results" id="rrResults" role="listbox" hidden></div></div>
       <div class="rr-bellwrap"><button class="rr-bell" type="button" id="rrBell" aria-label="Notifications" aria-expanded="false"><img class="rr-ico" src="assets/rr/bell.svg" width="20" height="20" alt=""><span class="dot" id="rrBellDot"></span></button><div class="rr-notes" id="rrNotes" hidden></div></div>
@@ -80,11 +81,11 @@
         <div class="acct-err" id="acctErr" hidden></div>
       </form>
       <button class="icon-btn sfx-btn" type="button" id="sfxBtn" aria-pressed="true" title="Sound effects" aria-label="Sound effects"><svg viewBox="0 0 24 24"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path class="w1" d="M15.5 9a4 4 0 0 1 0 6"/><path class="w2" d="M18 6.5a7.5 7.5 0 0 1 0 11"/><path class="mute" d="m16 9.5 5 5M21 9.5l-5 5"/></svg></button>
-      <a class="tb-xp" id="tbXp" href="#arena" aria-label="Your rank and XP"></a>
+      <a class="tb-xp" id="tbXp" href="#arena" aria-label="Your rank and points"></a>
       <a class="tb-acct" id="tbAcct" href="#profile"></a>
     </header>
 
-    <main class="content" id="main">
+    <main class="content" id="main" tabindex="-1">
       <div class="loading" id="loading">Loading 4,500 accounts…</div>
       <!-- RESILIENCE REWIRED: 1 · OVERVIEW -->
       <section class="view rr-view" data-view="overview" hidden>
@@ -166,9 +167,9 @@
         </div>
 
         <div class="panel">
-          <div class="panel-head"><h2>Income against layoff runway</h2><p>900 customers. Runway capped at 36 months for display. Select a dot to open it.</p></div>
+          <div class="panel-head"><h2>Income vs. how long they'd last without a job</h2><p>900 customers. Each dot shows monthly income against the months their savings would last after losing their job (shown up to 36). Select a dot to open it.</p></div>
           <div class="legend"><span><i style="background:var(--s1)"></i>Customer</span><span><i class="line" style="background:var(--crit)"></i>6-month line</span></div>
-          <div class="chart-box tall"><canvas id="scatter" aria-label="Scatter of monthly income versus layoff runway"></canvas></div>
+          <div class="chart-box tall"><canvas id="scatter" aria-label="Scatter of monthly income versus months each customer would last after losing their job"></canvas></div>
         </div>
 
         <div class="findings" id="findings"></div>
@@ -224,9 +225,9 @@
         </div>
       </section>
 
-      <!-- SHOCK LAB -->
+      <!-- PLAN AHEAD -->
       <section class="view" data-view="shock" hidden>
-        <div class="head"><h1>Shock lab</h1><p>Pick a scenario or size your own. Runway recalculates instantly, and every step of the math is shown.</p></div>
+        <div class="head"><h1>Plan ahead</h1><p>Pick a scenario or size your own. Runway recalculates instantly, and every step of the math is shown.</p></div>
         <div class="micr" data-micr></div>
         <div class="boss-bar" id="bossBar"></div>
         <div class="twists" id="twists"></div>
@@ -272,23 +273,38 @@
 
       <!-- PLAN -->
       <section class="view" data-view="plan" hidden>
-        <div class="head"><h1>Plan</h1><p>A goal plan to build the emergency fund now, and a backup plan for the day the shock lands. Both use this customer's own numbers.</p></div>
+        <div class="head"><h1>Plan</h1><p>A goal plan to build the emergency fund now, and how far that fund would take you if money stopped coming in. Both use this customer's own numbers.</p></div>
         <div class="micr" data-micr></div>
-        <div class="grid g-2">
-          <div class="panel">
+        <div class="plan-bento">
+          <!-- emergency fund: wider column -->
+          <div class="b-col b-fund-col">
+          <div class="panel b-fund-head">
             <div class="panel-head"><h2>Emergency fund</h2><span id="goalPill"></span></div>
-            <div class="field"><span class="lab">Target</span><div class="seg" id="goalSeg"><button type="button" data-v="3">3 months</button><button type="button" data-v="6">6 months</button><button type="button" data-v="9">9 months</button></div></div>
+            <div class="field"><span class="lab" id="goalLab">Target</span><div class="seg" id="goalSeg" role="group" aria-labelledby="goalLab"><button type="button" data-v="3">3 months</button><button type="button" data-v="6">6 months</button><button type="button" data-v="9">9 months</button><button type="button" data-v="12">12 months</button><button type="button" data-v="custom" aria-controls="goalCustomWrap">Custom</button></div><div class="goal-custom" id="goalCustomWrap" hidden><label for="goalCustom">Your target</label><input class="input" type="number" id="goalCustom" min="1" max="36" step="1" inputmode="numeric" aria-describedby="goalCustomHint"><span>months of spending</span><span class="hint" id="goalCustomHint">Pick any whole number from 1 to 36.</span></div></div>
             <div class="field"><label for="pSave">Set aside each month <output id="oSave"></output></label><input type="range" id="pSave" min="0" max="3000" step="25"><span class="hint" id="saveHint"></span></div>
-            <div class="ledger plain" style="grid-template-columns:repeat(3,minmax(0,1fr))" id="goalLedger"></div>
+          </div>
+          <div class="ledger plain b-fund-ledger" id="goalLedger"></div>
+          <div class="panel b-fund-chart">
+            <div class="panel-head"><h2>How the fund grows</h2></div>
             <div class="chart-box short"><canvas id="goalChart" aria-label="Emergency fund growth"></canvas></div>
             <div id="goalText" class="callout"></div>
           </div>
-          <div class="panel">
-            <div class="panel-head"><h2>If the shock hits</h2><p id="backupSub"></p></div>
+          </div>
+          <!-- how far your emergency fund would take you: narrower column -->
+          <div class="b-col b-shock-col">
+          <div class="panel plan-shock b-shock-head">
+            <div class="panel-head"><h2>How far your emergency fund would take you</h2><p id="backupSub"></p></div>
+            <div id="backupResult"></div>
+          </div>
+          <div class="panel plan-shock b-shock-moves">
+            <div class="panel-head"><h2>Your moves</h2></div>
             <div class="field"><label for="pCut">Cut everyday spending by <output id="oCut"></output></label><input type="range" id="pCut" min="0" max="40" step="5"></div>
             <div class="field"><label for="pSide">Side income <output id="oSide"></output></label><input type="range" id="pSide" min="0" max="2000" step="50"></div>
+          </div>
+          <div class="panel plan-shock b-shock-steps">
+            <div class="panel-head"><h2>Step by step</h2></div>
             <div class="steps" id="backupSteps"></div>
-            <div id="backupResult"></div>
+          </div>
           </div>
         </div>
         <div class="panel">
@@ -394,11 +410,11 @@
         <div class="ledger" id="portLedger"></div>
         <div class="grid g-main">
           <div class="panel">
-            <div class="panel-head"><h2>Layoff runway across the portfolio</h2><p>EI at 55%, months until the buffer runs out</p></div>
-            <div class="chart-box"><canvas id="histChart" aria-label="Distribution of layoff runway"></canvas></div>
+            <div class="panel-head"><h2>How long customers would last without a job</h2><p>Months until savings run out, with Employment Insurance (EI) paying 55% of usual income</p></div>
+            <div class="chart-box"><canvas id="histChart" aria-label="Distribution of how many months customers would last after losing their job"></canvas></div>
           </div>
           <div class="panel">
-            <div class="panel-head"><h2>Most fragile</h2><p id="fragileSub">Shortest layoff runway</p></div>
+            <div class="panel-head"><h2>Most fragile</h2><p id="fragileSub">Savings would run out soonest after a job loss</p></div>
             <div class="list-acc" id="fragileList"></div>
           </div>
         </div>
@@ -430,7 +446,7 @@
               <div class="field"><label for="pfHome">Housing</label><select class="input" id="pfHome"><option value="rent">Renting</option><option value="own">Own with mortgage</option><option value="family">Living with family</option></select></div>
               <div class="field"><label for="pfGoal">Main goal</label><select class="input" id="pfGoal"><option value="fund">Build an emergency fund</option><option value="debt">Pay off the loan</option><option value="home">Save for a home</option><option value="invest">Start investing</option></select></div>
               <div class="field"><label for="pfRisk">Comfort with risk</label><select class="input" id="pfRisk"><option value="3">Cautious</option><option value="5">Balanced</option><option value="7">Growth</option></select></div>
-              <div class="field"><label for="pfTarget">Emergency fund target</label><select class="input" id="pfTarget"><option value="3">3 months</option><option value="6">6 months</option><option value="9">9 months</option></select></div>
+              <div class="field"><label for="pfTarget">Emergency fund target</label><select class="input" id="pfTarget"><option value="3">3 months</option><option value="6">6 months</option><option value="9">9 months</option><option value="12">12 months</option></select></div>
               <div class="field"><label for="pfJob">Job stability</label><select class="input" id="pfJob"><option value="steady">Steady</option><option value="seasonal">Seasonal or contract</option><option value="self">Self-employed</option></select></div>
             </div>
             <div class="field"><label for="pfNotes">Notes for the coach</label><textarea class="input" id="pfNotes" rows="3" placeholder="e.g. Car lease ends in March. Wants to move to Ottawa."></textarea></div>
@@ -460,7 +476,7 @@
             <span class="eyebrow">Your rank</span>
             <h1 id="rankName">Pawn</h1>
             <p class="ink2" id="rankLine"></p>
-            <div class="xpbar" role="progressbar" aria-label="XP to next rank" id="xpBarWrap"><div class="xpfill" id="xpFill"></div></div>
+            <div class="xpbar" role="progressbar" aria-label="Points to next rank" id="xpBarWrap"><div class="xpfill" id="xpFill"></div></div>
             <div class="xp-meta"><span id="xpNow"></span><span id="xpNext"></span></div>
             <div class="rank-stats" id="rankStats"></div>
           </div>
@@ -472,7 +488,7 @@
             <div class="missions" id="missions"></div>
           </div>
           <div class="panel">
-            <div class="panel-head"><h2>Promotion path</h2><p>Earn XP to promote your piece</p></div>
+            <div class="panel-head"><h2>Promotion path</h2><p>Earn points to promote your piece</p></div>
             <div class="ladder" id="rankLadder"></div>
           </div>
         </div>
@@ -495,7 +511,7 @@
           </div>
         </div>
         <div class="panel">
-          <div class="panel-head"><h2>How XP works</h2><p>Everything is saved in this browser only</p></div>
+          <div class="panel-head"><h2>How points work</h2><p>Everything is saved in this browser only</p></div>
           <div class="xp-rules" id="xpRules"></div>
           <button class="btn sm" type="button" id="gameReset" style="justify-self:start">Reset my progress</button>
         </div>
@@ -532,6 +548,28 @@
         </div>
       </section>
     </main>
+    <!-- landing-page footer, shown under every view -->
+    <footer class="ds-foot app-foot" id="appFoot">
+      <div class="ds-checker" aria-hidden="true"></div>
+      <div class="ds-sparks" id="dsSparks" aria-hidden="true"></div>
+      <div class="ds-in">
+        <div class="ds-brand">
+          <button class="ds-logo" id="dsLogo" type="button" aria-label="Datasparks logo. Press for sparks">
+            <svg viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="dsg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFD36B"/><stop offset=".55" stop-color="#FF5E62"/><stop offset="1" stop-color="#7C5CFF"/></linearGradient></defs>
+              <rect width="64" height="64" rx="18" fill="url(#dsg)"/>
+              <g class="orb"><circle cx="32" cy="8" r="2.6" fill="#fff"/><circle cx="56" cy="32" r="2" fill="#fff" opacity=".8"/><circle cx="10" cy="46" r="1.8" fill="#fff" opacity=".7"/></g>
+              <g class="bars" fill="#fff" opacity=".35"><rect x="14" y="40" width="5" height="10" rx="2"/><rect x="22" y="34" width="5" height="16" rx="2"/><rect x="37" y="30" width="5" height="20" rx="2"/><rect x="45" y="24" width="5" height="26" rx="2"/></g>
+              <path class="star" d="M32 11 36.2 27.8 53 32 36.2 36.2 32 53 27.8 36.2 11 32 27.8 27.8Z" fill="#fff"/>
+            </svg>
+          </button>
+          <div class="ds-txt"><small>Built with <svg class="ds-heart" viewBox="0 0 24 24" aria-label="love"><path d="M12 20.5s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7c0 5.6-7.5 10.2-7.5 10.2z" fill="#FF5E62" stroke="none"/></svg> by team</small>
+            <b class="ds-name" aria-label="Datasparks"><span class="w1" aria-hidden="true"><span style="--i:0">D</span><span style="--i:1">a</span><span style="--i:2">t</span><span style="--i:3">a</span></span><span class="w2" aria-hidden="true"><span style="--i:4">s</span><span style="--i:5">p</span><span style="--i:6">a</span><span style="--i:7">r</span><span style="--i:8">k</span><span style="--i:9">s</span></span></b>
+          </div>
+        </div>
+        <p class="ds-line">Real data. Real stakes. Zero boring dashboards.</p>
+        <a class="ds-top" href="#" data-ds-top>Back to the board<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg></a>
+      </div>
+    </footer>
     <footer class="rr-only rr-footer" id="rrFooter">
       <div class="top">
         <div class="rr-fbrand"><div class="t"><img class="rr-ico" src="assets/rr/footer-logo.svg" width="36" height="36" alt="">Resilience Rewired</div><p>Do something today your future self will thank you for.</p><button class="tipbtn" type="button" id="rrTipBtn">✦  Get one money tip a week</button></div>
@@ -547,7 +585,7 @@
   <nav class="tabbar" id="tabbar" aria-label="Sections">
     <a href="#paradox"><svg viewBox="0 0 24 24"><path d="M5 19V11M12 19V5M19 19v-6"/></svg>Paradox</a>
     <a href="#customer"><svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c1.2-3.6 3.8-5.3 7-5.3s5.8 1.7 7 5.3"/></svg>Customer</a>
-    <a href="#shock"><svg viewBox="0 0 24 24"><path d="M13 3 5 13.5h6.5L10.5 21 19 10.5h-6.5z"/></svg>Shock</a>
+    <a href="#shock"><svg viewBox="0 0 24 24"><path d="M13 3 5 13.5h6.5L10.5 21 19 10.5h-6.5z"/></svg>Plan ahead</a>
     <a href="#plan"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="m8.5 12.3 2.4 2.4 4.7-5"/></svg>Plan</a>
     <a href="#budget"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9h-9z"/><path d="M15 3.5A9 9 0 0 1 20.5 9H15z"/></svg>Budget</a>
     <button type="button" id="moreBtn" aria-haspopup="dialog"><svg viewBox="0 0 24 24"><circle cx="5.5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="18.5" cy="12" r="1.3"/></svg>More</button>
