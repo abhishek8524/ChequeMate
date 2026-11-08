@@ -6,7 +6,9 @@
 <title>ChequeMate</title>
 <meta name="description" content="ChequeMate: financial resilience engine. Runway, shocks, plans, budgets and investing for any bank customer.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="assets/styles.css">
+<link rel="stylesheet" href="assets/styles.css?v=f3c2a9b6">
+<link rel="stylesheet" href="assets/game.css?v=f3c2a9b6">
+<link rel="stylesheet" href="assets/play.css?v=f3c2a9b6">
 </head>
 <body>
 <div class="app">
@@ -19,6 +21,8 @@
       <div class="side-sec"><span>Overview</span>
         <a href="#paradox"><span class="sf" style="--c:var(--indigo)"><svg viewBox="0 0 24 24"><path d="M5 19V11M12 19V5M19 19v-6"/></svg></span>The paradox</a>
         <a href="#data"><span class="sf" style="--c:var(--teal)"><svg viewBox="0 0 24 24"><path d="M12 15V4M7.5 8.5 12 4l4.5 4.5M5 15v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3"/></svg></span>Your data</a>
+        <a href="#arena"><span class="sf" style="--c:var(--yellow)"><svg viewBox="0 0 24 24"><path d="M4 18h16M5 15 3.5 7l5 4L12 5l3.5 6 5-4L19 15z"/></svg></span>Quests</a>
+        <a href="#play"><span class="sf" style="--c:var(--pink)"><svg viewBox="0 0 24 24"><rect x="2.5" y="7" width="19" height="11" rx="5.5"/><path d="M7.5 10.5v4M5.5 12.5h4M15.5 11.5h.01M18 13.5h.01"/></svg></span>Play</a>
       </div>
       <div class="side-sec"><span>This customer</span>
         <a href="#customer"><span class="sf" style="--c:var(--accent)"><svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c1.2-3.6 3.8-5.3 7-5.3s5.8 1.7 7 5.3"/></svg></span>Customer</a>
@@ -34,6 +38,7 @@
       </div>
     </nav>
     <div class="side-foot">
+      <a class="side-player" id="sidePlayer" href="#arena" aria-label="Your rank and XP"></a>
       <div class="seg theme-switch" role="group" aria-label="Appearance">
         <button type="button" data-theme-set="system">Auto</button>
         <button type="button" data-theme-set="light">Light</button>
@@ -57,6 +62,8 @@
         </button>
         <div class="acct-err" id="acctErr" hidden></div>
       </form>
+      <button class="icon-btn sfx-btn" type="button" id="sfxBtn" aria-pressed="true" title="Sound effects" aria-label="Sound effects"><svg viewBox="0 0 24 24"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path class="w1" d="M15.5 9a4 4 0 0 1 0 6"/><path class="w2" d="M18 6.5a7.5 7.5 0 0 1 0 11"/><path class="mute" d="m16 9.5 5 5M21 9.5l-5 5"/></svg></button>
+      <a class="tb-xp" id="tbXp" href="#arena" aria-label="Your rank and XP"></a>
       <a class="tb-acct" id="tbAcct" href="#profile"></a>
     </header>
 
@@ -66,10 +73,13 @@
       <!-- THE PARADOX -->
       <section class="view" data-view="paradox" hidden>
         <div class="hero" id="hero">
+          <div class="hero-top">
           <div class="head" style="padding:0">
             <span class="eyebrow">The Paycheque Paradox</span>
             <h1>A bigger paycheque doesn't buy more time.</h1>
             <p class="lede">We laid off every one of the bank's 4,500 customers on paper, with EI paying 55% of their income. The people with the most money coming in ran out first. Income tells you how much flows through an account. Runway tells you how long someone lasts.</p>
+          </div>
+          <div class="hero-3d" id="hero3d" aria-hidden="true"><span class="h3-cap"><b>The king falls first.</b> Big paycheque, tiny runway.</span></div>
           </div>
           <div class="pair" id="pair"></div>
         </div>
@@ -112,6 +122,7 @@
             <div id="rings"></div>
           </div>
         </div>
+        <div id="scorePanel"></div>
         <div class="ledger" id="ledger"></div>
         <div class="grid g-main">
           <div class="panel">
@@ -144,6 +155,7 @@
       <section class="view" data-view="shock" hidden>
         <div class="head"><h1>Shock lab</h1><p>Pick a scenario or size your own. Runway recalculates with the judges' formula, and every step of the math is shown.</p></div>
         <div class="micr" data-micr></div>
+        <div class="boss-bar" id="bossBar"></div>
         <div class="twists" id="twists"></div>
         <div class="grid g-main">
           <div class="panel">
@@ -161,6 +173,15 @@
               <div class="seg" id="oneQuick"><button type="button" data-m="0.5">½ month</button><button type="button" data-m="1">1 month</button><button type="button" data-m="2">2 months</button></div></div>
             <div class="field"><span class="lab">After EI ends</span><div class="seg" id="afterSeg"><button type="button" data-v="back">Back at work</button><button type="button" data-v="none">Still no job</button></div></div>
             <button class="btn" type="button" id="shockReset" style="justify-self:start">Clear the shock</button>
+          </div>
+        </div>
+        <div class="panel coin-panel">
+          <div class="coin-3d" id="coin3d" aria-hidden="true"></div>
+          <div class="coin-copy">
+            <span class="eyebrow">Runway in coins</span>
+            <h2 id="coinTitle"></h2>
+            <p id="coinText" class="ink2"></p>
+            <div class="legend"><span><i style="background:#F2BE45"></i>One month covered</span><span><i style="background:var(--crit);opacity:.45"></i>Month still needed</span></div>
           </div>
         </div>
         <div class="panel">
@@ -257,10 +278,14 @@
 
       <!-- COACH -->
       <section class="view" data-view="coach" hidden>
-        <div class="head"><h1>Coach</h1><p>Ask about this customer's numbers. With a Gemini key in Profile, answers come from Gemini with the account and shock attached. Without one, the built-in coach answers from the same numbers.</p></div>
+        <div class="coach-hero">
+          <div class="mate-big" id="mateBig" aria-hidden="true"></div>
+          <div class="head" style="padding:0"><span class="eyebrow">Meet Mate</span><h1>Your coach is a pawn with big plans.</h1><p>Ask about this customer's numbers. With a Gemini key in Profile, answers come from Gemini with the account and shock attached. Without one, the built-in coach answers from the same numbers.</p></div>
+        </div>
         <div class="coach">
           <div class="chat">
             <div class="msgs" id="msgs" aria-live="polite"></div>
+            <div class="chips" id="chips" role="group" aria-label="Suggested questions"></div>
             <form class="composer" id="composer">
               <textarea class="input" id="ask" rows="1" placeholder="Message" aria-label="Message the coach"></textarea>
               <button class="send" type="submit" aria-label="Send"><svg viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
@@ -269,12 +294,13 @@
           <div class="grid" style="align-content:start">
             <div class="panel">
               <h3>Try asking</h3>
+              <div class="seg prompt-tabs" id="promptTabs" role="group" aria-label="Question topics"></div>
               <div class="prompts" id="prompts"></div>
             </div>
             <div class="panel">
               <h3>Coach status</h3>
               <p class="small ink2" id="coachStatus"></p>
-              <a class="btn sm" href="#profile" style="justify-self:start">Set Gemini key</a>
+              <div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn sm" href="#profile">Set Gemini key</a><button class="btn sm" type="button" id="voiceBtn" aria-pressed="false">Read answers aloud: off</button></div>
             </div>
           </div>
         </div>
@@ -350,6 +376,82 @@
           </div>
         </div>
       </section>
+
+      <!-- QUESTS -->
+      <section class="view" data-view="arena" hidden>
+        <div class="arena-hero">
+          <div class="rank-stage" id="rankStage" aria-hidden="true"></div>
+          <div class="rank-info">
+            <span class="eyebrow">Your rank</span>
+            <h1 id="rankName">Pawn</h1>
+            <p class="ink2" id="rankLine"></p>
+            <div class="xpbar" role="progressbar" aria-label="XP to next rank" id="xpBarWrap"><div class="xpfill" id="xpFill"></div></div>
+            <div class="xp-meta"><span id="xpNow"></span><span id="xpNext"></span></div>
+            <div class="rank-stats" id="rankStats"></div>
+          </div>
+        </div>
+        <div class="grid g-main">
+          <div class="panel">
+            <div class="panel-head"><h2>Missions for this customer</h2><span id="missionPill"></span></div>
+            <div class="micr" data-micr style="box-shadow:none;background:var(--surface-2)"></div>
+            <div class="missions" id="missions"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><h2>Promotion path</h2><p>Earn XP to promote your piece</p></div>
+            <div class="ladder" id="rankLadder"></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h2>Badges</h2><p id="badgeSub"></p></div>
+          <div class="badges" id="badges"></div>
+        </div>
+        <div class="grid g-2">
+          <div class="panel">
+            <div class="panel-head"><h2>Fortress hall</h2><p>Highest resilience scores in the bank</p></div>
+            <div class="lb" id="lbTop"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><h2>Rescue list</h2><p>Lowest scores. Open one and build a plan.</p></div>
+            <div class="lb" id="lbLow"></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h2>How XP works</h2><p>Everything is saved in this browser only</p></div>
+          <div class="xp-rules" id="xpRules"></div>
+          <button class="btn sm" type="button" id="gameReset" style="justify-self:start">Reset my progress</button>
+        </div>
+      </section>
+
+      <!-- PLAY -->
+      <section class="view" data-view="play" hidden>
+        <div class="head"><span class="eyebrow">Play</span><h1>Can they survive the year?</h1><p>Two games built on real accounts. Runway Run deals a year of life to this customer, one month at a time. Who lasts longer? tests your instinct for the paradox.</p></div>
+        <div class="seg play-tabs" id="playTabs" role="tablist"><button type="button" data-t="run" aria-pressed="true">Runway Run</button><button type="button" data-t="quiz" aria-pressed="false">Who lasts longer?</button></div>
+
+        <div class="rr" id="playRun">
+          <div class="micr" data-micr></div>
+          <div class="rr-board" id="rrBoard"></div>
+          <div class="rr-stats" id="rrStats"></div>
+          <div class="rr-main">
+            <div class="rr-table panel">
+              <div class="rr-deal">
+                <div class="flip" id="rrFlip"><div class="flip-in"><div class="flip-back"><span>ChequeMate</span></div><div class="flip-front" id="rrEvent"></div></div></div>
+                <div class="rr-hand" id="rrHand"></div>
+              </div>
+              <div class="rr-over" id="rrOver" hidden></div>
+            </div>
+            <div class="panel rr-side">
+              <h3>This year so far</h3>
+              <div class="rr-log" id="rrLog"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="quiz" id="playQuiz" hidden>
+          <div class="quiz-top"><div><span class="eyebrow">Layoff with EI at 55%</span><h2>Which customer lasts longer?</h2></div><div class="quiz-score" id="quizScore"></div></div>
+          <div class="quiz-pair" id="quizPair"></div>
+          <div class="quiz-foot" id="quizFoot"></div>
+        </div>
+      </section>
     </main>
   </div>
 
@@ -366,6 +468,8 @@
     <div class="grab"></div>
     <h3>More</h3>
     <div class="list">
+      <a href="#play"><span class="sf" style="--c:var(--pink)"><svg viewBox="0 0 24 24"><rect x="2.5" y="7" width="19" height="11" rx="5.5"/><path d="M7.5 10.5v4M5.5 12.5h4M15.5 11.5h.01M18 13.5h.01"/></svg></span>Play</a>
+      <a href="#arena"><span class="sf" style="--c:var(--yellow)"><svg viewBox="0 0 24 24"><path d="M4 18h16M5 15 3.5 7l5 4L12 5l3.5 6 5-4L19 15z"/></svg></span>Quests</a>
       <a href="#invest"><span class="sf" style="--c:var(--mint)"><svg viewBox="0 0 24 24"><path d="M4 17 10 11l4 4 6-7M15 8h5v5"/></svg></span>Investing</a>
       <a href="#coach"><span class="sf" style="--c:var(--good)"><svg viewBox="0 0 24 24"><path d="M20 11.5c0 4.1-3.6 7.5-8 7.5-1.2 0-2.3-.2-3.3-.7L4 19.5l1.2-3.6A7.2 7.2 0 0 1 4 11.5C4 7.4 7.6 4 12 4s8 3.4 8 7.5z"/></svg></span>Coach</a>
       <a href="#data"><span class="sf" style="--c:var(--teal)"><svg viewBox="0 0 24 24"><path d="M12 15V4M7.5 8.5 12 4l4.5 4.5M5 15v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3"/></svg></span>Your data</a>
@@ -380,11 +484,27 @@
   </div>
 </div>
 <div class="toast" id="toast" role="status"></div>
+<div class="mate-dock-wrap" id="mateWrap">
+  <div class="mate-bubble" id="mateBubble" role="status" hidden>
+    <button class="mb-x" type="button" id="mateClose" aria-label="Close tip"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    <strong class="mb-name">Mate</strong>
+    <p id="mateText"></p>
+    <div class="mb-act" id="mateAct"></div>
+  </div>
+  <button class="mate-dock" id="mateDock" type="button" aria-label="Mate, your coach. Show a tip" aria-controls="mateBubble"><span class="mate-small" id="mateSmall"></span></button>
+</div>
+<div class="achv" id="achv" role="status" aria-live="polite"></div>
+<div class="xp-pop" id="xpPop" aria-hidden="true"></div>
+<canvas class="confetti" id="confetti" aria-hidden="true"></canvas>
 
-<script src="assets/vendor/chart.umd.min.js"></script>
-<script src="assets/vendor/papaparse.min.js"></script>
-<script src="data/insights.js"></script>
-<script src="data/accounts.js"></script>
-<script src="assets/app.js"></script>
+<script src="assets/vendor/chart.umd.min.js?v=f3c2a9b6"></script>
+<script src="assets/vendor/papaparse.min.js?v=f3c2a9b6"></script>
+<script src="assets/vendor/three.min.js?v=f3c2a9b6"></script>
+<script src="assets/mate3d.js?v=f3c2a9b6"></script>
+<script src="data/insights.js?v=f3c2a9b6"></script>
+<script src="data/accounts.js?v=f3c2a9b6"></script>
+<script src="assets/app.js?v=f3c2a9b6"></script>
+<script src="assets/game.js?v=f3c2a9b6"></script>
+<script src="assets/play.js?v=f3c2a9b6"></script>
 </body>
 </html>

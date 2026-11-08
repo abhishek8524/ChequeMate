@@ -21,15 +21,27 @@ Other findings: joint accounts with a loan defaulted 0 of 145 times (solo: 76 of
 No build step and no server needed for the demo.
 
 ```bash
+python3 server.py               # recommended: app + Gemini coach, http://localhost:8000
+# or, without the shared Gemini coach
 open index.html                 # macOS, works straight from the file
-# or
-python3 -m http.server 8000     # then visit http://localhost:8000
 ```
 
-The interface follows Apple platform conventions (San Francisco type, iOS system colours, grouped lists, segmented controls, Wallet-style cards, Activity-style rings, a tab bar on phones) and supports light and dark mode. Chart.js and PapaParse are vendored in `assets/vendor`, so the app works offline. Fonts load from Google Fonts when online and fall back to system fonts otherwise.
+The interface follows Apple platform conventions (San Francisco type, iOS system colours, grouped lists, segmented controls, Wallet-style cards, Activity-style rings, a tab bar on phones) and supports light and dark mode. Chart.js, PapaParse and three.js are vendored in `assets/vendor`, so the app works offline. Fonts load from Google Fonts when online and fall back to system fonts otherwise.
 
-### Gemini coach (optional)
-Open **Profile**, paste a Google AI Studio key, and save. The key is stored only in your browser's localStorage. Never commit a key. Without a key, the built-in coach answers from the same numbers.
+### Gemini coach
+Create a `.env` file next to `server.py` (it is git-ignored, never commit it):
+
+```
+GEMINI_API_KEY=your-google-ai-studio-key
+```
+
+Then run `python3 server.py`. The server calls Gemini for the app, so the key never reaches the browser. It uses `gemini-2.5-flash`, falls back to `gemini-2.5-flash-lite` when Google is busy, and limits each visitor to 20 questions a minute. Without a server, anyone can still paste their own key in **Profile** (stored only in their browser). With no key at all, the built-in coach answers from the same numbers.
+
+### Play, Quests and Mate
+- **Mate** is the 3D pawn coach (three.js). It reacts to the customer's runway, follows the cursor and can read answers aloud.
+- **Quests**: XP, chess ranks from Pawn to King, 26 badges, six missions per customer, a 0–100 resilience score and leaderboards. Progress is saved in each browser.
+- **Play**: *Runway Run* deals a year of life events to the current customer, and *Who lasts longer?* is a quiz built on the paycheque paradox.
+- **Shock lab** adds a boss-rush view of every scenario and a 3D coin tower where each coin is one month of runway.
 
 ## Pages
 - **The paradox**: the headline finding, quarter breakdown, scatter of 900 customers, default-prediction comparison.

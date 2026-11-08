@@ -32,6 +32,7 @@ const ICON = {
   info: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg>',
   x: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m15 9-6 6M9 9l6 6"/></svg>',
 };
+const emit = (n, d = {}) => { try { document.dispatchEvent(new CustomEvent('cm:' + n, { detail: Object.assign({ id: st.id }, d) })); } catch (e) { /* listener error */ } };
 function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('on'), 2400); }
 function tween(el, to, fmt, dur = 800) {
   if (!el) return;
@@ -197,8 +198,8 @@ function walletCard(o) {
 function bindTilt(root) {
   if (reduceMotion || matchMedia('(hover: none)').matches) return;
   $$('[data-tilt]', root).forEach(el => {
-    el.onpointermove = e => { const r = el.getBoundingClientRect(); const x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5; el.style.setProperty('--ry', (x * 10).toFixed(2) + 'deg'); el.style.setProperty('--rx', (-y * 8).toFixed(2) + 'deg'); };
-    el.onpointerleave = () => { el.style.setProperty('--ry', '0deg'); el.style.setProperty('--rx', '0deg'); };
+    el.onpointermove = e => { const r = el.getBoundingClientRect(); const x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5; el.style.setProperty('--ry', (x * 10).toFixed(2) + 'deg'); el.style.setProperty('--rx', (-y * 8).toFixed(2) + 'deg'); el.style.setProperty('--gx', ((x + .5) * 100).toFixed(1) + '%'); el.style.setProperty('--gy', ((y + .5) * 100).toFixed(1) + '%'); el.classList.add('lit'); };
+    el.onpointerleave = () => { el.style.setProperty('--ry', '0deg'); el.style.setProperty('--rx', '0deg'); el.classList.remove('lit'); };
   });
 }
 function animateStrips(root) {
@@ -227,10 +228,10 @@ function micrHTML(a) {
 }
 function renderMicr() { const a = acc(); if (!a) return; const h = micrHTML(a); $$('[data-micr]').forEach(el => el.innerHTML = h); const p = profile(a.id); $('#tbAcct').innerHTML = `<span class="avatar sm">${initials(p, a.id)}</span><span>${esc(p.name)}</span>`; }
 
-const TITLES = { paradox: 'The paradox', customer: 'Customer', shock: 'Shock lab', plan: 'Plan', budget: 'Budget', invest: 'Investing', coach: 'Coach', data: 'Your data', resources: 'Resources', profile: 'Profile' };
+const TITLES = { paradox: 'The paradox', customer: 'Customer', shock: 'Shock lab', plan: 'Plan', budget: 'Budget', invest: 'Investing', coach: 'Coach', data: 'Your data', resources: 'Resources', profile: 'Profile', arena: 'Quests', play: 'Play' };
 function openSheet() { $('#sheet').hidden = false; $('#sheetBg').hidden = false; }
 function closeSheet() { const s = $('#sheet'); if (s) { s.hidden = true; $('#sheetBg').hidden = true; } }
-const VIEWS = ['paradox', 'customer', 'shock', 'plan', 'budget', 'invest', 'coach', 'data', 'resources', 'profile'];
+const VIEWS = ['paradox', 'customer', 'shock', 'plan', 'budget', 'invest', 'coach', 'data', 'resources', 'profile', 'arena', 'play'];
 const RENDER = {};
 let currentView = null;
 function route() {
@@ -238,11 +239,12 @@ function route() {
   currentView = v;
   $$('.view').forEach(s => s.hidden = s.dataset.view !== v);
   $$('#nav a, #tabbar a').forEach(a => { if (a.getAttribute('href') === '#' + v) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
-  $('#moreBtn').toggleAttribute('aria-current', ['invest', 'coach', 'data', 'resources', 'profile'].includes(v));
+  $('#moreBtn').toggleAttribute('aria-current', ['invest', 'coach', 'data', 'resources', 'profile', 'arena', 'play'].includes(v));
   $('#tbTitle').textContent = TITLES[v]; document.title = TITLES[v] + ' – ChequeMate';
   closeSheet();
   renderMicr();
   RENDER[v] && RENDER[v]();
+  emit('view', { view: v });
   window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
 }
 function go(v) { if (location.hash === '#' + v) route(); else location.hash = v; }
@@ -253,6 +255,7 @@ function setAccount(id, quiet) {
   st.id = id; store.set('cm.last.' + SRC.kind, id);
   $('#acctInput').value = id; $('#acctInput').removeAttribute('aria-invalid'); $('#acctErr').hidden = true;
   if (changed) { st.plan.save = null; st.budget.inc = null; st.budget.zb = null; st.invest.mo = null; st.invest.r = null; st.chat = []; }
+  if (changed) emit('account');
   if (!quiet) { renderMicr(); RENDER[currentView] && RENDER[currentView](); }
   return true;
 }
@@ -262,6 +265,7 @@ function applyTheme(t) {
   if (t === 'light' || t === 'dark') root.setAttribute('data-theme', t); else root.removeAttribute('data-theme');
   $$('[data-theme-set]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.themeSet === (t || 'system'))));
   store.set('cm.theme', t || 'system');
+  emit('theme', { theme: t || 'system' });
   drawGuilloche();
   if (currentView) RENDER[currentView] && RENDER[currentView]();
 }
@@ -517,6 +521,7 @@ RENDER.shock = () => {
       return `<button type="button" class="cell ${cls(rr.v)}${cur ? ' cur' : ''}" data-i="${i}" data-b="${b}" title="Income ${i}%, bills +${b}%: ${rwLong(rr)}">${rr.v === Infinity ? '120+' : rr.v.toFixed(1)}</button>`;
     }).join('')}</div>`).join('');
   $$('#heat .cell').forEach(c => c.onclick = () => { st.shock.inc = +c.dataset.i; st.shock.bills = +c.dataset.b; st.shock.preset = 'custom'; RENDER.shock(); });
+  emit('shock', { preset: sh.preset, v: r.v, need: incomeShock ? sh.ei : 6, none: isNoShock(sh) });
 };
 function bindShock() {
   const upd = fn => e => { fn(+e.target.value); st.shock.preset = 'custom'; RENDER.shock(); };
@@ -591,6 +596,7 @@ RENDER.plan = () => {
     <div class="val">${rwText(l.r)}</div></div>`).join('') + `<p class="note">Dashed line: ${needM} months${sh.inc < 100 ? ', when EI ends' : ''}. Bars run to 24 months; longer runways fill the bar.</p>`;
   $$('#leverBars .bar-row').forEach(r => r.style.gridTemplateColumns = 'minmax(120px, 260px) minmax(0, 1fr) 56px');
   animBars('#leverBars');
+  emit('plan', { ok, need, needM, mtg, first: first.v, last: last.v });
 };
 function bindPlan() {
   $('#pSave').oninput = e => { st.plan.save = +e.target.value; RENDER.plan(); };
@@ -643,6 +649,7 @@ RENDER.budget = () => {
   $('#ruleTable').innerHTML = `<thead><tr><th>Rule</th><th class="r">Money to move each month</th></tr></thead><tbody>${scored.map((s, i) =>
     `<tr${i === 0 ? ' class="best"' : ''}><td>${s.r.name}${i === 0 ? ' <span class="pill info" style="margin-left:6px">Closest fit</span>' : ''}</td><td class="r">${money(s.g)}</td></tr>`).join('')}</tbody>`;
   renderZB(a);
+  emit('budget', { rule: st.budget.rule, best: scored[0] && scored[0].r.id });
 };
 const ZB_NAMES = ['Household bills', 'Insurance', 'Loan payment', 'Everyday cash spending', 'Card spending', 'Transfers out', 'Bank fees', 'Emergency fund', 'Investing'];
 function zbDefaults(a) { const m = a.mo || [0, 0, 0, 0, 0, 0, 0]; const raw = [m[0], m[1], m[2], m[4], m[5], m[6], m[3]]; const tot = raw.reduce((s, x) => s + x, 0) || 1; const k = a.S / tot; // scale averages to the typical (median) month
@@ -664,6 +671,7 @@ function zbSummary(a) {
   const cols = ['var(--s1)', 'var(--s1)', 'var(--s4)', 'var(--s2)', 'var(--s2)', 'var(--s2)', 'var(--muted)', 'var(--s3)', 'var(--s3)'];
   $('#zbBar').innerHTML = st.budget.zb.map((v, i) => v > 0 ? `<div style="flex:${v} 1 0;background:${cols[i]}" title="${ZB_NAMES[i]}: ${money(v)}"></div>` : '').join('') + (left > 0 ? `<div style="flex:${left} 1 0;background:var(--surface-2)" title="Unassigned ${money(left)}"></div>` : '');
   if (st.budget.rule === 'zero') $('#ruleAdvice').innerHTML = `<strong>Left to assign: ${money(left)}.</strong> ${left > 0 ? 'Give it to the emergency fund first.' : left < 0 ? 'The plan spends more than comes in. Trim a spending row.' : 'Every dollar has a job.'}`;
+  emit('zb', { left, rule: st.budget.rule });
 }
 function bindBudget() {
   $('#bInc').oninput = e => { const v = +String(e.target.value).replace(/[^0-9.]/g, ''); st.budget.inc = isFinite(v) ? v : 0; RENDER.budget(); };
@@ -719,8 +727,7 @@ function bindInvest() {
 }
 
 /* ================= VIEW: COACH ================= */
-const QUICK = ["Explain this customer's runway in plain words", 'Do they make it through the current shock?', 'What should they cut first?', 'Write a 90-day plan', 'Which budget rule fits them?', 'Where should their next dollar go?'];
-function aiCfg() { return Object.assign({ key: '', model: 'gemini-flash-latest' }, store.get('cm.ai', {})); }
+function aiCfg() { const c = Object.assign({ key: '', model: 'gemini-2.5-flash' }, store.get('cm.ai', {})); if (c.model === 'gemini-flash-latest') c.model = 'gemini-2.5-flash'; return c; }
 function contextText() {
   const a = acc(), pf = profile(), sh = st.shock, P = shockParams(a, sh), r = runway(a.B, a.I, a.S, P);
   const ei = runway(a.B, a.I, a.S, { mult: .55 }), base = runway(a.B, a.I, a.S);
@@ -732,14 +739,17 @@ function contextText() {
     `Runway rule: buffer_left = B - one_off; gap = spending_after - income_after; runway = buffer_left / gap (0 if buffer_left<=0, "no shortfall" if gap<=0, max 120).`,
     `Baseline runway: ${rwLong(base)}. Layoff with EI 55%: ${rwLong(ei)}, longer than ${pct(eiPercentile(ei.v))} of the bank's customers.`,
     `Current shock: ${shockLabel(sh, a)}. Income after ${money(a.I * P.mult)}, spending after ${money(a.S + P.extra)}, buffer left ${money(r.left)}, gap ${money(r.gap)}, runway ${rwLong(r)}.${sh.inc < 100 ? ` EI lasts ${sh.ei} months; ${r.v >= sh.ei ? 'they make it through' : 'they run out before it ends'}.` : ''}`,
-    `Backup levers (cumulative runway): ${list.map(l => `${l.name}: ${rwLong(l.r)}`).join('; ')}.`,
-    `Emergency fund goal: ${goalM} months = ${money(goalM * a.S)}; saving ${money(st.plan.save ?? 0)}/month.`,
+    `Backup plan, applied in this order. Each runway figure INCLUDES every step before it (they stack; they are not separate options): ${list.map((l, i) => `${i === 0 ? 'start' : 'then + ' + l.name} → ${rwLong(l.r)}${l.save ? ` (frees ${money(l.save)}/month on its own)` : ''}`).join('; ')}.`,
+    (() => { const goal = goalM * a.S, have = Math.max(a.B, 0), left = Math.max(0, goal - have), sur = a.I - a.S;
+      const save = st.plan.save ?? (sur > 0 ? r25(sur * .5) : r25(.1 * Math.max(a.S - a.F, 0)));
+      return `Emergency fund: goal ${goalM} months of spending = ${money(goal)}. The buffer already counts toward it: already saved ${money(have)}, still to save ${money(left)}. Monthly surplus (money in minus spending) is ${money(sur)}. Planned saving ${money(save)}/month${st.plan.save == null ? ' (default: half the surplus)' : ''}, so the goal is ${left === 0 ? 'already reached' : save > 0 ? `about ${Math.ceil(left / save)} months away` : 'not moving until they save something'}.`; })(),
     `Budget today: needs ${money(act.needs)}, wants ${money(act.wants)}, savings ${money(act.save)} on income ${money(a.I)}.`,
     `Bank-wide facts: high-income customers spend ~96% of income vs 69% for low-income, so they run out faster on EI (68% vs 4% within 6 months). Runway predicts real defaults better than income (AUC 0.72 vs 0.62). Joint accounts: 0 of 145 loans defaulted. January spending is ~45% above an average month.`,
   ].join('\n');
 }
 const SYS = `You are ChequeMate Coach, a financial resilience coach inside a Canadian bank's tool. You explain one customer's numbers to a bank employee or the customer.
-Rules: Use only the numbers in the context; if you calculate, show the short arithmetic. Amounts are Canadian dollars. Be concise: under 170 words, plain language, short paragraphs or up to 5 bullets, bold the key number once. Give concrete next steps tied to their numbers. Mention official resources (EI on canada.ca, FCAC, Credit Counselling Canada) when relevant. Never recommend specific stocks or funds. You are not a licensed advisor; say so only if asked for investment picks.`;
+Rules: Use only the numbers in the context; if you calculate, show the short arithmetic. Amounts are Canadian dollars. Be concise: under 170 words, plain language, short paragraphs or up to 5 bullets, bold the key number once. Give concrete next steps tied to their numbers. Mention official resources (EI on canada.ca, FCAC, Credit Counselling Canada) when relevant. Never recommend specific stocks or funds.
+Refer to the customer by their name or as "they"; don't restate their age, sex or province unless the question is about them. Answer the question asked first, in the first sentence, then support it. Backup-plan runways stack: never present a later step's runway as if that step worked alone. Don't add disclaimers about being an advisor unless asked for specific investment picks.`;
 function mdLite(t) {
   const lines = esc(t).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/(^|[^*])\*(?!\s)(.+?)\*/g, '$1<em>$2</em>').split('\n');
   let html = '', list = null;
@@ -762,45 +772,152 @@ function offlineAnswer(q) {
   if (/make it|survive|shock|twist/.test(s) && !isNoShock(sh)) return `Shock: ${shockLabel(sh, a)}.\nBuffer left ${money(r.left)}, monthly gap ${money(r.gap)}, so runway is **${rwLong(r)}**.${sh.inc < 100 ? (r.v >= sh.ei ? ` That's past the ${sh.ei}-month EI period.` : ` That's short of the ${sh.ei}-month EI period by ${(sh.ei - r.v).toFixed(1)} months.`) : ''}\nWith the backup plan, runway becomes ${rwLong(last.r)}.`;
   return `${pf.name} brings in about **${money(a.I)}** a month and spends ${money(a.S)} (${pct(a.S / (a.I || 1))}). The buffer is ${money(a.B)}.\nIf laid off with EI at 55%, the gap is ${money(Math.max(ei.gap, 0))} a month, so the buffer lasts **${rwLong(ei)}**. ${ei.v < 6 ? 'That runs out before 6 months of EI end.' : 'That outlasts a 6-month EI period.'}\nThe fastest fix is ${a.S > a.F ? `trimming everyday spending, which is ${money(a.S - a.F)} a month` : 'building the buffer with a monthly transfer'}.`;
 }
+/* Built-in server proxy (server.py): the key lives on the server, never in the browser. */
+let SERVER_AI = null; // null = unknown, false = none, { model } = available
+async function serverAI() {
+  if (SERVER_AI !== null) return SERVER_AI;
+  if (location.protocol === 'file:') return (SERVER_AI = false);
+  try { const r = await fetch('api/gemini/status', { cache: 'no-store' }); const j = r.ok ? await r.json() : {}; SERVER_AI = j.ok ? { model: j.model } : false; }
+  catch (e) { SERVER_AI = false; }
+  return SERVER_AI;
+}
 async function askGemini(q) {
-  const cfg = aiCfg(); if (!cfg.key) throw new Error('nokey');
-  const contents = st.chat.filter(m => m.role !== 'note').slice(-10).map(m => ({ role: m.role === 'user' ? 'user' : 'model', parts: [{ text: m.text }] }));
-  contents.push({ role: 'user', parts: [{ text: q }] });
-  const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(cfg.model || 'gemini-flash-latest')}:generateContent`, {
-    method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': cfg.key },
-    body: JSON.stringify({ systemInstruction: { parts: [{ text: SYS + '\n\nCONTEXT\n' + contextText() }] }, contents, generationConfig: { temperature: .4, maxOutputTokens: 900 } }),
-  });
-  const j = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(j.error?.message || `HTTP ${res.status}`);
-  const t = (j.candidates?.[0]?.content?.parts || []).map(p => p.text || '').join('').trim();
-  if (!t) throw new Error('Empty answer');
+  // Prefer the site's server (shared key, retries busy models). A personal key is only used when there is no server.
+  const cfg = aiCfg(); const srv = await serverAI();
+  if (!srv && !cfg.key) throw new Error('nokey');
+  // Gemini needs strictly alternating turns that start with the user, so drop the greeting and any failed turns.
+  const hist = st.chat.filter(m => !m.typing && m.text && !m.offline);
+  const turns = [];
+  for (const m of hist.slice(0, -1).slice(-10)) {
+    const role = m.role === 'user' ? 'user' : 'model';
+    if (!turns.length && role !== 'user') continue;
+    if (turns.length && turns[turns.length - 1].role === role) turns[turns.length - 1].parts[0].text += '\n\n' + m.text;
+    else turns.push({ role, parts: [{ text: m.text }] });
+  }
+  if (turns.length && turns[turns.length - 1].role === 'user') turns.pop();
+  turns.push({ role: 'user', parts: [{ text: q }] });
+  const flash = m => /flash/.test(m);
+  const body = m => ({ systemInstruction: { parts: [{ text: SYS + '\n\nCONTEXT\n' + contextText() }] }, contents: turns,
+    generationConfig: Object.assign({ temperature: .5, maxOutputTokens: 1500 }, flash(m) ? { thinkingConfig: { thinkingBudget: 0 } } : {}) });
+  let j = {}, used = '';
+  if (srv) {
+    const res = await fetch('api/gemini', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(Object.assign({ model: srv.model }, body(srv.model))) });
+    j = await res.json().catch(() => ({})); used = j.servedBy || srv.model;
+    if (!res.ok) throw new Error(j.error?.message || `HTTP ${res.status}`);
+  } else {
+    const models = [...new Set([cfg.model, 'gemini-2.5-flash', 'gemini-2.5-flash-lite'])];
+    for (const m of models) {
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(m)}:generateContent`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': cfg.key }, body: JSON.stringify(body(m)) });
+      j = await res.json().catch(() => ({})); used = m;
+      if (res.ok) break;
+      if (![429, 500, 503].includes(res.status)) throw new Error(j.error?.message || `HTTP ${res.status}`);
+      if (m === models[models.length - 1]) throw new Error(j.error?.message || `HTTP ${res.status}`);
+    }
+  }
+  const cand = j.candidates?.[0] || {};
+  let t = (cand.content?.parts || []).map(p => p.text || '').join('').trim();
+  if (!t) throw new Error(cand.finishReason === 'SAFETY' ? 'Gemini declined to answer that one' : 'Empty answer');
+  if (cand.finishReason === 'MAX_TOKENS') t += '…';
+  askGemini.via = `Gemini (${used})`;
   return t;
 }
 function renderMsgs() {
   const box = $('#msgs');
-  box.innerHTML = st.chat.map(m => m.role === 'user' ? `<div class="msg user">${esc(m.text)}</div>` : `<div class="msg bot${m.typing ? ' typing' : ''}">${m.typing ? 'Thinking…' : mdLite(m.text)}${m.src ? `<div class="src">${esc(m.src)}</div>` : ''}</div>`).join('');
+  box.innerHTML = st.chat.map(m => m.role === 'user' ? `<div class="msg user">${esc(m.text)}</div>` : `<div class="msg-row"><span class="mate-av" aria-hidden="true"></span><div class="msg bot${m.typing ? ' typing' : ''}">${m.typing ? '<span class="dots" aria-label="Thinking"><i></i><i></i><i></i></span>' : mdLite(m.text)}${m.src ? `<div class="src">${esc(m.src)}</div>` : ''}</div></div>`).join('');
   box.scrollTop = box.scrollHeight;
 }
 async function send(q) {
   q = q.trim(); if (!q) return;
+  emit('ask', { q });
   st.chat.push({ role: 'user', text: q }); const pending = { role: 'model', typing: true, text: '' }; st.chat.push(pending); renderMsgs();
-  try { pending.text = await askGemini(q); pending.src = `Gemini (${aiCfg().model})`; }
+  try { pending.text = await askGemini(q); pending.src = askGemini.via; }
   catch (e) {
-    pending.text = offlineAnswer(q);
-    pending.src = e.message === 'nokey' ? 'Built-in coach. Add a Gemini key in Profile for open-ended answers.'
-      : /fetch|network|Failed/i.test(e.message) ? "Built-in coach. Gemini couldn't be reached from here (this preview blocks outside calls). Run the site locally or on GitHub Pages to use Gemini."
-      : `Built-in coach. Gemini returned an error: ${e.message}`;
+    console.warn('[coach] Gemini failed:', e.message);
+    pending.text = offlineAnswer(q); pending.offline = true;
+    pending.src = e.message === 'nokey' ? 'Built-in coach. Start the site with server.py, or add a Gemini key in Profile, for open-ended answers.'
+      : /fetch|network|Failed/i.test(e.message) ? "Built-in coach. Gemini couldn't be reached from here. Check the connection and ask again."
+      : `Built-in coach, because Gemini said: ${e.message}`;
   }
   pending.typing = false; renderMsgs();
+  renderChips(q);
+  emit('answer', { text: pending.text });
+}
+
+/* ---------- suggested questions, built from this customer's numbers ---------- */
+const asked = () => new Set(st.chat.filter(m => m.role === 'user').map(m => m.text));
+function promptGroups() {
+  const a = acc(), pf = profile(), ei = runway(a.B, a.I, a.S, { mult: .55 }), sh = st.shock;
+  const sr = a.I > 0 ? (a.I - a.S) / a.I : 0, bm = a.S > 0 ? a.B / a.S : 0, tgt = +pf.target || 3;
+  const g = {
+    Understand: ["Explain this customer's runway in plain words",
+      ei.v === Infinity ? 'Why would a layoff not hurt them much?' : `Why does the buffer only last ${rwText(ei)} months on EI?`,
+      `Why do they spend ${pct(a.S / (a.I || 1))} of what comes in?`,
+      'How do they compare with the rest of the bank?',
+      a.neg > 0 ? `Why do ${a.neg} days below zero matter?` : 'What is the earliest warning sign to watch for?'],
+    Shocks: [isNoShock(sh) ? 'Would they survive a layoff on EI?' : 'Do they make it through the current shock?',
+      'What happens if the furnace dies next month?',
+      'What if they lose their income completely?',
+      'What if rent goes up $300 a month?',
+      'Which shock would hurt them the most?'],
+    Plan: ['What should they cut first?',
+      ei.v !== Infinity && ei.v < 6 ? 'How do they get past 6 months of EI?' : 'How can they make their runway even longer?',
+      a.P > 0 ? `Should they ask to pause the ${money(a.P)} loan payment?` : 'Which bills are worth shopping around?',
+      bm < tgt ? `How long until they have a ${tgt}-month emergency fund?` : 'Their fund is built. What comes next?',
+      'Write a 90-day plan'],
+    Budget: ['Which budget rule fits them?',
+      sr < .2 ? 'How can they get to saving 20% of income?' : 'They already save a lot. Is it enough?',
+      'Build them a zero-based budget',
+      'Where is their money going each month?',
+      'How should they handle January spending?'],
+    Invest: ['Where should their next dollar go?',
+      pf.goal === 'home' ? 'Should they open an FHSA for a first home?' : 'TFSA or RRSP for them?',
+      `What could ${money(r25(Math.max(100, .1 * a.I)))} a month grow into?`,
+      'Should they invest before the emergency fund is done?',
+      'How much risk fits their situation?'],
+  };
+  return g;
+}
+const FOLLOW = [
+  [/cut|trim|spend less|reduce|wants/i, ['How much runway does that buy them?', 'Which cut is easiest to keep up?', 'Write that as a weekly checklist']],
+  [/runway|buffer|last/i, ['What would double their runway?', 'How do they compare with the rest of the bank?', 'What should they do first this week?']],
+  [/plan|90|week|checklist/i, ['What should they do on day one?', 'What could knock this plan off course?', 'Turn this into a message to the customer']],
+  [/shock|layoff|furnace|income|rent|survive|EI/i, ['How do they close the gap?', 'Should they apply for EI right away?', 'What if EI runs out before they find work?']],
+  [/budget|rule|50|zero/i, ['Show the numbers for that rule', 'What is the one change that fits it best?', 'How do they stick to it?']],
+  [/invest|tfsa|rrsp|fhsa|dollar|grow|risk/i, ['How much should go to investing each month?', 'What is the difference between a TFSA and an RRSP?', 'What should they avoid?']],
+  [/fund|emergency|save|saving/i, ['Where should the emergency fund be kept?', 'How do they automate it?', 'What if they need to dip into it?']],
+];
+function renderChips(lastQ) {
+  const el = $('#chips'); if (!el || !acc()) return;
+  const done = asked(), g = promptGroups();
+  let list = [];
+  if (lastQ) { const f = FOLLOW.find(([re]) => re.test(lastQ)); if (f) list.push(...f[1]); }
+  const firsts = Object.values(g).map(x => x[0]);
+  list.push(...firsts, ...Object.values(g).flat());
+  list = [...new Set(list)].filter(q => !done.has(q)).slice(0, 4);
+  el.innerHTML = (lastQ ? '<span class="chips-k">Ask next</span>' : '<span class="chips-k">Suggested</span>') + list.map(q => `<button type="button">${esc(q)}</button>`).join('');
+  $$('#chips button').forEach(b => b.onclick = () => send(b.textContent));
+}
+let promptTab = 'Understand';
+function renderPrompts() {
+  const g = promptGroups(), done = asked();
+  $('#promptTabs').innerHTML = Object.keys(g).map(k => `<button type="button" data-k="${k}" aria-pressed="${k === promptTab}">${k}</button>`).join('');
+  $$('#promptTabs button').forEach(b => b.onclick = () => { promptTab = b.dataset.k; renderPrompts(); });
+  $('#prompts').innerHTML = g[promptTab].map(q => `<button type="button"${done.has(q) ? ' class="asked"' : ''}>${esc(q)}</button>`).join('');
+  $$('#prompts button').forEach(b => b.onclick = () => { send(b.textContent); setTimeout(renderPrompts, 0); });
 }
 RENDER.coach = () => {
   const a = acc(); if (!a) return; const pf = profile();
   if (!st.chat.length) st.chat.push({ role: 'model', text: `Hi. I'm looking at **${pf.name}** (account ${a.id}). Ask me what their numbers mean, whether they survive a shock, or what to do next.`, src: 'ChequeMate Coach' });
   renderMsgs();
-  $('#prompts').innerHTML = QUICK.map(q => `<button type="button">${esc(q)}</button>`).join('');
-  $$('#prompts button').forEach(b => b.onclick = () => send(b.textContent));
+  renderPrompts();
+  const lastUser = [...st.chat].reverse().find(m => m.role === 'user');
+  renderChips(lastUser && lastUser.text);
   const c = aiCfg();
-  $('#coachStatus').textContent = c.key ? `Gemini key saved. Model: ${c.model}. The account, profile and current shock are sent with each question.` : 'No Gemini key yet, so the built-in coach answers. It uses the same numbers as every page.';
+  $('#coachStatus').textContent = 'Checking for Gemini…';
+  serverAI().then(s => { $('#coachStatus').textContent = s ? `Gemini is on (${s.model}), connected through this site's server. The account, profile and current shock are sent with each question.`
+    : c.key ? `Using your own Gemini key from Profile. Model: ${c.model}. The account, profile and current shock are sent with each question.`
+    : 'No Gemini key yet, so the built-in coach answers. It uses the same numbers as every page.'; });
 };
 function bindCoach() {
   $('#composer').onsubmit = e => { e.preventDefault(); const t = $('#ask'); const q = t.value; t.value = ''; send(q); };
@@ -867,7 +984,7 @@ async function handleFiles(files) {
   if (miss.length) { status.innerHTML = `<div class="verdict crit">${ICON.alert}<div><strong>Missing columns: ${miss.join(', ')}</strong><p>Use the monthly_summary.csv layout from the track data.</p></div></div>`; return; }
   const out = buildFromRows(monthly, loans);
   const n = Object.keys(out).length; if (!n) { status.innerHTML = `<div class="verdict crit">${ICON.alert}<div><strong>No accounts found in the file</strong><p>Check that account_id and month have values.</p></div></div>`; return; }
-  DATA = out; SRC = { kind: 'upload', label: names.join(' + ') }; prepDataset();
+  DATA = out; SRC = { kind: 'upload', label: names.join(' + ') }; prepDataset(); emit('upload', { n: Object.keys(out).length });
   $('#srcLabel').textContent = `Data: ${names.join(' + ')}, ${n.toLocaleString()} accounts`;
   setAccount(IDS[0], true); toast(`Loaded ${n.toLocaleString()} accounts`); route();
 }
@@ -955,7 +1072,7 @@ RENDER.profile = () => {
 };
 function bindProfile() {
   $('#profForm').onsubmit = e => { e.preventDefault(); const p = profile(); for (const [id, k] of Object.entries(PF_FIELDS)) p[k] = $('#' + id).value.trim(); if (!p.name) p.name = `Customer ${st.id}`; p.house = clamp(+p.house || 1, 1, 12);
-    store.set('cm.p.' + st.id, p); st.invest.r = null; renderMicr(); toast('Profile saved'); };
+    store.set('cm.p.' + st.id, p); st.invest.r = null; renderMicr(); toast('Profile saved'); emit('profile'); };
   $('#pfClear').onclick = () => { store.del('cm.p.' + st.id); RENDER.profile(); renderMicr(); toast('Profile reset'); };
   $('#aiForm').onsubmit = e => { e.preventDefault(); const c = aiCfg(); const k = $('#aiKey').value.trim(); if (k && !k.startsWith('••')) c.key = k; c.model = $('#aiModel').value.trim() || 'gemini-flash-latest'; store.set('cm.ai', c); RENDER.profile(); $('#aiMsg').textContent = 'Saved.'; toast('Gemini settings saved'); };
   $('#aiClear').onclick = () => { store.del('cm.ai'); RENDER.profile(); $('#aiMsg').textContent = 'Key removed.'; };
@@ -996,6 +1113,7 @@ function boot() {
   route();
 }
 // expose engine for testing in the console
-window.ChequeMate = { runway, get data() { return DATA; } };
+window.ChequeMate = { runway, get data() { return DATA; }, get builtin() { return BUILTIN; }, get ids() { return IDS; }, get src() { return SRC; }, get view() { return currentView; },
+  st, acc, profile, shockParams, SHOCKS, money, pct, esc, toast, go, setAccount, applyPreset, rwText, rwLong, status, tone, eiPercentile, levers, isNoShock, ICON, reduceMotion, store };
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
 })();
