@@ -185,7 +185,11 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .ledger .v { font-family: var(--font-r); font-size: 27px; font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 4px; }
 .ledger .s { font-size: 12.5px; color: var(--ink-2); }
 .ledger.plain > div { --kc: var(--ink-2); background: var(--surface-2); box-shadow: none; }
-#growLedger .v, #goalLedger .v { font-size: 22px; }
+#goalLedger .v { font-size: 22px; }
+.growth-ledger { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+#growLedger { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.growth-ledger > div { padding: 14px 10px; }
+.growth-ledger .v { min-height: 2.2em; display: flex; align-items: center; font-size: 18px; line-height: 1.12; letter-spacing: -.04em; white-space: nowrap; overflow: visible; text-overflow: clip; }
 
 /* ---------- Wallet card ---------- */
 .wcard { position: relative; aspect-ratio: 1.586; max-width: 100%; border-radius: 22px; padding: 20px 22px; color: #fff; overflow: hidden; isolation: isolate;
@@ -473,6 +477,12 @@ input[type="range"]:disabled { opacity: .4; }
 .budget-input-heading { display: flex; justify-content: space-between; gap: 8px; padding: 0 2px; font-size: 13px; }
 .budget-input-heading span { color: var(--muted); }
 .budget-custom-summary { display: grid; gap: 14px; align-content: start; }
+.budget-income-edit { display: grid; grid-template-columns: minmax(0, 1fr) minmax(140px, .7fr); gap: 4px 12px; align-items: center; padding: 12px 14px; border: 1px solid color-mix(in srgb, var(--accent) 25%, var(--line)); border-radius: 14px; background: var(--accent-soft); }
+.budget-income-edit[hidden] { display: none; }
+.budget-income-edit label { font-size: 13px; font-weight: 600; }
+.budget-income-edit .money-in { grid-column: 2; grid-row: 1 / span 2; }
+.budget-income-edit .input { height: 40px; border: 1px solid var(--line-2); background: var(--surface); text-align: right; font-variant-numeric: tabular-nums; }
+.budget-income-edit small { color: var(--ink-2); font-size: 11.5px; line-height: 1.35; }
 .budget-custom-summary .zb-left { padding: 17px 18px; border: 1px solid var(--line); background: var(--accent-soft); }
 .budget-custom-summary .zb-left.is-over { border-color: color-mix(in srgb, var(--crit) 45%, var(--line)); background: var(--crit-soft); }
 .budget-custom-summary .zb-left .v { font-size: 27px; }
@@ -640,6 +650,7 @@ input[type="range"]:disabled { opacity: .4; }
   .budget-action { min-height: 56px; padding: 10px 12px; }
   .budget-custom-grid .zb-row { grid-template-columns: minmax(0, 1fr) minmax(100px, 126px); gap: 8px; padding-left: 10px; }
   .budget-income-chip { font-size: 12px; }
+  #growLedger .v { font-size: 15px; }
   .findings, .acct-cards { grid-template-columns: minmax(0, 1fr); }
   .bar-row { grid-template-columns: 90px minmax(0, 1fr) 52px; gap: 10px; }
   .formula { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }

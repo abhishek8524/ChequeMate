@@ -634,6 +634,13 @@ function ruleTransfers(rule, act, inc) {
     if (from.amount < 0.5) donors.shift();
     if (to.amount < 0.5) receivers.shift();
   }
+  const roundedTotal = Math.round(moves.reduce((sum, move) => sum + move.amount, 0));
+  const roundedMoves = moves.reduce((sum, move) => sum + Math.round(move.amount), 0);
+  if (moves.length && roundedTotal !== roundedMoves) {
+    const largest = moves.reduce((best, move, i) => move.amount > moves[best].amount ? i : best, 0);
+    moves[largest].amount += roundedTotal - roundedMoves;
+  }
+  moves.forEach(move => { move.amount = Math.round(move.amount); });
   return moves;
 }
 function activateBudgetTab(name, focus = false) {
@@ -651,6 +658,8 @@ RENDER.budget = () => {
   const a = acc(); if (!a) return;
   if (st.budget.inc == null) st.budget.inc = Math.round(a.I);
   const inc = st.budget.inc; const bi = $('#bInc'); if (document.activeElement !== bi) bi.value = inc.toLocaleString('en-CA');
+  const zbIncomeInput = $('#zbIncomeInput');
+  if (document.activeElement !== zbIncomeInput) zbIncomeInput.value = inc.toLocaleString('en-CA');
   $('#budgetIncome').textContent = money(a.I);
   $('#budgetSpending').textContent = money(a.S);
   $('#budgetSavings').textContent = money(a.I - a.S);
@@ -708,7 +717,21 @@ RENDER.budget = () => {
     $('#budgetSelectedName').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' });
   };
   $('#budgetOpenCustom').onclick = () => activateBudgetTab('custom');
-  $('#budgetAdjustIncome').onclick = () => { activateBudgetTab('recommended'); bi.focus(); };
+  $('#budgetAdjustIncome').onclick = () => {
+    const edit = $('#budgetIncomeEdit');
+    edit.hidden = !edit.hidden;
+    const expanded = !edit.hidden;
+    $('#budgetAdjustIncome').setAttribute('aria-expanded', String(expanded));
+    $('#budgetAdjustIncome strong').textContent = expanded ? 'Hide income editor' : 'Change planned income';
+    $('#budgetAdjustIncome small').textContent = expanded ? 'Your changes are applied immediately' : 'Edit income here; calculations update instantly';
+    if (!edit.hidden) zbIncomeInput.focus();
+  };
+  zbIncomeInput.oninput = e => {
+    const value = +String(e.target.value).replace(/[^0-9.]/g, '');
+    st.budget.inc = isFinite(value) ? value : 0;
+    RENDER.budget();
+  };
+  zbIncomeInput.onblur = e => { e.target.value = (st.budget.inc || 0).toLocaleString('en-CA'); };
   const recTab = $('#budgetRecommendedTab'), customTab = $('#budgetCustomTab');
   [recTab, customTab].forEach((tab, i) => {
     tab.onclick = () => activateBudgetTab(i === 0 ? 'recommended' : 'custom');
