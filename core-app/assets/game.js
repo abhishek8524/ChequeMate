@@ -20,6 +20,12 @@ const RANKS = [
   { id: 'queen', name: 'Queen', xp: 700, pal: 'crit', line: 'Every move is open to you. One rank left.' },
   { id: 'king', name: 'King', xp: 1000, pal: 'gold', line: 'Checkmate. Nothing knocks you over.' },
 ];
+const SKINS = [
+  { id: 'classic', name: 'Classic', rank: 0, desc: 'Glossy blue, like the app icon' },
+  { id: 'glass', name: 'Glass', rank: 1, desc: 'Unlocks at Knight' },
+  { id: 'holo', name: 'Hologram', rank: 3, desc: 'Unlocks at Rook' },
+  { id: 'gold', name: 'Gold', rank: 5, desc: 'Unlocks at King' },
+];
 const GLYPH = { pawn: '♟', knight: '♞', bishop: '♝', rook: '♜', queen: '♛', king: '♚' };
 const B = (id, name, desc, xp, c, ic) => ({ id, name, desc, xp, c, ic });
 const BADGES = [
@@ -112,6 +118,7 @@ function tone(f, at, dur, type = 'sine', vol = .07, to) {
 }
 function sfx(n) {
   if (!sfxOn) return;
+  if (navigator.userActivation && !navigator.userActivation.hasBeenActive) return; // browsers block audio before the first tap
   try {
     switch (n) {
       case 'xp': tone(988, 0, .1, 'sine', .05); tone(1480, .06, .14, 'sine', .05); break;
@@ -265,11 +272,16 @@ function mountMates() {
   if (!mateSmall && $('#mateSmall')) { mateSmall = D3.mountMate ? D3.mountMate($('#mateSmall'), { cam: [0, 1.0, 4.3], look: [0, .78, 0], fov: 27 }) : null; if (mateSmall) mates.push(mateSmall); }
   $('#mateDock').onclick = () => { const b = $('#mateBubble'); if (!b.hidden && b.classList.contains('on')) { hideSay(); return; } const t = tipFor(CM.view); if (t) say(t[0], t[1]); mateSmall && mateSmall.celebrate(); };
   $('#mateClose').onclick = hideSay;
-  setMoods();
+  setMoods(); applySkin();
+}
+function skin() { const s = G.skin || 'classic', k = SKINS.find(x => x.id === s); return k && rankIdx(G.xp) >= k.rank ? s : 'classic'; }
+function applySkin() {
+  const s = skin(); mates.forEach(m => m.setSkin && m.setSkin(s));
+  const img = IMG['mate-' + s] || IMG.mate; if (img) document.documentElement.style.setProperty('--mate-img', `url(${img})`);
 }
 function mountBig() {
   if (mateBig || !$('#mateBig') || !D3.mountMate) return;
-  mateBig = D3.mountMate($('#mateBig'), { cam: [0, 1.05, 4.0], look: [0, .82, 0], fov: 28 }); mates.push(mateBig); setMoods();
+  mateBig = D3.mountMate($('#mateBig'), { cam: [0, 1.05, 4.0], look: [0, .82, 0], fov: 28 }); mates.push(mateBig); setMoods(); applySkin();
 }
 
 /* ---------------- customer: resilience score panel ---------------- */
@@ -340,6 +352,9 @@ function renderArena() {
 
   $('#rankLadder').innerHTML = RANKS.map((x, k) => `<div class="rung ${k < i ? 'past' : k === i ? 'now' : 'next'}">${pieceImg(x.id, 'md')}<div><strong>${x.name}</strong><span>${x.xp} XP</span></div>${k < i ? '<span class="pill good">Earned</span>' : k === i ? '<span class="pill info">You are here</span>' : ''}</div>`).join('');
 
+  const cur = skin();
+  $('#skins').innerHTML = SKINS.map(k => { const open = i >= k.rank; return `<button type="button" class="skin${cur === k.id ? ' on' : ''}" data-s="${k.id}"${open ? '' : ' disabled'} aria-pressed="${cur === k.id}">${IMG['mate-' + k.id] ? `<img src="${IMG['mate-' + k.id]}" alt="">` : pieceImg('pawn', 'lg')}<strong>${k.name}</strong><span>${open ? (cur === k.id ? 'Wearing it' : 'Tap to wear') : k.desc}</span>${open ? '' : '<span class="lock">Locked</span>'}</button>`; }).join('');
+  $$('#skins .skin:not(:disabled)').forEach(b => b.onclick = () => { G.skin = b.dataset.s; save(); applySkin(); sfx('badge'); mates.forEach(m => m.celebrate()); renderArena(); });
   $('#badgeSub').textContent = `${nb} of ${BADGES.length} unlocked`;
   $('#badges').innerHTML = BADGES.map(b => { const got = G.badges[b.id]; return `<div class="badge${got ? ' got' : ''}" title="${esc(b.desc)}"><span class="bdg-ic" style="--bc:var(--${b.c})"><svg viewBox="0 0 24 24">${got ? b.ic : '<rect x="6" y="11" width="12" height="9" rx="2"/><path d="M8.5 11V8a3.5 3.5 0 0 1 7 0v3"/>'}</svg></span><strong>${b.name}</strong><span>${b.desc}</span>${b.xp ? `<em>+${b.xp} XP</em>` : ''}</div>`; }).join('');
 
@@ -364,7 +379,7 @@ function init() {
   hudRender(); mountMates(); sfxRender(); voiceRender();
   const sb = $('#sfxBtn'); if (sb) sb.onclick = () => { sfxOn = !sfxOn; store.set('cm.sfx', sfxOn); sfxRender(); if (sfxOn) sfx('xp'); };
   const vb = $('#voiceBtn'); if (vb) vb.onclick = () => { voiceOn = !voiceOn; store.set('cm.voice', voiceOn); voiceRender(); if (voiceOn) speak("Hi, I'm Mate. I'll read my answers out loud."); else if ('speechSynthesis' in window) speechSynthesis.cancel(); };
-  const snap = () => { IMG = D3.snapshot ? D3.snapshot([...RANKS.map(r => ({ kind: r.id, pal: r.pal })), { kind: 'mate', key: 'mate' }]) : {}; if (IMG.mate) document.documentElement.style.setProperty('--mate-img', `url(${IMG.mate})`); hudRender(); if (CM.view === 'arena') renderArena(); if (CM.view === 'customer') renderScore(); };
+  const snap = () => { IMG = D3.snapshot ? D3.snapshot([...RANKS.map(r => ({ kind: r.id, pal: r.pal })), { kind: 'mate', key: 'mate' }, ...SKINS.map(k => ({ kind: 'mate', key: 'mate-' + k.id, skin: k.id }))]) : {}; applySkin(); hudRender(); if (CM.view === 'arena') renderArena(); if (CM.view === 'customer') renderScore(); };
   (window.requestIdleCallback || (f => setTimeout(f, 300)))(snap);
   setTimeout(() => unlock('open'), 900);
   if (G.streak >= 3) setTimeout(() => unlock('streak3'), 1600);

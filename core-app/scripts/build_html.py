@@ -15,6 +15,7 @@ index = f"""<!doctype html>
 <link rel="stylesheet" href="assets/styles.css">
 <link rel="stylesheet" href="assets/game.css">
 <link rel="stylesheet" href="assets/play.css">
+<link rel="stylesheet" href="assets/glass.css">
 </head>
 <body>
 {body}
@@ -22,20 +23,22 @@ index = f"""<!doctype html>
 <script src="assets/vendor/papaparse.min.js"></script>
 <script src="assets/vendor/three.min.js"></script>
 <script src="assets/mate3d.js"></script>
+<script src="assets/fx.js"></script>
 <script src="data/insights.js"></script>
 <script src="data/accounts.js"></script>
 <script src="assets/app.js"></script>
 <script src="assets/game.js"></script>
 <script src="assets/play.js"></script>
+<script src="assets/viz.js"></script>
 </body>
 </html>
 """
 import hashlib, re
-ver = hashlib.md5(b''.join((R/f).read_bytes() for f in ['assets/app.js','assets/game.js','assets/play.js','assets/mate3d.js','assets/styles.css','assets/game.css','assets/play.css'])).hexdigest()[:8]
+ver = hashlib.md5(b''.join((R/f).read_bytes() for f in ['assets/app.js','assets/game.js','assets/play.js','assets/mate3d.js','assets/fx.js','assets/viz.js','assets/styles.css','assets/game.css','assets/play.css','assets/glass.css'])).hexdigest()[:8]
 index = re.sub(r'((?:src|href)="(?:assets|data)/[^"?]+\.(?:js|css))"', lambda m: m.group(1) + '?v=' + ver + '"', index)
 (R/'index.html').write_text(index)
-css = (R/'assets/styles.css').read_text() + '\n' + (R/'assets/game.css').read_text() + '\n' + (R/'assets/play.css').read_text(); js = (R/'assets/app.js').read_text()
-m3d = (R/'assets/mate3d.js').read_text(); game = (R/'assets/game.js').read_text() + '\n' + (R/'assets/play.js').read_text()
+css = (R/'assets/styles.css').read_text() + '\n' + (R/'assets/game.css').read_text() + '\n' + (R/'assets/play.css').read_text() + '\n' + (R/'assets/glass.css').read_text(); js = (R/'assets/app.js').read_text()
+m3d = (R/'assets/mate3d.js').read_text() + '\n' + (R/'assets/fx.js').read_text(); game = (R/'assets/game.js').read_text() + '\n' + (R/'assets/play.js').read_text() + '\n' + (R/'assets/viz.js').read_text()
 page = f"""<title>ChequeMate</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 {FONTS}

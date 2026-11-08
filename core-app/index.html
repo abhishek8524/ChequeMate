@@ -6,9 +6,10 @@
 <title>ChequeMate</title>
 <meta name="description" content="ChequeMate: financial resilience engine. Runway, shocks, plans, budgets and investing for any bank customer.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="assets/styles.css?v=f3c2a9b6">
-<link rel="stylesheet" href="assets/game.css?v=f3c2a9b6">
-<link rel="stylesheet" href="assets/play.css?v=f3c2a9b6">
+<link rel="stylesheet" href="assets/styles.css?v=ce110671">
+<link rel="stylesheet" href="assets/game.css?v=ce110671">
+<link rel="stylesheet" href="assets/play.css?v=ce110671">
+<link rel="stylesheet" href="assets/glass.css?v=ce110671">
 </head>
 <body>
 <div class="app">
@@ -39,6 +40,7 @@
     </nav>
     <div class="side-foot">
       <a class="side-player" id="sidePlayer" href="#arena" aria-label="Your rank and XP"></a>
+      <div class="seg style-switch" role="group" aria-label="Style"><button type="button" data-style-set="glass">Glass</button><button type="button" data-style-set="solid">Solid</button></div>
       <div class="seg theme-switch" role="group" aria-label="Appearance">
         <button type="button" data-theme-set="system">Auto</button>
         <button type="button" data-theme-set="light">Light</button>
@@ -139,6 +141,10 @@
           <div class="panel-head"><h2>Money in and out</h2><div class="legend"><span><i class="line" style="background:var(--s1)"></i>Money in</span><span><i class="line" style="background:var(--s2)"></i>Money out</span></div></div>
           <div class="chart-box"><canvas id="flowChart" aria-label="Monthly money in and money out"></canvas></div>
         </div>
+        <div class="panel sankey-panel">
+          <div class="panel-head"><h2>Where the money flows</h2><p id="sankeySub">Average month. Hover a stream to trace it.</p></div>
+          <div class="sankey" id="sankey" role="img" aria-label="Money flow from income sources through the account to spending"></div>
+        </div>
         <div class="grid g-2">
           <div class="panel">
             <div class="panel-head"><h2>Average balance</h2><p>Shaded months set the buffer</p></div>
@@ -190,8 +196,10 @@
           <div class="chart-box"><canvas id="projChart" aria-label="Projected balance by month"></canvas></div>
         </div>
         <div class="panel">
-          <div class="panel-head"><h2>Stress grid</h2><p>Months of runway for every mix of income cut and bill increase. Select a cell to load it.</p></div>
-          <div class="table-wrap"><div class="heat" id="heat"></div></div>
+          <div class="panel-head"><h2>Stress grid</h2><div class="seg" id="heatMode"><button type="button" data-m="grid">Grid</button><button type="button" data-m="3d">3D terrain</button></div></div>
+          <p class="ink2 small" id="heatHint">Months of runway for every mix of income cut and bill increase. Select a cell to load it.</p>
+          <div class="table-wrap" id="heatGrid"><div class="heat" id="heat"></div></div>
+          <div class="terrain" id="terrain" hidden></div>
         </div>
       </section>
 
@@ -402,6 +410,10 @@
           </div>
         </div>
         <div class="panel">
+          <div class="panel-head"><h2>Mate's wardrobe</h2><p>New looks unlock as you rank up</p></div>
+          <div class="skins" id="skins"></div>
+        </div>
+        <div class="panel">
           <div class="panel-head"><h2>Badges</h2><p id="badgeSub"></p></div>
           <div class="badges" id="badges"></div>
         </div>
@@ -476,6 +488,7 @@
       <a href="#resources"><span class="sf" style="--c:var(--pink)"><svg viewBox="0 0 24 24"><path d="M5 4.5h5a2 2 0 0 1 2 2V20a1.5 1.5 0 0 0-1.5-1.5H5zM19 4.5h-5a2 2 0 0 0-2 2V20a1.5 1.5 0 0 1 1.5-1.5H19z"/></svg></span>Resources</a>
       <a href="#profile"><span class="sf" style="--c:var(--gray)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M5.5 18.5l1.7-1.7M16.8 7.2l1.7-1.7"/></svg></span>Profile</a>
     </div>
+    <div class="seg style-switch" role="group" aria-label="Style" style="justify-self:center"><button type="button" data-style-set="glass">Glass</button><button type="button" data-style-set="solid">Solid</button></div>
     <div class="seg theme-switch" role="group" aria-label="Appearance" style="justify-self:center">
       <button type="button" data-theme-set="system">Auto</button>
       <button type="button" data-theme-set="light">Light</button>
@@ -497,14 +510,16 @@
 <div class="xp-pop" id="xpPop" aria-hidden="true"></div>
 <canvas class="confetti" id="confetti" aria-hidden="true"></canvas>
 
-<script src="assets/vendor/chart.umd.min.js?v=f3c2a9b6"></script>
-<script src="assets/vendor/papaparse.min.js?v=f3c2a9b6"></script>
-<script src="assets/vendor/three.min.js?v=f3c2a9b6"></script>
-<script src="assets/mate3d.js?v=f3c2a9b6"></script>
-<script src="data/insights.js?v=f3c2a9b6"></script>
-<script src="data/accounts.js?v=f3c2a9b6"></script>
-<script src="assets/app.js?v=f3c2a9b6"></script>
-<script src="assets/game.js?v=f3c2a9b6"></script>
-<script src="assets/play.js?v=f3c2a9b6"></script>
+<script src="assets/vendor/chart.umd.min.js?v=ce110671"></script>
+<script src="assets/vendor/papaparse.min.js?v=ce110671"></script>
+<script src="assets/vendor/three.min.js?v=ce110671"></script>
+<script src="assets/mate3d.js?v=ce110671"></script>
+<script src="assets/fx.js?v=ce110671"></script>
+<script src="data/insights.js?v=ce110671"></script>
+<script src="data/accounts.js?v=ce110671"></script>
+<script src="assets/app.js?v=ce110671"></script>
+<script src="assets/game.js?v=ce110671"></script>
+<script src="assets/play.js?v=ce110671"></script>
+<script src="assets/viz.js?v=ce110671"></script>
 </body>
 </html>

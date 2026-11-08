@@ -127,6 +127,13 @@ function makeMate() {
   const head = new T.Group(); head.position.set(0, 1.2, 0); bodyG.add(head);
   const hs = new T.SphereGeometry(.31, 48, 32).translate(0, 1.2, 0); paint(hs, pal, 0, H); hs.translate(0, -1.2, 0);
   const hm = new T.Mesh(hs, mat); hm.castShadow = true; head.add(hm);
+  const SKIN = {
+    classic: mat,
+    glass: new T.MeshPhysicalMaterial({ color: lin('#A9D4FF'), transparent: true, opacity: .62, roughness: .03, metalness: .05, clearcoat: 1, clearcoatRoughness: .02, envMapIntensity: 2.2, depthWrite: false }),
+    holo: new T.MeshPhysicalMaterial({ color: lin('#7CF7FF'), emissive: lin('#1B8CFF'), emissiveIntensity: .9, transparent: true, opacity: .8, roughness: .35, depthWrite: false }),
+    gold: new T.MeshPhysicalMaterial({ color: lin('#F2C14E'), metalness: 1, roughness: .2, clearcoat: 1, clearcoatRoughness: .05 }),
+  };
+  function setSkin(k) { const m = SKIN[k] || mat; body.material = m; hm.material = m; }
   const eyeMat = new T.MeshPhysicalMaterial({ color: 0x14151a, roughness: .12, clearcoat: 1 }), shine = new T.MeshBasicMaterial({ color: 0xffffff });
   const eyes = [-1, 1].map(sx => {
     const e = new T.Group(); e.add(new T.Mesh(new T.SphereGeometry(.058, 24, 16), eyeMat));
@@ -160,7 +167,7 @@ function makeMate() {
     ringMat.opacity = .32 + .2 * Math.sin(t * 2.4); ring.scale.setScalar(1 - y * .3);
   }
   return {
-    group: g, update, setMood,
+    group: g, update, setMood, setSkin,
     look(x, y) { S.look.x = clamp(x, -1, 1); S.look.y = clamp(y, -1, 1); },
     celebrate() { if (!reduce) S.jump = S.t; },
     talk(ms) { S.talkUntil = performance.now() + (reduce ? 0 : ms); },
@@ -182,7 +189,7 @@ const noop = () => {};
 
 /* ---------- public mounts ---------- */
 function mountMate(el, o = {}) {
-  if (!OK) { flat(el, 'pawn', 'mate-flat'); return { setMood: noop, celebrate: noop, talk: noop, think: noop, look: noop }; }
+  if (!OK) { flat(el, 'pawn', 'mate-flat'); return { setMood: noop, celebrate: noop, talk: noop, think: noop, look: noop, setSkin: noop }; }
   const st = new Stage(el, { cam: o.cam || [0, 1.15, 4.4], look: o.look || [0, .8, 0], fov: o.fov || 27, exposure: 1.1 });
   const m = makeMate(); st.scene.add(m.group); st.on(m.update); follow(el, m);
   return m;
@@ -308,6 +315,80 @@ function mountCoins(el) {
   };
 }
 
+
+/** 3D runway terrain: one bar per (income, bills) scenario, height = months of runway. Drag to orbit, hover to read, click to load. */
+function mountTerrain(el, onPick) {
+  if (!OK) return null;
+  const st = new Stage(el, { cam: [0, 7.4, 11.2], look: [0, .9, 0], fov: 31, floorY: -.02 });
+  const world = new T.Group(); st.scene.add(world);
+  const baseMat = new T.MeshPhysicalMaterial({ color: isDark() ? 0x1c1c22 : 0xffffff, roughness: .45, clearcoat: .6 });
+  const base = new T.Mesh(new T.BoxGeometry(1, .12, 1), baseMat); base.position.y = -.06; base.receiveShadow = true; world.add(base);
+  document.addEventListener('cm:theme', () => baseMat.color.set(isDark() ? 0x1c1c22 : 0xffffff));
+  const COL = ['#FF453A', '#FF8A80', '#FFB340', '#7BE495', '#30D158'].map(lin);
+  const boxGeo = new T.BoxGeometry(1, 1, 1); boxGeo.translate(0, .5, 0);
+  const tip = document.createElement('div'); tip.className = 'terr-tip'; tip.hidden = true; el.appendChild(tip);
+  const labels = new T.Group(); world.add(labels);
+  let bars = [], data = null, ring = null, hover = null, rotY = -.5, drag = null, idle = 0;
+  const sprite = (text, size = .32, color = '#8E8E93') => {
+    const c = document.createElement('canvas'); c.width = 256; c.height = 64; const x = c.getContext('2d');
+    x.font = '600 34px -apple-system, Inter, sans-serif'; x.fillStyle = color; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(text, 128, 32);
+    const tex = new T.CanvasTexture(c); tex.encoding = T.sRGBEncoding;
+    const sp = new T.Sprite(new T.SpriteMaterial({ map: tex, transparent: true, depthWrite: false })); sp.scale.set(size * 4, size, 1); return sp;
+  };
+  const cls = v => v === Infinity || v >= 12 ? 4 : v >= 6 ? 3 : v >= 3 ? 2 : v >= 1 ? 1 : 0;
+  function build(d) {
+    bars.forEach(b => world.remove(b.mesh)); bars = []; labels.clear();
+    const R = d.rows.length, C = d.cols.length, gap = 1.05, w = (C - 1) * gap, dep = (R - 1) * gap;
+    base.scale.set(w + 1.4, 1, dep + 1.4);
+    d.vals.forEach((row, i) => row.forEach((v, j) => {
+      const m = new T.Mesh(boxGeo, new T.MeshPhysicalMaterial({ color: COL[cls(v)], roughness: .28, clearcoat: 1, clearcoatRoughness: .1, metalness: .05 }));
+      m.scale.set(.82, .001, .82); m.position.set(j * gap - w / 2, 0, i * gap - dep / 2); m.castShadow = true; m.receiveShadow = true;
+      m.userData = { i, j, v }; world.add(m); bars.push({ mesh: m, h: .001, target: .08 + Math.min(v === Infinity ? 24 : v, 24) / 24 * 3.2, delay: (i + j) * .04 });
+    }));
+    d.cols.forEach((c, j) => { const sp = sprite(c + '%'); sp.position.set(j * gap - w / 2, .05, dep / 2 + 1.05); labels.add(sp); });
+    d.rows.forEach((r, i) => { const sp = sprite('+' + r + '%'); sp.position.set(-w / 2 - 1.25, .05, i * gap - dep / 2); labels.add(sp); });
+    const t1 = sprite('Income kept →', .3, '#0A84FF'); t1.position.set(0, .05, dep / 2 + 1.7); labels.add(t1);
+    const t2 = sprite('Bills ↓', .3, '#0A84FF'); t2.position.set(-w / 2 - 1.25, .05, -dep / 2 - .9); labels.add(t2);
+    if (!ring) { ring = new T.Mesh(new T.RingGeometry(.56, .66, 4, 1), new T.MeshBasicMaterial({ color: lin('#0A84FF'), transparent: true, opacity: .95, side: T.DoubleSide })); ring.rotation.set(-Math.PI / 2, 0, Math.PI / 4); world.add(ring); }
+    const t0 = st.t || 0; bars.forEach(b => b.t0 = t0);
+  }
+  function setCur(cur) { const b = bars.find(x => x.mesh.userData.i === cur[0] && x.mesh.userData.j === cur[1]); if (ring) { ring.visible = !!b; if (b) ring.position.set(b.mesh.position.x, .02, b.mesh.position.z); ring.userData.bar = b; } }
+  const ray = new T.Raycaster(), mv = new T.Vector2();
+  const cv = st.r.domElement; cv.style.touchAction = 'pan-y'; cv.style.cursor = 'grab';
+  const pick = e => { const r = cv.getBoundingClientRect(); mv.set((e.clientX - r.left) / r.width * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1); ray.setFromCamera(mv, st.cam); const hit = ray.intersectObjects(bars.map(b => b.mesh))[0]; return hit && hit.object; };
+  cv.addEventListener('pointerdown', e => { drag = { x: e.clientX, r: rotY, moved: false }; cv.setPointerCapture(e.pointerId); cv.style.cursor = 'grabbing'; });
+  cv.addEventListener('pointerup', e => { cv.style.cursor = 'grab'; if (drag && !drag.moved) { const o = pick(e); if (o && onPick) onPick(o.userData.i, o.userData.j); } drag = null; });
+  cv.addEventListener('pointermove', e => {
+    idle = st.t || 0;
+    if (drag) { const dx = e.clientX - drag.x; if (Math.abs(dx) > 3) drag.moved = true; rotY = drag.r + dx * .008; return; }
+    const o = pick(e); hover = o;
+    if (o && data) { const r = el.getBoundingClientRect(); const { i, j, v } = o.userData; tip.hidden = false; tip.style.left = (e.clientX - r.left + 14) + 'px'; tip.style.top = (e.clientY - r.top - 10) + 'px';
+      tip.innerHTML = `<b>${v === Infinity ? '120+' : v.toFixed(1)} months</b><span>Income ${data.cols[j]}%, bills +${data.rows[i]}%</span>`; }
+    else tip.hidden = true;
+  });
+  cv.addEventListener('pointerleave', () => { tip.hidden = true; hover = null; });
+  st.on((t, dt) => {
+    if (!drag && t - idle > 3) rotY += dt * .12;
+    world.rotation.y += (rotY - world.rotation.y) * Math.min(1, dt * 8 || 1);
+    for (const b of bars) {
+      const k = clamp((t - (b.t0 || 0) - b.delay) / .7, 0, 1), e = 1 - Math.pow(1 - k, 3);
+      if (reduce) b.h = b.target; else b.h += (b.target - b.h) * (k >= 1 ? Math.min(1, dt * 10) : e);
+      b.mesh.scale.y = Math.max(.001, b.h);
+      const hi = hover === b.mesh; b.mesh.material.emissive = b.mesh.material.emissive || new T.Color(); b.mesh.material.emissive.setScalar(hi ? .18 : 0);
+    }
+    if (ring && ring.visible) { const pul = 1 + Math.sin(t * 4) * .06; ring.scale.set(pul, pul, 1); }
+  });
+  return {
+    set(d) {
+      const same = data && data.rows.join() === d.rows.join() && data.cols.join() === d.cols.join();
+      data = d;
+      if (!same || !bars.length) build(d);
+      else d.vals.forEach((row, i) => row.forEach((v, j) => { const b = bars[i * d.cols.length + j]; b.mesh.userData.v = v; b.target = .08 + Math.min(v === Infinity ? 24 : v, 24) / 24 * 3.2; b.mesh.material.color.copy(COL[cls(v)]); }));
+      setCur(d.cur);
+    },
+  };
+}
+
 /** Render pieces once to images, for icons that look like the 3D ones. */
 function snapshot(items, size = 160) {
   if (!OK) return {};
@@ -323,7 +404,7 @@ function snapshot(items, size = 160) {
     const cam = new T.PerspectiveCamera(30, 1, .1, 50);
     for (const it of items) {
       let obj, H;
-      if (it.kind === 'mate') { const m = makeMate(); m.update(0.5, 0); obj = m.group; obj.children.filter(c => c.geometry && c.geometry.type === 'RingGeometry').forEach(c => c.visible = false); H = 1.55; }
+      if (it.kind === 'mate') { const m = makeMate(); if (it.skin) m.setSkin(it.skin); m.update(0.5, 0); obj = m.group; obj.children.filter(c => c.geometry && c.geometry.type === 'RingGeometry').forEach(c => c.visible = false); H = 1.55; }
       else { obj = piece(it.kind, it.pal); H = obj.userData.H; obj.rotation.y = it.kind === 'knight' ? -.55 : .5; }
       s.add(obj);
       if (it.kind === 'mate') { cam.position.set(0, 1.25, 2.45); cam.lookAt(0, 1.08, 0); }
@@ -336,5 +417,5 @@ function snapshot(items, size = 160) {
   return out;
 }
 
-window.CM3D = { ok: OK, PAL, mountMate, mountHero, mountRank, mountCoins, snapshot };
+window.CM3D = { ok: OK, PAL, mountMate, mountHero, mountRank, mountCoins, mountTerrain, snapshot };
 })();
