@@ -48,7 +48,7 @@ Then run `python3 server.py`. The server calls Gemini for the app, so the key ne
 - **Customer**: I, F, S, B and runway; layoff, no-income and combined-shock runways; auto insights; monthly charts.
 - **Shock lab**: the judges' twist cards plus sliders for income kept, EI length, bills change, new monthly costs and one-off costs. Shows every step of the runway formula, a month-by-month projection and a stress grid.
 - **Plan**: emergency-fund goal with timeline, and a backup plan that stacks levers (spending cut, loan deferral, bill trims, side income) and shows runway after each.
-- **Budget**: 50/30/20, 70/20/10, 60/20/20, 80/20, 30/30/30/10 and zero-based, measured against actual spending, with the closest-fit rule.
+- **Budget**: a monthly income/spending/savings summary, a personalized closest-fit recommendation, side-by-side method comparisons, and a tabbed custom zero-based budget.
 - **Investing**: the Canadian order of operations (cushion, debt, emergency fund, TFSA/FHSA, RRSP), a growth calculator, 2026 limits.
 - **Coach**: Gemini with the account, profile and current shock attached, or the offline coach.
 - **Your data**: upload any `monthly_summary.csv` (plus optional `loans.csv`) for portfolio insights computed in the browser.

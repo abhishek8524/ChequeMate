@@ -6,10 +6,10 @@
 <title>ChequeMate</title>
 <meta name="description" content="ChequeMate: financial resilience engine. Runway, shocks, plans, budgets and investing for any bank customer.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="assets/styles.css?v=ce110671">
-<link rel="stylesheet" href="assets/game.css?v=ce110671">
-<link rel="stylesheet" href="assets/play.css?v=ce110671">
-<link rel="stylesheet" href="assets/glass.css?v=ce110671">
+<link rel="stylesheet" href="assets/styles.css?v=2c477ac0">
+<link rel="stylesheet" href="assets/game.css?v=2c477ac0">
+<link rel="stylesheet" href="assets/play.css?v=2c477ac0">
+<link rel="stylesheet" href="assets/glass.css?v=2c477ac0">
 </head>
 <body>
 <div class="app">
@@ -232,32 +232,72 @@
 
       <!-- BUDGET -->
       <section class="view" data-view="budget" hidden>
-        <div class="head"><h1>Budget</h1><p>Six well-known rules, measured against how this customer actually spends. Change the income to plan for any paycheque.</p></div>
-        <div class="micr" data-micr></div>
-        <div class="grid g-main">
-          <div class="panel">
-            <div class="field"><label for="bInc">Monthly take-home</label><div class="money-in" style="max-width:280px"><input class="input" id="bInc" inputmode="decimal"></div><span class="hint">Starts at this customer's typical money in.</span></div>
-            <div class="seg" id="ruleSeg"></div>
-            <p class="ink2" id="ruleWhy"></p>
-            <div id="ruleCompare" class="grid"></div>
-            <div id="ruleAdvice" class="callout"></div>
-          </div>
-          <div class="panel">
-            <div class="panel-head"><h2>Which rule fits</h2><p>Money to move each month</p></div>
-            <div class="table-wrap"><table class="cmp" id="ruleTable"></table></div>
-          </div>
+        <div class="head"><h1>Budget</h1><p>A clear view of this customer's monthly money, with a plan that fits how they spend.</p></div>
+        <div class="budget-tabs" role="tablist" aria-label="Budget tools">
+          <button type="button" id="budgetRecommendedTab" role="tab" aria-controls="budgetRecommendedPanel" aria-selected="true">Recommended Budget</button>
+          <button type="button" id="budgetCustomTab" role="tab" aria-controls="budgetCustomPanel" aria-selected="false" tabindex="-1">Custom Budget</button>
         </div>
-        <div class="panel" id="zbPanel">
-          <div class="panel-head"><h2>Zero-based budget</h2><p>Give every dollar a job. Starts from this account's typical month.</p></div>
-          <div class="grid g-2">
-            <div class="zb" id="zbRows"></div>
-            <div class="grid" style="align-content:start">
-              <div class="zb-left"><span>Left to assign</span><span class="v" id="zbLeft"></span></div>
-              <div class="split"><div class="split-bar" id="zbBar"></div></div>
-              <p class="note">Aim for zero. A negative number means the plan spends more than comes in.</p>
-              <button class="btn" type="button" id="zbReset" style="justify-self:start">Reset to this account's typical month</button>
-            </div>
+        <div id="budgetRecommendedPanel" class="budget-tab-panel" role="tabpanel" aria-labelledby="budgetRecommendedTab">
+          <div class="budget-summary" aria-label="Customer monthly financial summary">
+            <div class="budget-stat"><span>Monthly income</span><strong id="budgetIncome"></strong><small>Typical money in</small></div>
+            <div class="budget-stat"><span>Monthly spending</span><strong id="budgetSpending"></strong><small>Typical money out</small></div>
+            <div class="budget-stat" id="budgetSavingsCard"><span>Monthly savings</span><strong id="budgetSavings"></strong><small>Income minus spending</small></div>
           </div>
+          <div class="budget-income-row">
+            <div><strong>Plan with a different income?</strong><span>Changes budget targets, not the customer's actual summary above.</span></div>
+            <label class="budget-income-field" for="bInc"><span>Monthly income</span><span class="money-in"><input class="input" id="bInc" inputmode="decimal" aria-label="Monthly income for budget planning"></span></label>
+          </div>
+          <article class="budget-recommendation" aria-live="polite">
+            <div class="budget-rec-copy"><span class="budget-eyebrow">PERSONALIZED RECOMMENDATION</span><h2 id="budgetRecName"></h2><p id="budgetRecWhy"></p></div>
+            <div class="budget-rec-action"><span id="budgetRecMove"></span><button type="button" class="btn primary budget-recommendation-button" id="budgetUseRecommendation"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg><span>Compare recommended method</span></button></div>
+          </article>
+          <section class="panel budget-comparison">
+            <div class="panel-head"><div><span class="budget-eyebrow">CURRENTLY SELECTED</span><h2 id="budgetSelectedName"></h2></div><span class="pill info" id="budgetSelectedBadge"></span></div>
+            <p class="ink2" id="ruleWhy"></p>
+            <div id="ruleCompare" class="budget-compare-content"></div>
+            <div id="ruleAdvice" class="callout"></div>
+          </section>
+          <section class="budget-methods" aria-labelledby="budgetMethodsTitle">
+            <div class="panel-head"><div><h2 id="budgetMethodsTitle">Compare other methods</h2><p>Choose a method to see how its targets compare with this customer's spending.</p></div></div>
+            <div id="ruleSeg" class="budget-method-grid"></div>
+            <div class="budget-glossary" aria-label="Budget category definitions">
+              <p><strong>Needs</strong><span>Essentials like housing, bills and insurance.</span></p>
+              <p><strong>Wants</strong><span>Flexible everyday spending and extras.</span></p>
+              <p><strong>Savings</strong><span>Money kept for future goals and emergencies.</span></p>
+            </div>
+            <button type="button" class="budget-action budget-action-income budget-open-custom" id="budgetOpenCustom">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 8h8M8 12h2m4 0h2m-8 4h2m4 0h2"/></svg>
+              <span><strong>Build your own budget</strong><small>Give every dollar a job in the custom planner</small></span>
+              <span class="budget-action-arrow" aria-hidden="true">→</span>
+            </button>
+          </section>
+        </div>
+        <div id="budgetCustomPanel" class="budget-tab-panel" role="tabpanel" aria-labelledby="budgetCustomTab" hidden>
+          <section class="panel" id="zbPanel">
+            <div class="panel-head"><div><span class="budget-eyebrow">MAKE IT YOURS</span><h2>Give every dollar a job</h2><p>Start with this customer's typical month, then edit the amounts to fit your plan.</p></div><span class="budget-income-chip">Available: <strong id="zbIncome"></strong></span></div>
+            <div class="budget-custom-grid">
+              <div>
+                <div class="budget-input-heading"><strong>Monthly categories</strong><span>Edit any amount</span></div>
+                <div class="zb" id="zbRows"></div>
+              </div>
+              <div class="budget-custom-summary">
+                <div class="zb-left" id="zbLeftCard"><span>Left to assign</span><span class="v" id="zbLeft" aria-live="polite"></span></div>
+                <div class="split"><div class="split-lab"><span>Income allocation</span><span id="zbAllocationLabel"></span></div><div class="split-bar" id="zbBar" role="img" aria-label="Budget allocation breakdown"></div></div>
+                <div class="budget-balance-note" id="zbBalanceNote" aria-live="polite"></div>
+                <p class="note">A zero balance means every dollar has a job. Any money left over is ready to assign.</p>
+                <div class="budget-custom-actions" aria-label="Custom budget actions">
+                  <button class="budget-action budget-action-reset" type="button" id="zbReset">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11a9 9 0 1 1 2.6 6.4"/><path d="M3 4v7h7"/></svg>
+                    <span><strong>Restore typical amounts</strong><small>Reset to this customer's usual month</small></span>
+                  </button>
+                  <button class="budget-action budget-action-income" type="button" id="budgetAdjustIncome">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h10M4 17h7"/><circle cx="18" cy="16" r="3"/><path d="M18 14.5v3M16.5 16h3"/></svg>
+                    <span><strong>Change planned income</strong><small>Update the amount available to budget</small></span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
         </div>
       </section>
 
@@ -510,16 +550,16 @@
 <div class="xp-pop" id="xpPop" aria-hidden="true"></div>
 <canvas class="confetti" id="confetti" aria-hidden="true"></canvas>
 
-<script src="assets/vendor/chart.umd.min.js?v=ce110671"></script>
-<script src="assets/vendor/papaparse.min.js?v=ce110671"></script>
-<script src="assets/vendor/three.min.js?v=ce110671"></script>
-<script src="assets/mate3d.js?v=ce110671"></script>
-<script src="assets/fx.js?v=ce110671"></script>
-<script src="data/insights.js?v=ce110671"></script>
-<script src="data/accounts.js?v=ce110671"></script>
-<script src="assets/app.js?v=ce110671"></script>
-<script src="assets/game.js?v=ce110671"></script>
-<script src="assets/play.js?v=ce110671"></script>
-<script src="assets/viz.js?v=ce110671"></script>
+<script src="assets/vendor/chart.umd.min.js?v=2c477ac0"></script>
+<script src="assets/vendor/papaparse.min.js?v=2c477ac0"></script>
+<script src="assets/vendor/three.min.js?v=2c477ac0"></script>
+<script src="assets/mate3d.js?v=2c477ac0"></script>
+<script src="assets/fx.js?v=2c477ac0"></script>
+<script src="data/insights.js?v=2c477ac0"></script>
+<script src="data/accounts.js?v=2c477ac0"></script>
+<script src="assets/app.js?v=2c477ac0"></script>
+<script src="assets/game.js?v=2c477ac0"></script>
+<script src="assets/play.js?v=2c477ac0"></script>
+<script src="assets/viz.js?v=2c477ac0"></script>
 </body>
 </html>

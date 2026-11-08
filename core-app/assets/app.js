@@ -607,11 +607,11 @@ function bindPlan() {
 
 /* ================= VIEW: BUDGET ================= */
 const RULES = [
-  { id: '50-30-20', name: '50/30/20', why: 'Half to needs, 30% to wants and 20% to savings. The best-known starting point.', parts: [['Needs', .5, 'needs'], ['Wants', .3, 'wants'], ['Savings', .2, 'save']] },
-  { id: '70-20-10', name: '70/20/10', why: 'Everyday living takes 70%, savings 20%, and 10% goes to paying down debt or giving.', parts: [['Living', .7, 'living'], ['Savings', .2, 'save'], ['Debt or giving', .1, 'debt']] },
-  { id: '60-20-20', name: '60/20/20', why: 'A version of 50/30/20 for expensive cities like Toronto, where needs take more room.', parts: [['Needs', .6, 'needs'], ['Wants', .2, 'wants'], ['Savings', .2, 'save']] },
-  { id: '80-20', name: '80/20', why: 'Pay yourself first. Move 20% to savings on payday and spend the rest without tracking.', parts: [['Spending', .8, 'spend'], ['Savings', .2, 'save']] },
-  { id: '30-30-30-10', name: '30/30/30/10', why: 'Housing, other needs, goals and fun each get a fixed slice.', parts: [['Housing', .3, 'housing'], ['Other needs', .3, 'otherNeeds'], ['Goals', .3, 'save'], ['Fun', .1, 'wants']] },
+  { id: '50-30-20', name: 'Balanced Budget (50/30/20)', why: 'Plan for essentials first, leave room for flexible spending, and save for future needs.', parts: [['Needs', .5, 'needs'], ['Wants', .3, 'wants'], ['Savings', .2, 'save']] },
+  { id: '70-20-10', name: 'Debt & Giving Budget (70/20/10)', why: 'Set aside 70% for everyday living, 20% for savings and 10% for debt payments or giving.', parts: [['Living', .7, 'living'], ['Savings', .2, 'save'], ['Debt or giving', .1, 'debt']] },
+  { id: '60-20-20', name: 'Higher-Needs Budget (60/20/20)', why: 'Allow more of your income for essentials when housing and other needs cost more.', parts: [['Needs', .6, 'needs'], ['Wants', .2, 'wants'], ['Savings', .2, 'save']] },
+  { id: '80-20', name: 'Simple Budget (80/20)', why: 'Move 20% to savings on payday, then use the rest for spending without tracking every category.', parts: [['Spending', .8, 'spend'], ['Savings', .2, 'save']] },
+  { id: '30-30-30-10', name: 'Four-Bucket Budget (30/30/30/10)', why: 'Split income between housing, other needs, goals and fun for a simple category-based plan.', parts: [['Housing', .3, 'housing'], ['Other needs', .3, 'otherNeeds'], ['Goals', .3, 'save'], ['Fun', .1, 'wants']] },
   { id: 'zero', name: 'Zero-based', why: 'Every dollar gets a job until nothing is left to assign. Build it in the panel below.', parts: null },
 ];
 function actuals(a, inc) {
@@ -619,35 +619,106 @@ function actuals(a, inc) {
   return { needs, wants, save, living: a.S - Math.min(a.P, a.S), debt: Math.min(a.P, a.S), spend: a.S, housing: Math.min(a.H, needs), otherNeeds: Math.max(needs - a.H, 0) };
 }
 function ruleGap(rule, act, inc) { return rule.parts.reduce((s, [, f, k]) => s + Math.abs(act[k] - f * inc), 0) / 2; }
+function ruleTransfers(rule, act, inc) {
+  const donors = [], receivers = [];
+  rule.parts.forEach(([name, fraction, key]) => {
+    const difference = fraction * inc - act[key];
+    if (difference < -0.5) donors.push({ name, amount: -difference });
+    else if (difference > 0.5) receivers.push({ name, amount: difference });
+  });
+  const moves = [];
+  while (donors.length && receivers.length) {
+    const from = donors[0], to = receivers[0], amount = Math.min(from.amount, to.amount);
+    moves.push({ from: from.name, to: to.name, amount });
+    from.amount -= amount; to.amount -= amount;
+    if (from.amount < 0.5) donors.shift();
+    if (to.amount < 0.5) receivers.shift();
+  }
+  return moves;
+}
+function activateBudgetTab(name, focus = false) {
+  const recommended = name === 'recommended';
+  const tab = $(recommended ? '#budgetRecommendedTab' : '#budgetCustomTab');
+  $('#budgetRecommendedTab').setAttribute('aria-selected', String(recommended));
+  $('#budgetRecommendedTab').tabIndex = recommended ? 0 : -1;
+  $('#budgetCustomTab').setAttribute('aria-selected', String(!recommended));
+  $('#budgetCustomTab').tabIndex = recommended ? -1 : 0;
+  $('#budgetRecommendedPanel').hidden = !recommended;
+  $('#budgetCustomPanel').hidden = recommended;
+  if (focus) tab.focus();
+}
 RENDER.budget = () => {
   const a = acc(); if (!a) return;
   if (st.budget.inc == null) st.budget.inc = Math.round(a.I);
   const inc = st.budget.inc; const bi = $('#bInc'); if (document.activeElement !== bi) bi.value = inc.toLocaleString('en-CA');
-  $('#ruleSeg').innerHTML = RULES.map(r => `<button type="button" data-r="${r.id}" aria-pressed="${st.budget.rule === r.id}">${r.name}</button>`).join('');
-  $$('#ruleSeg button').forEach(b => b.onclick = () => { st.budget.rule = b.dataset.r; RENDER.budget(); if (b.dataset.r === 'zero') $('#zbPanel').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' }); });
-  const rule = RULES.find(r => r.id === st.budget.rule), act = actuals(a, inc);
+  $('#budgetIncome').textContent = money(a.I);
+  $('#budgetSpending').textContent = money(a.S);
+  $('#budgetSavings').textContent = money(a.I - a.S);
+  $('#budgetSavingsCard').classList.toggle('is-negative', a.I < a.S);
+  const act = actuals(a, inc);
+  const scored = RULES.filter(r => r.parts).map((r, order) => ({ r, g: ruleGap(r, act, inc), order })).sort((x, y) => x.g - y.g || x.order - y.order);
+  const recommended = inc > 0 ? scored[0] : null;
+  const recommendedMoves = recommended ? ruleTransfers(recommended.r, act, inc) : [];
+  const recommendedMoveTotal = recommendedMoves.reduce((sum, x) => sum + Math.round(x.amount), 0);
+  const rule = RULES.find(r => r.id === st.budget.rule && r.parts) || RULES[0];
+  $('#budgetRecName').textContent = recommended ? recommended.r.name : 'Add income to see a recommendation';
+  const planSavings = inc - a.S;
+  $('#budgetRecWhy').textContent = recommended
+    ? `${planSavings >= 0 ? `At this planned income, the customer spends ${pct(a.S / inc)} and has ${money(planSavings)} left (${pct(planSavings / inc)}) for savings.` : `At this planned income, spending is ${money(Math.abs(planSavings))} above income.`} ${recommendedMoveTotal < 1 ? 'This method already matches their current mix.' : `It requires the smallest reallocation of the methods below: ${money(recommendedMoveTotal)} per month.`}`
+    : 'Enter a monthly income above $0 to compare budget methods with this customer’s spending.';
+  $('#budgetRecMove').textContent = recommended ? `${money(recommendedMoveTotal)} / month to reallocate` : 'Recommendation unavailable';
+  $('#budgetUseRecommendation').disabled = !recommended;
+  $('#budgetSelectedName').textContent = rule.name;
+  $('#budgetSelectedBadge').textContent = recommended && recommended.r.id === rule.id ? 'Recommended' : 'Exploring this method';
+  $('#budgetSelectedBadge').classList.toggle('info', !!(recommended && recommended.r.id === rule.id));
+  $('#budgetSelectedBadge').classList.toggle('muted', !(recommended && recommended.r.id === rule.id));
   $('#ruleWhy').textContent = rule.why;
+  $('#ruleSeg').innerHTML = scored.map(({ r }) => `<button type="button" class="budget-method${st.budget.rule === r.id ? ' is-selected' : ''}" data-r="${r.id}" aria-pressed="${st.budget.rule === r.id}"><span class="budget-method-title">${esc(r.name)}</span><span class="budget-method-description">${esc(r.why)}</span><span class="budget-method-tags">${recommended && recommended.r.id === r.id ? '<span class="pill info">Recommended</span>' : ''}${st.budget.rule === r.id ? '<span class="pill">Selected</span>' : ''}</span></button>`).join('');
+  $$('#ruleSeg button').forEach(b => b.onclick = () => { st.budget.rule = b.dataset.r; RENDER.budget(); });
   const cols = ['var(--s1)', 'var(--s2)', 'var(--s3)', 'var(--s4)'];
-  if (rule.parts && inc > 0) {
+  if (inc > 0) {
     const tgt = rule.parts.map(([n, f, k], i) => ({ n, v: f * inc, c: cols[i], k }));
     const today = rule.parts.map(([n, , k], i) => ({ n, v: act[k], c: cols[i], k }));
-    const bar = (parts, total) => parts.map(p => p.v > 0 ? `<div style="flex:${p.v} 1 0;background:${p.c}" title="${esc(p.n)}: ${money(p.v)}">${p.v / total > .09 ? pct(p.v / total) : ''}</div>` : '').join('');
+    const bar = parts => parts.map(p => p.v > 0 ? `<div style="flex:${p.v} 1 0;background:${p.c}" title="${esc(p.n)}: ${money(p.v)}">${p.v / inc > .09 ? pct(p.v / inc) : ''}</div>` : '').join('');
     const over = Math.max(0, -act.save);
-    $('#ruleCompare').innerHTML = `<div class="legend">${rule.parts.map(([n], i) => `<span><i style="background:${cols[i]}"></i>${n}</span>`).join('')}${over ? '<span><i style="background:var(--crit)"></i>Overspending</span>' : ''}</div>
-      <div class="split"><div class="split-lab"><span>${rule.name} target</span><span>${money(inc)}</span></div><div class="split-bar">${bar(tgt, inc)}</div></div>
-      <div class="split"><div class="split-lab"><span>This customer today</span><span>${money(a.S)} spent${over ? `, ${money(over)} over` : ''}</span></div><div class="split-bar">${bar(today.filter(p => p.v > 0), Math.max(inc, a.S))}${over ? `<div class="over" style="flex:${over} 1 0" title="Spending above income: ${money(over)}"></div>` : ''}</div></div>
-      <div class="table-wrap"><table class="cmp"><thead><tr><th>Bucket</th><th class="r">Target</th><th class="r">Today</th><th class="r">Difference</th></tr></thead><tbody>${tgt.map((t, i) => {
-        const d = today[i].v - t.v; return `<tr><td><i style="display:inline-block;width:10px;height:10px;border-radius:3px;background:${t.c};margin-right:8px"></i>${t.n}</td><td class="r">${money(t.v)}</td><td class="r">${money(today[i].v)}</td><td class="r" style="color:var(--${Math.abs(d) < inc * .03 ? 'muted' : (t.k === 'save' ? (d < 0 ? 'crit-t' : 'good-t') : (d > 0 ? 'crit-t' : 'good-t'))})">${d > 0 ? '+' : ''}${money(d)}</td></tr>`; }).join('')}</tbody></table></div>`;
-    const saveIdx = rule.parts.findIndex(p => p[2] === 'save'); const saveShort = tgt[saveIdx].v - today[saveIdx].v;
-    const worst = tgt.map((t, i) => ({ n: t.n, d: today[i].v - t.v, k: t.k })).filter(x => x.k !== 'save').sort((x, y) => y.d - x.d)[0];
-    $('#ruleAdvice').innerHTML = saveShort <= 0 ? `<strong>Already saving ${money(act.save)} a month, ${money(-saveShort)} above the ${rule.name} target.</strong> Point the extra at the emergency fund until it covers ${profile().target} months, then at investing.`
-      : `<strong>To fit ${rule.name}, move ${money(saveShort)} a month into savings.</strong> ${worst && worst.d > 0 ? `The biggest overrun is ${worst.n.toLowerCase()}, ${money(worst.d)} above target.` : 'Spending buckets are within target; the gap comes from income.'}`;
-  } else if (rule.parts) { $('#ruleCompare').innerHTML = '<p class="muted">Enter a monthly income above $0.</p>'; $('#ruleAdvice').innerHTML = ''; }
-  else { $('#ruleCompare').innerHTML = '<p class="ink2">The zero-based planner is below. Every row starts at this account\'s monthly average.</p>'; $('#ruleAdvice').innerHTML = `<strong>Left to assign: ${money(zbLeft(a))}.</strong> Give it to the emergency fund first.`; }
-
-  const scored = RULES.filter(r => r.parts).map(r => ({ r, g: ruleGap(r, act, inc) })).sort((x, y) => x.g - y.g);
-  $('#ruleTable').innerHTML = `<thead><tr><th>Rule</th><th class="r">Money to move each month</th></tr></thead><tbody>${scored.map((s, i) =>
-    `<tr${i === 0 ? ' class="best"' : ''}><td>${s.r.name}${i === 0 ? ' <span class="pill info" style="margin-left:6px">Closest fit</span>' : ''}</td><td class="r">${money(s.g)}</td></tr>`).join('')}</tbody>`;
+    const transfers = ruleTransfers(rule, act, inc);
+    const move = transfers.reduce((sum, x) => sum + Math.round(x.amount), 0);
+    $('#ruleCompare').innerHTML = `<div class="budget-chart-group">
+      <div class="split"><div class="split-lab"><span>${esc(rule.name)} targets</span><span>${money(inc)} income</span></div><div class="split-bar" role="img" aria-label="Target allocation for ${esc(rule.name)}">${bar(tgt)}</div></div>
+      <div class="split"><div class="split-lab"><span>Customer's current month</span><span>${money(a.S)} spent${over ? ` · ${money(over)} above planned income` : ''}</span></div><div class="split-bar" role="img" aria-label="Current spending allocation">${bar(today.filter(p => p.v > 0))}</div></div></div>
+      <div class="table-wrap"><table class="cmp budget-compare-table"><thead><tr><th>Category</th><th class="r">Target</th><th class="r">Today</th><th class="r">Difference</th></tr></thead><tbody>${tgt.map((t, i) => {
+        const d = today[i].v - t.v, close = Math.abs(d) < inc * .03;
+        const direction = close ? 'Near target' : d > 0 ? 'Above target' : 'Below target';
+        const color = close ? 'muted' : ((t.k === 'save' ? d < 0 : d > 0) ? 'crit-t' : 'good-t');
+        return `<tr><td><i style="display:inline-block;width:10px;height:10px;border-radius:3px;background:${t.c};margin-right:8px"></i>${esc(t.n)}</td><td class="r">${money(t.v)}</td><td class="r">${money(today[i].v)}</td><td class="r budget-diff" style="color:var(--${color})"><strong>${direction}</strong><span>${d > 0 ? '+' : ''}${money(d)}</span></td></tr>`; }).join('')}</tbody></table></div>`;
+    if (!transfers.length || move < 1) $('#ruleAdvice').innerHTML = `<strong>This customer's current month is already close to this method.</strong> No meaningful reallocation is needed based on these estimates.`;
+    else {
+      const topMoves = transfers.slice(0, 2).map(x => `shift ${money(x.amount)} from ${esc(x.from)} to ${esc(x.to)}`);
+      const more = transfers.length > 2 ? ' plus smaller category adjustments' : '';
+      $('#ruleAdvice').innerHTML = `<strong>To match this method, ${topMoves.join(' and ')}${more} each month.</strong> The estimated total to reallocate is ${money(move)}.`;
+    }
+  } else {
+    $('#ruleCompare').innerHTML = '<p class="muted">Enter a monthly income above $0 to compare targets with current spending.</p>';
+    $('#ruleAdvice').innerHTML = '';
+  }
+  $('#budgetUseRecommendation').onclick = () => {
+    if (!recommended) return;
+    st.budget.rule = recommended.r.id;
+    RENDER.budget();
+    $('#budgetSelectedName').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' });
+  };
+  $('#budgetOpenCustom').onclick = () => activateBudgetTab('custom');
+  $('#budgetAdjustIncome').onclick = () => { activateBudgetTab('recommended'); bi.focus(); };
+  const recTab = $('#budgetRecommendedTab'), customTab = $('#budgetCustomTab');
+  [recTab, customTab].forEach((tab, i) => {
+    tab.onclick = () => activateBudgetTab(i === 0 ? 'recommended' : 'custom');
+    tab.onkeydown = e => {
+      if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) return;
+      e.preventDefault();
+      const next = e.key === 'Home' || e.key === 'ArrowLeft' && i === 1 ? 0 : e.key === 'End' || e.key === 'ArrowRight' && i === 0 ? 1 : i;
+      activateBudgetTab(next === 0 ? 'recommended' : 'custom', true);
+    };
+  });
   renderZB(a);
   emit('budget', { rule: st.budget.rule, best: scored[0] && scored[0].r.id });
 };
@@ -660,7 +731,7 @@ function renderZB(a) {
   const rows = $('#zbRows');
   if (!rows.dataset.for || rows.dataset.for !== String(st.id) + ':' + st.budget.zbv) {
     rows.dataset.for = String(st.id) + ':' + st.budget.zbv;
-    rows.innerHTML = ZB_NAMES.map((n, i) => `<div class="zb-row"><label for="zb${i}">${n}</label><div class="money-in"><input class="input" id="zb${i}" inputmode="decimal" value="${st.budget.zb[i]}"></div></div>`).join('');
+    rows.innerHTML = ZB_NAMES.map((n, i) => `<div class="zb-row"><label for="zb${i}">${n}</label><div class="money-in"><input class="input" id="zb${i}" inputmode="decimal" aria-label="${esc(n)} monthly budget amount" value="${st.budget.zb[i]}"></div></div>`).join('');
     $$('#zbRows input').forEach((inp, i) => inp.oninput = () => { st.budget.zb[i] = +String(inp.value).replace(/[^0-9.]/g, '') || 0; zbSummary(a); });
   }
   zbSummary(a);
@@ -668,9 +739,18 @@ function renderZB(a) {
 function zbSummary(a) {
   const left = zbLeft(a); const el = $('#zbLeft'); el.textContent = money(left);
   el.style.color = Math.abs(left) < 1 ? 'var(--good-t)' : left < 0 ? 'var(--crit-t)' : 'var(--ink)';
+  $('#zbIncome').textContent = money(st.budget.inc ?? a.I);
+  $('#zbAllocationLabel').textContent = `${money((st.budget.inc ?? a.I) - left)} assigned`;
+  $('#zbLeftCard').classList.toggle('is-over', left < -0.5);
+  $('#zbBalanceNote').className = `budget-balance-note${left < -0.5 ? ' is-over' : Math.abs(left) < 1 ? ' is-balanced' : ''}`;
+  $('#zbBalanceNote').innerHTML = left < -0.5
+    ? `<strong>Over budget by ${money(Math.abs(left))}.</strong> Reduce a category or adjust the monthly income before assigning more.`
+    : Math.abs(left) < 1
+      ? '<strong>Balanced.</strong> Every dollar of the planned income has a job.'
+      : `<strong>${money(left)} left to assign.</strong> Add it to a savings goal, emergency fund or another category.`;
   const cols = ['var(--s1)', 'var(--s1)', 'var(--s4)', 'var(--s2)', 'var(--s2)', 'var(--s2)', 'var(--muted)', 'var(--s3)', 'var(--s3)'];
   $('#zbBar').innerHTML = st.budget.zb.map((v, i) => v > 0 ? `<div style="flex:${v} 1 0;background:${cols[i]}" title="${ZB_NAMES[i]}: ${money(v)}"></div>` : '').join('') + (left > 0 ? `<div style="flex:${left} 1 0;background:var(--surface-2)" title="Unassigned ${money(left)}"></div>` : '');
-  if (st.budget.rule === 'zero') $('#ruleAdvice').innerHTML = `<strong>Left to assign: ${money(left)}.</strong> ${left > 0 ? 'Give it to the emergency fund first.' : left < 0 ? 'The plan spends more than comes in. Trim a spending row.' : 'Every dollar has a job.'}`;
+  $('#zbBar').setAttribute('aria-label', left < 0 ? `Budget exceeds monthly income by ${money(Math.abs(left))}` : `${money(Math.max(0, (st.budget.inc ?? a.I) - left))} assigned, ${money(left)} left`);
   emit('zb', { left, rule: st.budget.rule });
 }
 function bindBudget() {
