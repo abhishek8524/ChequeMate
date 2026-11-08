@@ -1,7 +1,7 @@
-# IP-only mode: plain HTTP on port 80, no domain needed.
-# When you have a domain (A record -> server IP), replace ":80" with "yourdomain.com, www.yourdomain.com"
-# and Caddy will get an HTTPS certificate automatically.
-:80 {
+# Domain mode: Caddy gets and renews HTTPS certificates automatically.
+# Needs DNS A records for chequemate.work and www.chequemate.work -> the server IP.
+# (For plain HTTP on the IP only, replace the first line with ":80".)
+chequemate.work, www.chequemate.work {
 	encode gzip
 	reverse_proxy 127.0.0.1:8000 {
 		# server.py rate-limits per visitor using this header
