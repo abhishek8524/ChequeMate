@@ -304,11 +304,11 @@ function renderScore() {
       <p>Scores higher than <b>${pct(b)}</b> of the bank's customers. It blends runway on EI, safety net, saving rate and overdraft history.</p>
       <p class="score-tip"><b>Biggest gain:</b> ${esc(w.tip)} <a href="#${w.go}">Open ${esc(w.go === 'plan' ? 'Plan' : w.go === 'budget' ? 'Budget' : 'details')}</a></p>
     </div>
-    <div class="score-parts">${s.parts.map(p => `<div class="sp-row"><span class="sp-k">${p.k}</span><span class="sp-track"><i data-w="${p.pts / p.max * 100}" style="--c:var(--${p.v >= .66 ? 'good' : p.v >= .33 ? 'warn' : 'crit'})"></i></span><span class="sp-v">${p.pts}<small>/${p.max}</small></span></div>`).join('')}</div>
+    <div class="score-rings">${s.parts.map(p => { const C = 2 * Math.PI * 16; return `<div class="sr" style="--c:var(--${p.v >= .66 ? 'good' : p.v >= .33 ? 'warn' : 'crit'})"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="16" class="bg"/><circle cx="20" cy="20" r="16" class="fg" transform="rotate(-90 20 20)" style="stroke-dasharray:${C.toFixed(1)};stroke-dashoffset:${C.toFixed(1)}" data-off="${(C * (1 - p.pts / p.max)).toFixed(1)}"/></svg><b>${p.pts}<small>/${p.max}</small></b><span>${p.k}</span></div>`; }).join('')}</div>
   </div>`;
   requestAnimationFrame(() => requestAnimationFrame(() => {
     const g = $('.g-arc', el); if (g) g.style.strokeDashoffset = g.dataset.off;
-    $$('.sp-track i', el).forEach(i => i.style.width = i.dataset.w + '%');
+    $$('.score-rings .fg', el).forEach(c => c.style.strokeDashoffset = c.dataset.off);
   }));
   const n = $('.g-num .n', el); const to = s.score;
   if (reduce) n.textContent = to; else { const t0 = performance.now(); const st = now => { const k = Math.min(1, (now - t0) / 1100); n.textContent = Math.round(to * (1 - Math.pow(1 - k, 3))); if (k < 1) requestAnimationFrame(st); }; requestAnimationFrame(st); }

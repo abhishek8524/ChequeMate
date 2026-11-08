@@ -157,19 +157,39 @@ const shadePlugin = { id: 'shade', beforeDatasetsDraw(c, _a, o) {
   ctx.restore(); } };
 const moneyTick = v => Math.abs(v) >= 1000 ? (v < 0 ? '-' : '') + '$' + Math.round(Math.abs(v) / 1000) + 'k' : money(v);
 
+/* money in rises, money out falls, the line is what's left over */
+function drawFlow(a) {
+  const n = st.flowN || 12, k = n >= a.n ? 0 : a.n - n, L = monthLabels(a).slice(k), ins = a.in.slice(k), outs = a.out.slice(k), net = ins.map((v, i) => v - outs[i]);
+  const s1 = V('--s1'), s2 = V('--s2'), good = V('--good'), crit = V('--crit');
+  const grad = (col, down) => c => { const { ctx, chartArea } = c.chart; if (!chartArea) return col; const g = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom); g.addColorStop(down ? 1 : 0, col); g.addColorStop(.5, alpha(col, .55)); return g; };
+  const thin = n > 24;
+  chart('flowChart', { data: { labels: L, datasets: [
+    { type: 'bar', label: 'Money in', data: ins, backgroundColor: grad(s1), borderRadius: thin ? 3 : 7, borderSkipped: false, stack: 'f', maxBarThickness: 26, order: 2 },
+    { type: 'bar', label: 'Money out', data: outs.map(v => -v), backgroundColor: grad(s2, true), borderRadius: thin ? 3 : 7, borderSkipped: false, stack: 'f', maxBarThickness: 26, order: 2 },
+    { type: 'line', label: 'Left over', data: net, borderColor: V('--ink'), borderWidth: 2, tension: .35, order: 1,
+      pointRadius: thin ? 0 : 4, pointHoverRadius: 6, pointBackgroundColor: net.map(v => v >= 0 ? good : crit), pointBorderColor: V('--surface'), pointBorderWidth: 2 },
+  ] }, options: baseOpts({ scales: { x: { stacked: true }, y: { stacked: true, ticks: { callback: v => moneyTick(Math.abs(v)) } } },
+    plugins: { tooltip: { callbacks: { label: i => ` ${i.dataset.label}: ${i.dataset.label === 'Left over' ? (i.raw < 0 ? '−' : '+') : ''}${money(Math.abs(i.raw))}` } } } }) });
+  const avgIn = ins.reduce((s, v) => s + v, 0) / (ins.length || 1), avgOut = outs.reduce((s, v) => s + v, 0) / (outs.length || 1), red = net.filter(v => v < 0).length;
+  const sum = $('#flowSum'); if (sum) sum.innerHTML = `<span><i style="background:${s1}"></i>In ${money(avgIn)}<small>/mo</small></span><span><i style="background:${s2}"></i>Out ${money(avgOut)}<small>/mo</small></span><span class="${red > n / 3 ? 'bad' : ''}"><i class="dot"></i>${red} of ${ins.length} months in the red</span>`;
+}
+
 /* ---------------- runway strip (signature) ---------------- */
 function strip(r, o = {}) {
   const max = o.max || 24, v = r.v, inf = v === Infinity, over = inf || v > max;
   const w = over ? 100 : (v / max) * 100;
   const s = o.fill || (inf ? 'good' : status(v));
   const ticks = [0, 6, 12, 18, 24, 36, 48].filter(t => t <= max);
-  const marks = (o.marks || []).filter(m => m.at > 0 && m.at <= max).map(m => `<div class="strip-mark${m.cls ? ' ' + m.cls : ''}" style="left:${m.at / max * 100}%"><span>${esc(m.label)}</span></div>`).join('');
+  const FLAG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 21V4M6 4h11l-2.5 4L17 12H6"/></svg>';
+  const marks = (o.marks || []).filter(m => m.at > 0 && m.at <= max).map(m => `<div class="mb-flag${m.cls ? ' ' + m.cls : ''}" style="left:${m.at / max * 100}%">${FLAG}<span>${esc(m.label)}</span></div>`).join('');
+  const fillTo = v === 0 ? 0 : over ? max : v;
+  const cells = Array.from({ length: max }, (_, i) => { const f = Math.max(0, Math.min(1, fillTo - i)); return `<span class="mb" style="--f:${f.toFixed(2)};--d:${Math.min(i, 30) * 28}ms"></span>`; }).join('');
   return `<div class="strip${o.compact ? ' compact' : ''}">
     <div class="strip-top">
       <div class="strip-big"><span class="n" data-to="${inf ? 'inf' : v}">${inf ? '120+' : '0.0'}</span><span class="u">${inf ? 'months, no shortfall' : 'months'}</span></div>
       ${o.pill ? `<span class="pill ${o.pill[0]}">${esc(o.pill[1])}</span>` : ''}
     </div>
-    <div class="strip-track" style="--tick:${100 / max}%"><div class="strip-fill${v === 0 ? ' zero' : ''}" data-w="${w}" style="--fill-c:var(--${s})"></div>${marks}</div>
+    <div class="mblocks" role="img" aria-label="${inf ? 'Never runs out' : v + ' of ' + max + ' months'}" style="--n:${max};--fill-c:var(--${s})">${cells}${marks}</div>
     <div class="strip-scale">${ticks.map(t => `<span style="left:${t / max * 100}%">${t}${t === max ? (over && !inf ? '+' : '') + ' mo' : ''}</span>`).join('')}</div>
     ${o.note ? `<p class="strip-note">${o.note}</p>` : ''}
   </div>`;
@@ -186,7 +206,7 @@ function ringsSVG(items, size = 188) {
   return h + '</svg>';
 }
 function animateRings(root) { $$('.rings .arc', root).forEach(a => { requestAnimationFrame(() => requestAnimationFrame(() => a.style.strokeDashoffset = a.dataset.off)); }); }
-const LOGO = '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 19h8M9.2 16.6h5.6l-.8-5h-4zM9.6 11.6C8.2 10.8 7.8 9.2 8.7 8c.8-1 2.3-1.3 3.3-.4.9-.9 2.4-.6 3.3.4.9 1.2.5 2.8-.9 3.6"/></svg>';
+const LOGO = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.8 8.4 7.4 15.6h9.2l3.6-7.2-4.5 3.4L12 5.2l-3.7 6.6z" fill="#fff"/><rect x="7.2" y="16.7" width="9.6" height="2.5" rx="1.25" fill="#fff"/></svg>';
 function tone(v) { return v === Infinity || v >= 6 ? 'good' : v >= 3 ? 'warn' : 'crit'; }
 function walletCard(o) {
   return `<div class="wcard ${o.tone}" data-tilt>
@@ -203,6 +223,7 @@ function bindTilt(root) {
   });
 }
 function animateStrips(root) {
+  $$('.mblocks', root).forEach(m => { m.classList.remove('go'); requestAnimationFrame(() => requestAnimationFrame(() => m.classList.add('go'))); });
   $$('.strip-fill', root).forEach(f => { f.style.width = '0'; requestAnimationFrame(() => requestAnimationFrame(() => { f.style.width = f.dataset.w + '%'; })); });
   $$('.strip-big .n', root).forEach(n => { const t = n.dataset.to; if (t === 'inf') return; tween(n, +t, x => x.toFixed(1), 900); });
 }
@@ -396,13 +417,23 @@ RENDER.customer = () => {
       <div><span class="t" style="color:var(--ring3)">Saving</span><span class="v">${Math.round(Math.max(sr0, 0) * 100)}<small>/20%</small></span><span class="s">Share of income left each month</span></div>
     </div></div>`;
   animateRings($('#rings'));
+  const IC = {
+    in: '<path d="M12 3v11M7.5 9.5 12 14l4.5-4.5"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/>',
+    out: '<path d="M12 14V3M7.5 7.5 12 3l4.5 4.5"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/>',
+    fixed: '<path d="M4 11 12 4l8 7"/><path d="M6 9.5V20h12V9.5"/><path d="M10 20v-5h4v5"/>',
+    buffer: '<path d="M19 10.5c0-3-3-5.5-7-5.5-4.4 0-7.5 2.6-7.5 6 0 1.8.9 3.3 2.3 4.4L6 19h3l.7-1.6c.7.2 1.5.3 2.3.3s1.6-.1 2.3-.3L15 19h3l-.5-3c.9-.6 1.6-1.4 2-2.3H21v-3h-2z"/><path d="M10 7.5h3"/><circle cx="15.5" cy="10" r=".6" fill="currentColor"/>',
+    loan: '<rect x="3.5" y="6" width="17" height="12" rx="2.5"/><path d="M3.5 10h17M7 14.5h4"/>',
+    runway: '<path d="M7 3h10M7 21h10M8 3c0 4 8 5 8 9s-8 5-8 9M16 3c0 4-8 5-8 9s8 5 8 9"/>',
+  };
+  const card = (ic, c, l, v, s) => `<div style="--kc:${c}"><span class="k"><i class="lic">${'<svg viewBox="0 0 24 24">' + IC[ic] + '</svg>'}</i>${l}</span><span class="v" title="${esc(v)}">${v}</span><span class="s">${s}</span></div>`;
   $('#ledger').innerHTML = [
-    ['I', 'Money in', money(a.I), 'Typical month'],
-    ['F', 'Fixed costs', money(a.F), 'Bills, insurance, loan'],
-    ['S', 'Spending', money(a.S), `${a.I > 0 ? pct(a.S / a.I) : '—'} of money in`],
-    ['B', 'Buffer', money(a.B), 'Avg balance, last 6 months'],
-    ['', 'Runway today', base.v === Infinity ? 'No shortfall' : rwText(base) + ' mo', base.v === Infinity ? 'Money in covers spending' : 'Already spending more than comes in'],
-  ].map(([k, l, v, s]) => `<div><span class="k">${k ? `<b>${k}</b>` : ''}${l}</span><span class="v" title="${esc(v)}">${v}</span><span class="s">${s}</span></div>`).join('');
+    card('in', 'var(--s1)', 'Money in', money(a.I), 'Typical month'),
+    card('out', 'var(--warn)', 'Money out', money(a.S), `${a.I > 0 ? pct(a.S / a.I) : '—'} of money in`),
+    card('fixed', 'var(--purple)', 'Fixed costs', money(a.F), 'Bills, insurance, loan'),
+    card('buffer', 'var(--good)', 'Savings buffer', money(a.B), 'Avg balance, last 6 months'),
+    card('loan', 'var(--indigo)', 'Loan payment', a.P > 0 ? money(a.P) : 'None', a.P > 0 ? 'Every month, still running' : 'No running loan'),
+    card('runway', base.v === Infinity || base.v >= 6 ? 'var(--teal)' : 'var(--crit)', 'Runway today', base.v === Infinity ? 'No shortfall' : rwText(base) + ' mo', base.v === Infinity ? 'Money in covers spending' : 'Already spending more than comes in'),
+  ].join('');
 
   const ei = runway(a.B, a.I, a.S, { mult: .55 });
   const p = eiPercentile(ei.v);
@@ -432,10 +463,8 @@ RENDER.customer = () => {
 
   // flow chart
   const L = monthLabels(a), s1 = V('--s1'), s2 = V('--s2');
-  chart('flowChart', { type: 'line', data: { labels: L, datasets: [
-    { label: 'Money in', data: a.in, borderColor: s1, backgroundColor: s1, borderWidth: 2.5, pointRadius: 0, pointHoverRadius: 5, tension: .35 },
-    { label: 'Money out', data: a.out, borderColor: s2, backgroundColor: s2, borderWidth: 2.5, pointRadius: 0, pointHoverRadius: 5, tension: .35 },
-  ] }, options: baseOpts({ scales: { y: { ticks: { callback: moneyTick } } }, plugins: { tooltip: { callbacks: { label: i => ` ${i.dataset.label}: ${money(i.raw)}` } } } }) });
+  drawFlow(a);
+  $$('#flowRange button').forEach(b => { b.setAttribute('aria-pressed', String(+b.dataset.n === (st.flowN || 12))); b.onclick = () => { st.flowN = +b.dataset.n; $$('#flowRange button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); drawFlow(a); }; });
   chart('balChart', { type: 'line', data: { labels: L, datasets: [
     { label: 'Average balance', data: a.bal, borderColor: s1, backgroundColor: areaFill(s1), fill: 'origin', borderWidth: 2.5, pointRadius: 0, pointHoverRadius: 5, tension: .35 },
   ] }, plugins: [shadePlugin], options: baseOpts({ scales: { y: { ticks: { callback: moneyTick } } },

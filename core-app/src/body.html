@@ -204,7 +204,8 @@
           </div>
         </div>
         <div class="panel">
-          <div class="panel-head"><h2>Money in and out</h2><div class="legend"><span><i class="line" style="background:var(--s1)"></i>Money in</span><span><i class="line" style="background:var(--s2)"></i>Money out</span></div></div>
+          <div class="panel-head"><h2>Money in and out</h2><div class="seg" id="flowRange" role="group" aria-label="Range"><button type="button" data-n="12">12 months</button><button type="button" data-n="24">2 years</button><button type="button" data-n="999">All</button></div></div>
+          <div class="flow-sum" id="flowSum"></div>
           <div class="chart-box"><canvas id="flowChart" aria-label="Monthly money in and money out"></canvas></div>
         </div>
         <div class="panel sankey-panel">
