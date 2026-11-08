@@ -10,6 +10,7 @@
 *.key
 *credentials*.json
 *service-account*.json
+.pytest_cache/
 # Temporary files
 *.log
 __pycache__/
