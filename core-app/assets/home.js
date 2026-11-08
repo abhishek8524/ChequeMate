@@ -211,7 +211,7 @@ function renderDash() {
     <div><h3 style="font:800 24px var(--font);margin:6px 0 4px">Flip a card</h3><p class="why" style="margin:0 0 14px;opacity:.65">Hover or tap a card to see the answer for this customer.</p>
       <div class="flips" id="flips">${FLIPS.map((f, i) => `<button type="button" class="flip" style="--c:${f.c}" aria-pressed="false" data-i="${i}"><span class="fi"><span class="fr"><span class="ic">${svg(f.ic)}</span><b>${f.t}</b><small>${f.s}</small></span><span class="bk"><span class="lbl">${f.t}</span><span class="big" id="fv${i}">…</span><p id="fp${i}">Working it out…</p></span></span></button>`).join('')}</div></div>
 
-    <div class="deep"><a href="${appLink('customer')}">Customer page <span>›</span></a><a href="${appLink('shock')}">Plan ahead <span>›</span></a><a href="${appLink('plan')}">Saving plan <span>›</span></a><a href="${appLink('paradox')}">Findings across 4,500 customers <span>›</span></a></div>`;
+    <div class="deep"><a href="${appLink('customer')}">You <span>›</span></a><a href="${appLink('shock')}">Emergency fund <span>›</span></a><a href="${appLink('plan')}">Saving plan <span>›</span></a><a href="${appLink('paradox')}">About <span>›</span></a></div>`;
   $$('#flips .flip').forEach(b => b.onclick = () => b.setAttribute('aria-pressed', String(b.getAttribute('aria-pressed') !== 'true')));
   bindWhatIf(); drawHistory(hist); fillFlips();
 }

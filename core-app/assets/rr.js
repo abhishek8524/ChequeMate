@@ -98,8 +98,8 @@ function closeMenus(except) {
 
 /* ---------------- search (/ shortcut, grouped, keyboard) ---------------- */
 const PAGES = [['overview', 'Overview', 'Your accounts and resilience'], ['situations', 'Situations', 'Job loss, bills, repairs: test your runway'], ['saving', 'Saving plan', 'Safety-net savings and recovery options'], ['investing', 'Investing', 'Order to fill things, growth calculator'], ['yourdata', 'Your money', 'Score, history, compare, budget rule'],
-  ['paradox', 'Findings', 'The paycheque paradox across 4,500 customers'], ['customer', 'Customer deep-dive', 'Score, money flow'], ['shock', 'Plan ahead', 'Situations and stress grid'], ['plan', 'Plan builder', 'Goal and backup plans'],
-  ['budget', 'Budget rules', '50/30/20 and more'], ['coach', 'Rookie', 'Ask the 3D coach'], ['arena', 'Quests', 'Points and badges'], ['play', 'Play', 'Runway Run, quiz'], ['data', 'Upload your data', 'CSV portfolio'], ['resources', 'Resources', 'Official sources'], ['profile', 'Profile', 'Your details']];
+  ['paradox', 'About', 'The paycheque paradox across 4,500 customers'], ['customer', 'You', 'Score, money flow'], ['shock', 'Emergency fund', 'Situations and stress grid'], ['plan', 'Plan builder', 'Goal and backup plans'],
+  ['budget', 'Budget rules', '50/30/20 and more'], ['coach', 'Rookie', 'Ask the 3D coach'], ['arena', 'Challenges', 'Points, badges and games'], ['data', 'Upload your data', 'CSV portfolio'], ['resources', 'Resources', 'Official sources'], ['profile', 'Profile', 'Your details']];
 const HELP = [['How do I apply for EI?', 'Apply the week your job ends, even before your record of employment arrives.'], ['What is my runway?', 'How many months your savings last if a situation hits.'],
   ['How much should my emergency fund be?', 'Three to six months of money out is a common target.'], ['TFSA or RRSP?', 'It depends on your tax rate now and later.'], ['Can my bank pause a loan payment?', 'Many lenders offer deferrals if you call before missing one.']];
 let sel = -1, results = [];

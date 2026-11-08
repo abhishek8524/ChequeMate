@@ -391,3 +391,7 @@ footer.ds-foot { padding-bottom: 28px; }
   footer.ds-foot { padding-bottom: 104px; } .ck-sig::before { width: 66px; } .ck-sig { width: 84px; } .ck-foot { overflow: hidden; }
 }
 .s4:has(.dash-empty) { min-height: auto; padding-bottom: 150px; }
+
+/* type pairing shared with the app: Bricolage Grotesque headings, Manrope text */
+:root { --font: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; --font-h: "Bricolage Grotesque", "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; --font-r: "Bricolage Grotesque", "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+

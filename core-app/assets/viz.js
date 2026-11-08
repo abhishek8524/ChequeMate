@@ -1,5 +1,5 @@
 /* ChequeMate special graphs: a money-flow Sankey (income sources -> account -> where it goes)
-   and the 3D runway terrain for Plan ahead stress grid. */
+   and the 3D runway terrain for the Emergency fund stress grid. */
 (() => {
 'use strict';
 const CM = window.ChequeMate, D3 = window.CM3D || {};
@@ -59,7 +59,7 @@ function setMode(m) {
   mode = D3.ok ? m : 'grid'; store.set('cm.heatMode', mode);
   $$('#heatMode button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.m === mode)));
   $('#heatGrid').hidden = mode !== 'grid'; $('#terrain').hidden = mode !== '3d';
-  $('#heatHint').textContent = mode === '3d' ? 'Taller is safer: each bar is months of runway. Drag to orbit, hover to read, select a bar to load that scenario.' : 'Months of runway for every mix of income cut and bill increase. Select a cell to load it.';
+  $('#heatHint').textContent = mode === '3d' ? 'Taller is safer: each bar is how many months your emergency fund lasts. Drag to orbit, hover to read, select a bar to load that scenario.' : 'How long your emergency fund lasts, in months, for every mix of income cut and bill increase. Select a cell to load it.';
   if (mode === '3d') {
     if (!terr && D3.mountTerrain) terr = D3.mountTerrain($('#terrain'), (i, j) => { const s = CM.st.shock; s.inc = INCS[j]; s.bills = BILLS[i]; s.preset = 'custom'; CM.go('shock'); });
     if (terr) terr.set(terrainData());

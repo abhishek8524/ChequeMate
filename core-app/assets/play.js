@@ -1,5 +1,5 @@
 /* ChequeMate Play: Runway Run (a year of life, one month at a time), Who lasts longer? (the paradox as a quiz),
-   and the 3D coin tower in Plan ahead. Uses the same engine and numbers as every other page. */
+   and the 3D coin tower on the Emergency fund page. Uses the same engine and numbers as every other page. */
 (() => {
 'use strict';
 const CM = window.ChequeMate, D3 = window.CM3D || {};
@@ -300,13 +300,13 @@ function setTab(t) {
 }
 let bound = false;
 on('view', ({ view }) => {
-  if (view !== 'play') return;
+  if (view !== 'arena') return; // games are on the Challenges page
   if (!bound) { bound = true; $$('#playTabs button').forEach(b => b.onclick = () => { Q().sfx('tap'); setTab(b.dataset.t); }); }
   setTab(store.get('cm.playTab', 'run'));
 });
-on('account', () => { if (CM.view === 'play' || R) setTimeout(() => { newRun(); }, 0); });
+on('account', () => { if (CM.view === 'arena' || R) setTimeout(() => { newRun(); }, 0); });
 
-/* ================= COIN TOWER (Plan ahead) ================= */
+/* ================= COIN TOWER (Emergency fund) ================= */
 let coins = null;
 on('shock', d => {
   if (CM.view !== 'shock' && !$('#coin3d')?.offsetParent) return;

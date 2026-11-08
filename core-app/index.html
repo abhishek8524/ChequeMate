@@ -5,14 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Resilience Rewired</title>
 <meta name="description" content="ChequeMate: financial resilience engine. Runway, shocks, plans, budgets and investing for any bank customer.">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,600&display=swap">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Manrope:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,600&display=swap">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23FFB347'/%3E%3Cstop offset='1' stop-color='%23FF2D55'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='24' height='24' rx='6' fill='url(%23g)'/%3E%3Cpath d='M3.8 8.4 7.4 15.6h9.2l3.6-7.2-4.5 3.4L12 5.2l-3.7 6.6z' fill='%23fff'/%3E%3Crect x='7.2' y='16.7' width='9.6' height='2.5' rx='1.25' fill='%23fff'/%3E%3Cpath d='M9.7 12.3l1.6 1.6 3-3.3' fill='none' stroke='%23FF5E62' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="assets/styles.css?v=8b5000ec">
-<link rel="stylesheet" href="assets/game.css?v=8b5000ec">
-<link rel="stylesheet" href="assets/play.css?v=8b5000ec">
-<link rel="stylesheet" href="assets/glass.css?v=8b5000ec">
-<link rel="stylesheet" href="assets/rr.css?v=8b5000ec">
-<link rel="stylesheet" href="assets/footer.css?v=8b5000ec">
+<link rel="stylesheet" href="assets/styles.css?v=b6a1410d">
+<link rel="stylesheet" href="assets/game.css?v=b6a1410d">
+<link rel="stylesheet" href="assets/play.css?v=b6a1410d">
+<link rel="stylesheet" href="assets/glass.css?v=b6a1410d">
+<link rel="stylesheet" href="assets/rr.css?v=b6a1410d">
+<link rel="stylesheet" href="assets/footer.css?v=b6a1410d">
 <script>(function(){var r=document.documentElement;try{var q=new URLSearchParams(location.search).get('ui');if(q==='rr'||q==='ios')localStorage.setItem('cm.ui',JSON.stringify(q));}catch(e){}var ui='ios';try{ui=JSON.parse(localStorage.getItem('cm.ui')||'"ios"');}catch(e){}r.setAttribute('data-ui',ui==='rr'?'rr':'ios');try{var t=JSON.parse(localStorage.getItem('cm.theme')||'"system"');var d=t==='dark'||(t==='system'&&matchMedia('(prefers-color-scheme: dark)').matches);r.setAttribute('data-rr-theme',d?'dark':'light');r.setAttribute('data-text',JSON.parse(localStorage.getItem('cm.rr.text')||'"standard"'));}catch(e){}})();</script>
 </head>
 <body>
@@ -25,17 +25,15 @@
     </a>
     <nav class="nav" id="nav">
       <div class="side-sec"><span>Overview</span>
-        <a href="#paradox"><span class="sf" style="--c:var(--indigo)"><svg viewBox="0 0 24 24"><path d="M5 19V11M12 19V5M19 19v-6"/></svg></span>The paradox</a>
-        <a href="#data"><span class="sf" style="--c:var(--teal)"><svg viewBox="0 0 24 24"><path d="M12 15V4M7.5 8.5 12 4l4.5 4.5M5 15v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3"/></svg></span>Your data</a>
-        <a href="#arena"><span class="sf" style="--c:var(--yellow)"><svg viewBox="0 0 24 24"><path d="M4 18h16M5 15 3.5 7l5 4L12 5l3.5 6 5-4L19 15z"/></svg></span>Quests</a>
-        <a href="#play"><span class="sf" style="--c:var(--pink)"><svg viewBox="0 0 24 24"><rect x="2.5" y="7" width="19" height="11" rx="5.5"/><path d="M7.5 10.5v4M5.5 12.5h4M15.5 11.5h.01M18 13.5h.01"/></svg></span>Play</a>
+        <a href="#paradox"><span class="sf" style="--c:var(--indigo)"><svg viewBox="0 0 24 24"><path d="M5 19V11M12 19V5M19 19v-6"/></svg></span>About</a>
+        <a href="#data"><span class="sf" style="--c:var(--teal)"><svg viewBox="0 0 24 24"><path d="M12 15V4M7.5 8.5 12 4l4.5 4.5M5 15v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3"/></svg></span>The data</a>
       </div>
       <div class="side-sec"><span>This customer</span>
-        <a href="#customer"><span class="sf" style="--c:var(--accent)"><svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c1.2-3.6 3.8-5.3 7-5.3s5.8 1.7 7 5.3"/></svg></span>Customer</a>
-        <a href="#shock"><span class="sf" style="--c:var(--warn)"><svg viewBox="0 0 24 24"><path d="M13 3 5 13.5h6.5L10.5 21 19 10.5h-6.5z"/></svg></span>Plan ahead</a>
-        <a href="#plan"><span class="sf" style="--c:var(--good)"><svg viewBox="0 0 24 24"><path d="M4.5 12.5 9.5 17.5 19.5 6.5"/></svg></span>Plan</a>
+        <a href="#customer"><span class="sf" style="--c:var(--accent)"><svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c1.2-3.6 3.8-5.3 7-5.3s5.8 1.7 7 5.3"/></svg></span>You</a>
         <a href="#budget"><span class="sf" style="--c:var(--purple)"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9h-9z"/><path d="M15 3.5A9 9 0 0 1 20.5 9H15z"/></svg></span>Budget</a>
+        <a href="#shock"><span class="sf" style="--c:var(--warn)"><svg viewBox="0 0 24 24"><path d="M13 3 5 13.5h6.5L10.5 21 19 10.5h-6.5z"/></svg></span>Emergency fund</a>
         <a href="#invest"><span class="sf" style="--c:var(--mint)"><svg viewBox="0 0 24 24"><path d="M4 17 10 11l4 4 6-7M15 8h5v5"/></svg></span>Investing</a>
+        <a href="#arena"><span class="sf" style="--c:var(--yellow)"><svg viewBox="0 0 24 24"><path d="M4 18h16M5 15 3.5 7l5 4L12 5l3.5 6 5-4L19 15z"/></svg></span>Challenges</a>
       </div>
       <div class="side-sec"><span>Tools</span>
         <a href="#coach"><span class="sf" style="--c:var(--good)"><svg viewBox="0 0 24 24"><path d="M20 11.5c0 4.1-3.6 7.5-8 7.5-1.2 0-2.3-.2-3.3-.7L4 19.5l1.2-3.6A7.2 7.2 0 0 1 4 11.5C4 7.4 7.6 4 12 4s8 3.4 8 7.5z"/></svg></span>Coach</a>
@@ -77,16 +75,16 @@
       <a class="rr-tab" href="#saving" data-v="saving">Saving plan</a>
       <a class="rr-tab" href="#yourdata" data-v="yourdata"><img class="rr-ico on" src="assets/rr/nav-your-data-on.svg" width="18" height="18" alt=""><img class="rr-ico off" src="assets/rr/nav-your-data-off.svg" width="18" height="18" alt="">Your money</a>
       <a class="rr-tab" href="#investing" data-v="investing"><img class="rr-ico on" src="assets/rr/nav-investing-on.svg" width="18" height="18" alt=""><img class="rr-ico off" src="assets/rr/nav-investing-off.svg" width="18" height="18" alt="">Investing</a>
-      <a class="rr-tab" href="#paradox" data-v="paradox">Findings</a>
+      <a class="rr-tab" href="#paradox" data-v="paradox">About</a>
       <div class="rr-more"><button class="rr-tab" type="button" id="rrMoreBtn" aria-haspopup="menu" aria-expanded="false" aria-controls="rrMenu">Extras <img class="rr-ico caret" src="assets/rr/arrow-down.svg" width="12" height="12" alt=""></button>
-        <div class="rr-menu" id="rrMenu" role="menu" hidden><h4>Extra features</h4><a href="#customer" role="menuitem" data-v="customer">Customer deep-dive<span>Score, rings, money flow and insights</span></a><a href="#shock" role="menuitem" data-v="shock">Plan ahead<span>Every situation, boss rush, 3D terrain</span></a><a href="#plan" role="menuitem" data-v="plan">Plan builder<span>Goal and backup plans in detail</span></a><a href="#budget" role="menuitem" data-v="budget">Budget rules<span>Six rules and a zero-based planner</span></a><a href="#coach" role="menuitem" data-v="coach">Coach Mate<span>The 3D pawn coach</span></a><a href="#arena" role="menuitem" data-v="arena">Quests and ranks<span>Points, badges, missions, leaderboards</span></a><a href="#play" role="menuitem" data-v="play">Play<span>Runway Run and Who lasts longer?</span></a><a href="#data" role="menuitem" data-v="data">Upload your data<span>Score a whole CSV in your browser</span></a><a href="#resources" role="menuitem" data-v="resources">Resources<span>Official Canadian sources</span></a><a href="#profile" role="menuitem" data-v="profile">Profile<span>Details the bank data can’t know</span></a></div></div>
+        <div class="rr-menu" id="rrMenu" role="menu" hidden><h4>Extra features</h4><a href="#customer" role="menuitem" data-v="customer">You<span>Score, rings, money flow and insights</span></a><a href="#shock" role="menuitem" data-v="shock">Emergency fund<span>Every situation, boss rush, 3D terrain</span></a><a href="#budget" role="menuitem" data-v="budget">Budget rules<span>Six rules and a zero-based planner</span></a><a href="#coach" role="menuitem" data-v="coach">Coach Mate<span>The 3D pawn coach</span></a><a href="#arena" role="menuitem" data-v="arena">Challenges and ranks<span>Points, badges, missions, leaderboards</span></a><a href="#data" role="menuitem" data-v="data">Upload your data<span>Score a whole CSV in your browser</span></a><a href="#resources" role="menuitem" data-v="resources">Resources<span>Official Canadian sources</span></a><a href="#profile" role="menuitem" data-v="profile">Profile<span>Details the bank data can’t know</span></a></div></div>
       <span class="rr-spacer"></span>
       <div class="rr-search" id="rrSearchBox"><img class="rr-ico" src="assets/rr/search.svg" width="18" height="18" alt=""><input id="rrSearch" type="search" placeholder="Search accounts, payments, help…" aria-label="Search accounts, payments, plans and help" aria-controls="rrResults" aria-expanded="false" autocomplete="off"><kbd>/</kbd><div class="rr-results" id="rrResults" role="listbox" hidden></div></div>
       <div class="rr-bellwrap"><button class="rr-bell" type="button" id="rrBell" aria-label="Notifications" aria-expanded="false"><img class="rr-ico" src="assets/rr/bell.svg" width="20" height="20" alt=""><span class="dot" id="rrBellDot"></span></button><div class="rr-notes" id="rrNotes" hidden></div></div>
     </nav>
     <div class="rr-only rr-jump" id="rrJump"></div>
     <header class="toolbar">
-      <span class="tb-title" id="tbTitle">The paradox</span>
+      <span class="tb-title" id="tbTitle">About</span>
       <span class="tb-space"></span>
       <form class="search" id="acctForm" autocomplete="off" role="search">
         <div class="search-field">
@@ -201,7 +199,7 @@
 
       <!-- CUSTOMER -->
       <section class="view" data-view="customer" hidden>
-        <div class="head"><h1>Customer</h1><p>Typical month, savings buffer and runway, from this account's own history. Every number comes from their own records.</p></div>
+        <div class="head"><h1>You</h1><p>Typical month, savings buffer and runway, from this account's own history. Every number comes from their own records.</p></div>
         <div class="cust-hero">
           <div id="wcard"></div>
           <div class="panel laid-off">
@@ -245,53 +243,7 @@
 
       <!-- PLAN AHEAD -->
       <section class="view" data-view="shock" hidden>
-        <div class="head"><h1>Plan ahead</h1><p>Pick a scenario or size your own. Runway recalculates instantly, and every step of the math is shown.</p></div>
-        <div class="micr" data-micr></div>
-        <div class="boss-bar" id="bossBar"></div>
-        <div class="twists" id="twists"></div>
-        <div class="grid g-main">
-          <div class="panel">
-            <div id="shockStrip"></div>
-            <div id="verdict"></div>
-            <div class="formula" id="formula"></div>
-          </div>
-          <div class="panel">
-            <h2>Size the shock</h2>
-            <div class="field"><label for="sInc">Income kept <output id="oInc"></output></label><input type="range" id="sInc" min="0" max="100" step="5"><span class="hint">EI regular benefits pay 55% of insurable earnings, up to $729 a week in 2026.</span></div>
-            <div class="field"><label for="sEi">How long EI pays <output id="oEi"></output></label><input type="range" id="sEi" min="1" max="12" step="1"></div>
-            <div class="field"><label for="sBills">Household bills change <output id="oBills"></output></label><input type="range" id="sBills" min="0" max="60" step="5"></div>
-            <div class="field"><label for="sExtra">New monthly cost <output id="oExtra"></output></label><input type="range" id="sExtra" min="0" max="2500" step="50"><span class="hint">A rent hike, a car payment, childcare.</span></div>
-            <div class="field"><label for="sOne">One-off cost <output id="oOne"></output></label><input type="range" id="sOne" min="0" max="40000" step="250">
-              <div class="seg" id="oneQuick"><button type="button" data-m="0.5">½ month</button><button type="button" data-m="1">1 month</button><button type="button" data-m="2">2 months</button></div></div>
-            <div class="field"><span class="lab">After EI ends</span><div class="seg" id="afterSeg"><button type="button" data-v="back">Back at work</button><button type="button" data-v="none">Still no job</button></div></div>
-            <button class="btn" type="button" id="shockReset" style="justify-self:start">Clear the shock</button>
-          </div>
-        </div>
-        <div class="panel coin-panel">
-          <div class="coin-3d" id="coin3d" aria-hidden="true"></div>
-          <div class="coin-copy">
-            <span class="eyebrow">Runway in coins</span>
-            <h2 id="coinTitle"></h2>
-            <p id="coinText" class="ink2"></p>
-            <div class="legend"><span><i style="background:#F2BE45"></i>One month covered</span><span><i style="background:var(--crit);opacity:.45"></i>Month still needed</span></div>
-          </div>
-        </div>
-        <div class="panel">
-          <div class="panel-head"><h2>Balance month by month</h2><p id="projSub"></p></div>
-          <div class="legend"><span><i class="line" style="background:var(--s1)"></i>With the shock</span><span><i class="line" style="background:var(--muted)"></i>No shock</span></div>
-          <div class="chart-box"><canvas id="projChart" aria-label="Projected balance by month"></canvas></div>
-        </div>
-        <div class="panel">
-          <div class="panel-head"><h2>Stress grid</h2><div class="seg" id="heatMode"><button type="button" data-m="grid">Grid</button><button type="button" data-m="3d">3D terrain</button></div></div>
-          <p class="ink2 small" id="heatHint">Months of runway for every mix of income cut and bill increase. Select a cell to load it.</p>
-          <div class="table-wrap" id="heatGrid"><div class="heat" id="heat"></div></div>
-          <div class="terrain" id="terrain" hidden></div>
-        </div>
-      </section>
-
-      <!-- PLAN -->
-      <section class="view" data-view="plan" hidden>
-        <div class="head"><h1>Plan</h1><p>A goal plan to build the emergency fund now, and how far that fund would take you if money stopped coming in. Both use this customer's own numbers.</p></div>
+        <div class="head"><h1>Emergency fund</h1><p>Build your emergency fund, then see how long it would last if something went wrong. Pick a scenario below and everything on this page updates, using your own numbers.</p></div>
         <div class="micr" data-micr></div>
         <div class="plan-bento">
           <!-- emergency fund: wider column -->
@@ -306,6 +258,10 @@
             <div class="panel-head"><h2>How the fund grows</h2></div>
             <div class="chart-box short"><canvas id="goalChart" aria-label="Emergency fund growth"></canvas></div>
             <div id="goalText" class="callout"></div>
+          </div>
+        <div class="panel b-fund-moves">
+            <div class="panel-head"><h2>How long your emergency fund lasts after each move</h2><p>Bar 1 is what happens if the scenario hits. Each bar below adds one more move on top of the ones above it. The longer the bar, the longer your money lasts.</p></div>
+            <div class="bars" id="leverBars"></div>
           </div>
           </div>
           <!-- how far your emergency fund would take you: narrower column -->
@@ -325,29 +281,68 @@
           </div>
           </div>
         </div>
+        <h2 class="sec-title" id="scenTitle">Test a scenario</h2>
+        <div class="boss-bar" id="bossBar"></div>
+        <p class="pick-hint" id="pickHint" role="note"><span id="pickHintT">Pick a scenario below to see how long your emergency fund would last.</span></p>
+        <div class="twists" id="twists"></div>
+        <div class="grid g-main">
+          <div class="panel">
+            <div id="shockStrip"></div>
+            <div id="verdict"></div>
+            <div class="fx-head"><h3 id="fxTitle">How we worked this out</h3><p>This uses your own numbers for the scenario you picked. Read it from top to bottom: first what you have saved, then what happens each month.</p></div>
+            <div class="fx" id="formula" role="group" aria-labelledby="fxTitle"></div>
+          </div>
+          <div class="panel">
+            <h2>Size the shock</h2>
+            <div class="field"><label for="sInc">Income kept <output id="oInc"></output></label><input type="range" id="sInc" min="0" max="100" step="5"><span class="hint">EI regular benefits pay 55% of insurable earnings, up to $729 a week in 2026.</span></div>
+            <div class="field"><label for="sEi">How long EI pays <output id="oEi"></output></label><input type="range" id="sEi" min="1" max="12" step="1"></div>
+            <div class="field"><label for="sBills">Household bills change <output id="oBills"></output></label><input type="range" id="sBills" min="0" max="60" step="5"></div>
+            <div class="field"><label for="sExtra">New monthly cost <output id="oExtra"></output></label><input type="range" id="sExtra" min="0" max="2500" step="50"><span class="hint">A rent hike, a car payment, childcare.</span></div>
+            <div class="field"><label for="sOne">One-off cost <output id="oOne"></output></label><input type="range" id="sOne" min="0" max="40000" step="250">
+              <div class="seg" id="oneQuick"><button type="button" data-m="0.5">½ month</button><button type="button" data-m="1">1 month</button><button type="button" data-m="2">2 months</button></div></div>
+            <div class="field"><span class="lab">After EI ends</span><div class="seg" id="afterSeg"><button type="button" data-v="back">Back at work</button><button type="button" data-v="none">Still no job</button></div></div>
+            <button class="btn" type="button" id="shockReset" style="justify-self:start">Clear the shock</button>
+          </div>
+        </div>
+        <div class="panel coin-panel">
+          <div class="coin-3d" id="coin3d" aria-hidden="true"></div>
+          <div class="coin-copy">
+            <span class="eyebrow">How long your emergency fund lasts, in coins</span>
+            <h2 id="coinTitle"></h2>
+            <p id="coinText" class="ink2"></p>
+            <div class="legend"><span><i style="background:#F2BE45"></i>One month covered</span><span><i style="background:var(--crit);opacity:.45"></i>Month still needed</span></div>
+          </div>
+        </div>
         <div class="panel">
-          <div class="panel-head"><h2>Runway after each move</h2><p>Each bar adds one action on top of the last</p></div>
-          <div class="bars" id="leverBars"></div>
+          <div class="panel-head"><h2>Balance month by month</h2><p id="projSub"></p></div>
+          <div class="legend"><span><i class="line" style="background:var(--s1)"></i>With the scenario</span><span><i class="line" style="background:var(--muted)"></i>No scenario</span></div>
+          <div class="chart-box"><canvas id="projChart" aria-label="Projected balance by month"></canvas></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h2>Stress grid</h2><div class="seg" id="heatMode"><button type="button" data-m="grid">Grid</button><button type="button" data-m="3d">3D terrain</button></div></div>
+          <p class="ink2 small" id="heatHint">How long your emergency fund lasts, in months, for every mix of income cut and bill increase. Select a cell to load it.</p>
+          <div class="table-wrap" id="heatGrid"><div class="heat" id="heat"></div></div>
+          <div class="terrain" id="terrain" hidden></div>
         </div>
       </section>
+
 
       <!-- BUDGET -->
       <section class="view" data-view="budget" hidden>
         <div class="head"><h1>Budget</h1><p>Six well-known rules, measured against how this customer actually spends. Change the income to plan for any paycheque.</p></div>
         <div class="micr" data-micr></div>
-        <div class="grid g-main">
-          <div class="panel">
-            <div class="field"><label for="bInc">Monthly take-home</label><div class="money-in" style="max-width:280px"><input class="input" id="bInc" inputmode="decimal"></div><span class="hint">Starts at this customer's typical money in.</span></div>
-            <div class="seg" id="ruleSeg"></div>
-            <p class="ink2" id="ruleWhy"></p>
-            <div id="ruleCompare" class="grid"></div>
-            <div id="ruleAdvice" class="callout"></div>
+          <div class="panel budget-main">
+            <div class="bm-left">
+              <div class="field"><label for="bInc">Monthly take-home</label><div class="money-in" style="max-width:280px"><input class="input" id="bInc" inputmode="decimal"></div><span class="hint">Starts at this customer's typical money in.</span></div>
+              <div class="rule-head"><h3 id="ruleSegT">Pick a budgeting rule</h3><p>Each rule splits your take-home pay into buckets. The numbers are percentages: 50/30/20 means 50% for needs like rent and bills, 30% for wants, and 20% for savings. Pick one to compare it with how you spend today.</p></div>
+              <div class="seg" id="ruleSeg" role="group" aria-labelledby="ruleSegT"></div>
+              <p class="ink2" id="ruleWhy"></p>
+            </div>
+            <div class="bm-right">
+              <div id="ruleCompare" class="grid"></div>
+              <div id="ruleAdvice" class="callout"></div>
+            </div>
           </div>
-          <div class="panel">
-            <div class="panel-head"><h2>Which rule fits</h2><p>Money to move each month</p></div>
-            <div class="table-wrap"><table class="cmp" id="ruleTable"></table></div>
-          </div>
-        </div>
         <div class="panel" id="zbPanel">
           <div class="panel-head"><h2>Zero-based budget</h2><p>Give every dollar a job. Starts from this account's typical month.</p></div>
           <div class="grid g-2">
@@ -417,7 +412,7 @@
 
       <!-- DATA -->
       <section class="view" data-view="data" hidden>
-        <div class="head"><h1>Your data</h1><p>Drop in a monthly_summary.csv with any number of accounts and, if you have it, loans.csv. ChequeMate computes every account in your browser. Nothing leaves this page.</p></div>
+        <div class="head"><h1>The data</h1><p>Drop in a monthly_summary.csv with any number of accounts and, if you have it, loans.csv. ChequeMate computes every account in your browser. Nothing leaves this page.</p></div>
         <label class="drop" id="drop" for="fileIn">
           <span class="sf" style="--c:var(--teal)"><svg viewBox="0 0 24 24"><path d="M12 15V4M7.5 8.5 12 4l4.5 4.5M5 15v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3"/></svg></span>
           <strong>Drop CSV files here, or choose files</strong>
@@ -486,7 +481,7 @@
         </div>
       </section>
 
-      <!-- QUESTS -->
+      <!-- CHALLENGES -->
       <section class="view" data-view="arena" hidden>
         <div class="arena-hero">
           <div class="rank-stage" id="rankStage" aria-hidden="true"></div>
@@ -533,11 +528,8 @@
           <div class="xp-rules" id="xpRules"></div>
           <button class="btn sm" type="button" id="gameReset" style="justify-self:start">Reset my progress</button>
         </div>
-      </section>
-
-      <!-- PLAY -->
-      <section class="view" data-view="play" hidden>
-        <div class="head"><span class="eyebrow">Play</span><h1>Can they survive the year?</h1><p>Two games built on real accounts. Runway Run deals a year of life to this customer, one month at a time. Who lasts longer? tests your instinct for the paradox.</p></div>
+        <!-- PLAY (games) -->
+        <div class="head play-head" id="play"><span class="eyebrow">Play</span><h2>Can they survive the year?</h2><p>Two games built on real accounts. Runway Run deals a year of life to this customer, one month at a time. Who lasts longer? tests your instinct for the paradox.</p></div>
         <div class="seg play-tabs" id="playTabs" role="tablist"><button type="button" data-t="run" aria-pressed="true">Runway Run</button><button type="button" data-t="quiz" aria-pressed="false">Who lasts longer?</button></div>
 
         <div class="rr" id="playRun">
@@ -565,11 +557,10 @@
           <div class="quiz-foot" id="quizFoot"></div>
         </div>
       </section>
+
     </main>
     <!-- landing-page footer, shown under every view -->
     <footer class="ds-foot app-foot" id="appFoot">
-      <div class="ds-checker" aria-hidden="true"></div>
-      <div class="ds-sparks" id="dsSparks" aria-hidden="true"></div>
       <div class="ds-in">
         <div class="ds-brand">
           <button class="ds-logo" id="dsLogo" type="button" aria-label="Datasparks logo. Press for sparks">
@@ -601,11 +592,10 @@
   </div>
 
   <nav class="tabbar" id="tabbar" aria-label="Sections">
-    <a href="#paradox"><svg viewBox="0 0 24 24"><path d="M5 19V11M12 19V5M19 19v-6"/></svg>Paradox</a>
-    <a href="#customer"><svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c1.2-3.6 3.8-5.3 7-5.3s5.8 1.7 7 5.3"/></svg>Customer</a>
-    <a href="#shock"><svg viewBox="0 0 24 24"><path d="M13 3 5 13.5h6.5L10.5 21 19 10.5h-6.5z"/></svg>Plan ahead</a>
-    <a href="#plan"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="m8.5 12.3 2.4 2.4 4.7-5"/></svg>Plan</a>
+    <a href="#paradox"><svg viewBox="0 0 24 24"><path d="M5 19V11M12 19V5M19 19v-6"/></svg>About</a>
+    <a href="#customer"><svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c1.2-3.6 3.8-5.3 7-5.3s5.8 1.7 7 5.3"/></svg>You</a>
     <a href="#budget"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9h-9z"/><path d="M15 3.5A9 9 0 0 1 20.5 9H15z"/></svg>Budget</a>
+    <a href="#shock"><svg viewBox="0 0 24 24"><path d="M13 3 5 13.5h6.5L10.5 21 19 10.5h-6.5z"/></svg>Emergency fund</a>
     <button type="button" id="moreBtn" aria-haspopup="dialog"><svg viewBox="0 0 24 24"><circle cx="5.5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="18.5" cy="12" r="1.3"/></svg>More</button>
   </nav>
   <div class="sheet-bg" id="sheetBg" hidden></div>
@@ -613,11 +603,10 @@
     <div class="grab"></div>
     <h3>More</h3>
     <div class="list">
-      <a href="#play"><span class="sf" style="--c:var(--pink)"><svg viewBox="0 0 24 24"><rect x="2.5" y="7" width="19" height="11" rx="5.5"/><path d="M7.5 10.5v4M5.5 12.5h4M15.5 11.5h.01M18 13.5h.01"/></svg></span>Play</a>
-      <a href="#arena"><span class="sf" style="--c:var(--yellow)"><svg viewBox="0 0 24 24"><path d="M4 18h16M5 15 3.5 7l5 4L12 5l3.5 6 5-4L19 15z"/></svg></span>Quests</a>
+      <a href="#arena"><span class="sf" style="--c:var(--yellow)"><svg viewBox="0 0 24 24"><path d="M4 18h16M5 15 3.5 7l5 4L12 5l3.5 6 5-4L19 15z"/></svg></span>Challenges</a>
       <a href="#invest"><span class="sf" style="--c:var(--mint)"><svg viewBox="0 0 24 24"><path d="M4 17 10 11l4 4 6-7M15 8h5v5"/></svg></span>Investing</a>
       <a href="#coach"><span class="sf" style="--c:var(--good)"><svg viewBox="0 0 24 24"><path d="M20 11.5c0 4.1-3.6 7.5-8 7.5-1.2 0-2.3-.2-3.3-.7L4 19.5l1.2-3.6A7.2 7.2 0 0 1 4 11.5C4 7.4 7.6 4 12 4s8 3.4 8 7.5z"/></svg></span>Coach</a>
-      <a href="#data"><span class="sf" style="--c:var(--teal)"><svg viewBox="0 0 24 24"><path d="M12 15V4M7.5 8.5 12 4l4.5 4.5M5 15v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3"/></svg></span>Your data</a>
+      <a href="#data"><span class="sf" style="--c:var(--teal)"><svg viewBox="0 0 24 24"><path d="M12 15V4M7.5 8.5 12 4l4.5 4.5M5 15v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3"/></svg></span>The data</a>
       <a href="#resources"><span class="sf" style="--c:var(--pink)"><svg viewBox="0 0 24 24"><path d="M5 4.5h5a2 2 0 0 1 2 2V20a1.5 1.5 0 0 0-1.5-1.5H5zM19 4.5h-5a2 2 0 0 0-2 2V20a1.5 1.5 0 0 1 1.5-1.5H19z"/></svg></span>Resources</a>
       <a href="#profile"><span class="sf" style="--c:var(--gray)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M5.5 18.5l1.7-1.7M16.8 7.2l1.7-1.7"/></svg></span>Profile</a>
     </div>
@@ -653,22 +642,22 @@
 <div class="xp-pop" id="xpPop" aria-hidden="true"></div>
 <canvas class="confetti" id="confetti" aria-hidden="true"></canvas>
 
-<script src="assets/vendor/chart.umd.min.js?v=8b5000ec"></script>
-<script src="assets/vendor/papaparse.min.js?v=8b5000ec"></script>
-<script src="assets/vendor/three.min.js?v=8b5000ec"></script>
-<script src="assets/mate3d.js?v=8b5000ec"></script>
-<script src="assets/fx.js?v=8b5000ec"></script>
-<script src="data/insights.js?v=8b5000ec"></script>
-<script src="data/accounts.js?v=8b5000ec"></script>
-<script src="assets/app.js?v=8b5000ec"></script>
-<script src="assets/game.js?v=8b5000ec"></script>
-<script src="assets/play.js?v=8b5000ec"></script>
-<script src="assets/viz.js?v=8b5000ec"></script>
-<script src="assets/rr.js?v=8b5000ec"></script>
-<script src="assets/rr2.js?v=8b5000ec"></script>
-<script src="assets/api.js?v=8b5000ec"></script>
-<script src="assets/live.js?v=8b5000ec"></script>
-<script src="assets/live-ios.js?v=8b5000ec"></script>
-<script src="assets/footer.js?v=8b5000ec"></script>
+<script src="assets/vendor/chart.umd.min.js?v=b6a1410d"></script>
+<script src="assets/vendor/papaparse.min.js?v=b6a1410d"></script>
+<script src="assets/vendor/three.min.js?v=b6a1410d"></script>
+<script src="assets/mate3d.js?v=b6a1410d"></script>
+<script src="assets/fx.js?v=b6a1410d"></script>
+<script src="data/insights.js?v=b6a1410d"></script>
+<script src="data/accounts.js?v=b6a1410d"></script>
+<script src="assets/app.js?v=b6a1410d"></script>
+<script src="assets/game.js?v=b6a1410d"></script>
+<script src="assets/play.js?v=b6a1410d"></script>
+<script src="assets/viz.js?v=b6a1410d"></script>
+<script src="assets/rr.js?v=b6a1410d"></script>
+<script src="assets/rr2.js?v=b6a1410d"></script>
+<script src="assets/api.js?v=b6a1410d"></script>
+<script src="assets/live.js?v=b6a1410d"></script>
+<script src="assets/live-ios.js?v=b6a1410d"></script>
+<script src="assets/footer.js?v=b6a1410d"></script>
 </body>
 </html>

@@ -209,6 +209,11 @@ function animateRings(root) { $$('.rings .arc', root).forEach(a => { requestAnim
 const LOGO = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.8 8.4 7.4 15.6h9.2l3.6-7.2-4.5 3.4L12 5.2l-3.7 6.6z" fill="#fff"/><rect x="7.2" y="16.7" width="9.6" height="2.5" rx="1.25" fill="#fff"/></svg>';
 function tone(v) { return v === Infinity || v >= 6 ? 'good' : v >= 3 ? 'warn' : 'crit'; }
 function walletCard(o) {
+  if (o.hero) return `<div class="wcard wc-you ${o.tone}" data-tilt>
+    <div class="wc-top"><div class="wc-amt"><small>${esc(o.midLabel)}</small><strong>${o.mid}</strong></div><span class="wc-glass">${esc(o.badge)}</span></div>
+    <div></div>
+    <div class="wc-bot"><div><div>${esc(o.name)}</div><div class="no">•••• ${String(o.id).slice(-4)}</div></div><div class="rw"><span>${esc(o.rwLabel)}</span><b>${o.rw}</b></div></div>
+  </div>`;
   return `<div class="wcard ${o.tone}" data-tilt>
     <div class="wc-top"><span class="lg">${LOGO}ChequeMate</span><span class="wc-glass">${esc(o.badge)}</span></div>
     <div class="wc-mid"><small>${esc(o.midLabel)}</small><strong>${o.mid}</strong></div>
@@ -262,7 +267,7 @@ function micrHTML(a) {
 }
 function renderMicr() { const a = acc(); if (!a) return; const h = micrHTML(a); $$('[data-micr]').forEach(el => el.innerHTML = h); const p = profile(a.id); $('#tbAcct').innerHTML = `<span class="avatar sm">${initials(p, a.id)}</span><span>${esc(p.name)}</span>`; }
 
-const TITLES = { paradox: 'The paradox', customer: 'Customer', shock: 'Plan ahead', plan: 'Plan', budget: 'Budget', invest: 'Investing', coach: 'Coach', data: 'Your data', resources: 'Resources', profile: 'Profile', arena: 'Quests', play: 'Play', overview: 'Overview', investing: 'Investing', yourdata: 'Your money', situations: 'Situations', saving: 'Saving plan', paradox: 'Findings' };
+const TITLES = { paradox: 'About', customer: 'You', shock: 'Emergency fund', plan: 'Plan', budget: 'Budget', invest: 'Investing', coach: 'Coach', data: 'The data', resources: 'Resources', profile: 'Profile', arena: 'Challenges', play: 'Play', overview: 'Overview', investing: 'Investing', yourdata: 'Your money', situations: 'Situations', saving: 'Saving plan', paradox: 'Findings' };
 function openSheet() { $('#sheet').hidden = false; $('#sheetBg').hidden = false; }
 function closeSheet() { const s = $('#sheet'); if (s) { s.hidden = true; $('#sheetBg').hidden = true; } }
 const VIEWS = ['paradox', 'customer', 'shock', 'plan', 'budget', 'invest', 'coach', 'data', 'resources', 'profile', 'arena', 'play', 'overview', 'investing', 'yourdata', 'situations', 'saving'];
@@ -270,7 +275,9 @@ const RENDER = {};
 let currentView = null;
 function route() {
   let v = location.hash.slice(1); const ios = document.documentElement.getAttribute('data-ui') !== 'rr';
-  if (ios) v = ({ overview: 'customer', situations: 'shock', saving: 'plan', yourdata: 'data', investing: 'invest' })[v] || v;
+  if (v === 'plan') v = 'shock'; // the Plan page now lives on the Emergency fund page
+  if (v === 'play') v = 'arena'; // the games now live on the Challenges page
+  if (ios) v = ({ overview: 'customer', situations: 'shock', saving: 'shock', yourdata: 'data', investing: 'invest' })[v] || v;
   if (!VIEWS.includes(v)) v = ios ? 'customer' : 'overview';
   currentView = v;
   $$('.view').forEach(s => s.hidden = s.dataset.view !== v);
@@ -339,7 +346,7 @@ RENDER.paradox = () => {
   $('#pair').innerHTML = pair.map(id => {
     const a = Object.assign({ id }, BUILTIN[id]); const r = runway(a.B, a.I, a.S, { mult: .55 }); const t = r.v >= 6 ? 'good' : 'crit';
     return `<div class="pair-col">
-      ${walletCard({ tone: t, badge: r.v >= 6 ? 'Outlasts EI' : 'Out before EI ends', midLabel: 'Money in each month', mid: money(a.I), name: `Account ${id}`, id, rwLabel: 'Lasts if job lost', rw: rwText(r) + ' mo' })}
+      ${walletCard({ hero: true, tone: t, badge: r.v >= 6 ? 'Outlasts EI' : 'Out before EI ends', midLabel: 'Money in each month', mid: money(a.I), name: `Account ${id}`, id, rwLabel: 'Lasts if job lost', rw: rwText(r) + ' mo' })}
       ${strip(r, { max: 24, compact: true, fill: r.v >= 6 ? 'good' : 'crit', marks: [{ at: 6, label: 'EI ends' }] })}
       <div class="pair-cap"><span class="small ink2">Spends ${pct(a.S / a.I)} of it. Buffer ${money(a.B)}.</span><button class="btn sm" type="button" data-open="${id}">Run the layoff</button></div>
     </div>`;
@@ -405,7 +412,7 @@ RENDER.customer = () => {
   const base = runway(a.B, a.I, a.S);
   const pf = profile(), ei0 = runway(a.B, a.I, a.S, { mult: .55 }), tm = +pf.target || 3;
   const bm0 = a.S > 0 ? a.B / a.S : 0, sr0 = a.I > 0 ? (a.I - a.S) / a.I : 0;
-  $('#wcard').innerHTML = walletCard({ tone: tone(ei0.v), badge: ei0.v >= 6 ? 'Resilient' : ei0.v >= 3 ? 'Tight' : 'Fragile', midLabel: 'Savings buffer', mid: money(a.B), name: pf.name, id: a.id, rwLabel: 'Lasts if job lost', rw: rwText(ei0) + ' mo' });
+  $('#wcard').innerHTML = walletCard({ hero: true, tone: tone(ei0.v), badge: ei0.v >= 6 ? 'Resilient' : ei0.v >= 3 ? 'Tight' : 'Fragile', midLabel: 'Savings buffer', mid: money(a.B), name: pf.name, id: a.id, rwLabel: 'Lasts if job lost', rw: rwText(ei0) + ' mo' });
   bindTilt($('#wcard'));
   $('#rings').innerHTML = `<div class="rings-wrap">${ringsSVG([
       { p: ei0.v === Infinity ? 2 : ei0.v / 6, color: 'var(--ring1)', label: 'Runway' },
@@ -514,8 +521,9 @@ RENDER.shock = () => {
   const marks = incomeShock ? [{ at: sh.ei, label: `EI ends at ${sh.ei} mo` }] : [];
   let pill = r.v === Infinity ? ['good', 'No monthly shortfall'] : r.v === 0 ? ['crit', 'Buffer gone'] : [status(r.v), r.v < 3 ? 'Critical' : r.v < 6 ? 'Tight' : 'Holds up'];
   if (incomeShock && r.v !== Infinity) pill = r.v >= sh.ei ? ['good', 'Makes it through EI'] : ['crit', 'Runs out before EI ends'];
-  $('#shockStrip').innerHTML = `<div class="panel-head"><h2>Runway</h2><p>${esc(shockLabel(sh, a)) || 'no shock'}</p></div>` + strip(r, { max: 24, marks, pill, fill: incomeShock && r.v !== 0 ? (r.v >= sh.ei ? 'good' : 'crit') : undefined });
+  $('#shockStrip').innerHTML = `<div class="panel-head"><h2>How long your emergency fund lasts</h2><p>${isNoShock(sh) ? 'No scenario picked yet' : esc(shockLabel(sh, a))}</p></div>` + strip(r, { max: 24, marks, pill, fill: incomeShock && r.v !== 0 ? (r.v >= sh.ei ? 'good' : 'crit') : undefined });
   animateStrips($('#shockStrip'));
+  $('#pickHintT').textContent = isNoShock(sh) ? 'Pick a scenario below to see how long your emergency fund would last. You can also fine-tune it with the sliders.' : 'Pick another scenario below to compare, or fine-tune this one with the sliders.';
 
   // verdict
   let v;
@@ -529,26 +537,39 @@ RENDER.shock = () => {
   else v = [status(r.v), r.v < 6 ? ICON.alert : ICON.check, `The buffer lasts ${r.v.toFixed(1)} months`, `Spending now runs ${money(r.gap)} a month above income.`];
   $('#verdict').innerHTML = `<div class="verdict ${v[0]}">${v[1]}<div><strong>${v[2]}</strong><p>${v[3]}</p></div></div>`;
 
-  const extraTxt = [sh.bills ? `${sh.bills}% × H` : '', sh.extra ? money(sh.extra) : ''].filter(Boolean).join(' + ');
-  const rows = [
-    ['Buffer', 'B', money(a.B)],
-    ['One-off cost', sh.oneMult != null ? `${sh.oneMult} × S` : 'set by slider', money(P.oneOff)],
-    ['Buffer left', 'B − one-off', money(r.left)],
-    ['Income after shock', `I × ${sh.inc}%`, `${money(a.I * P.mult)}<small>${money(a.I)} × ${(P.mult).toFixed(2)}</small>`],
-    ['Spending after shock', 'S' + (extraTxt ? ' + ' + extraTxt : ''), `${money(a.S + P.extra)}<small>${money(a.S)}${P.extra ? ' + ' + money(P.extra) : ''}</small>`],
-    ['Monthly gap', 'spending − income', money(r.gap)],
-  ];
-  $('#formula').innerHTML = rows.map(([k, e, v]) => `<div class="f-k">${k}</div><div class="f-e">${e}</div><div class="f-v">${v}</div>`).join('') +
-    `<div class="f-k total">Runway</div><div class="f-e total">${r.kind === 'zero' ? 'buffer left ≤ 0' : r.kind === 'none' ? 'gap ≤ 0' : 'buffer left ÷ gap, max 120'}</div><div class="f-v total">${r.kind === 'zero' ? '0 months' : r.kind === 'none' ? 'No shortfall (120+)' : r.v.toFixed(1) + ' months'}</div>`;
+  // worked calculation, in plain language (replaces the B / S / H shorthand)
+  const months_ = n => `${n} month${n === 1 ? '' : 's'}`;
+  const oneTxt = P.oneOff <= 0 ? 'None in this scenario'
+    : sh.oneMult != null ? `A surprise cost worth ${sh.oneMult === .5 ? 'half a month' : months_(sh.oneMult)} of your spending, paid on day one`
+    : 'A surprise cost paid on day one';
+  const inTxt = sh.inc >= 100 ? 'Your usual income' : sh.inc === 0 ? `No income at all (usually ${money(a.I)})`
+    : `${sh.inc}% of your usual ${money(a.I)}${sh.inc === 55 ? ', what Employment Insurance (EI) pays' : ''}`;
+  const outParts = [sh.bills ? `bills up ${sh.bills}% (+${money(sh.bills / 100 * a.H)})` : '', sh.extra ? `a new ${money(sh.extra)} monthly cost` : ''].filter(Boolean);
+  const outTxt = `Your usual spending of ${money(a.S)}` + (outParts.length ? `, plus ${outParts.join(' and ')}` : '');
+  const gapTxt = r.gap > 0 ? 'Money going out minus money coming in' : 'None: money coming in covers what goes out';
+  const row = (label, note, value, op = '') => `<div class="fx-row${op === '=' ? ' sub' : ''}"><div class="fx-k"><b>${label}</b><span>${note}</span></div><div class="fx-v">${op ? `<i class="op" aria-hidden="true">${op}</i>` : ''}${value}</div></div>`;
+  const result = r.kind === 'zero' ? ['0 months', 'The one-off cost uses up all of your savings on day one']
+    : r.kind === 'none' ? ['Never runs out', 'With no monthly shortfall, your savings never run down']
+    : [`${r.v.toFixed(1)} months`, `Savings left (${money(r.left)}) ÷ monthly shortfall (${money(r.gap)})${r.kind === 'cap' ? ', capped at 120 months' : ''}`];
+  $('#formula').innerHTML =
+    `<div class="fx-group">Your savings</div>` +
+    row('Savings now', 'What is in the account today', money(a.B)) +
+    row('One-off cost', oneTxt, money(P.oneOff), '−') +
+    row('Savings left', 'What you have after the one-off cost', money(r.left), '=') +
+    `<div class="fx-group">Each month</div>` +
+    row('Money coming in', inTxt, money(a.I * P.mult)) +
+    row('Money going out', outTxt, money(a.S + P.extra), '−') +
+    row('Monthly shortfall', gapTxt, money(Math.max(0, r.gap)), '=') +
+    `<div class="fx-row total"><div class="fx-k"><b>How long your emergency fund lasts</b><span>${result[1]}</span></div><div class="fx-v">${result[0]}</div></div>`;
 
   // projection
   const pr = projection(a, sh, 24), s1 = V('--s1'), crit = V('--crit'), muted = V('--muted'), ink = V('--ink');
   $('#projSub').textContent = incomeShock ? `EI for ${sh.ei} months, then ${sh.after === 'back' ? 'back at full pay' : 'no income'}` + (pr.zero != null ? `. Hits zero around month ${pr.zero.toFixed(1)}.` : '. Never hits zero in 24 months.')
     : (pr.zero != null ? `Hits zero around month ${pr.zero.toFixed(1)}.` : 'Never hits zero in 24 months.');
   chart('projChart', { type: 'line', data: { labels: pr.pts.map((_, i) => i === 0 ? 'Now' : 'M' + i), datasets: [
-    { label: 'With the shock', data: pr.pts.map(Math.round), borderColor: s1, backgroundColor: areaFill(s1, .2), fill: 'origin', borderWidth: 3, pointRadius: 0, pointHoverRadius: 4, tension: 0,
+    { label: 'With the scenario', data: pr.pts.map(Math.round), borderColor: s1, backgroundColor: areaFill(s1, .2), fill: 'origin', borderWidth: 3, pointRadius: 0, pointHoverRadius: 4, tension: 0,
       segment: { borderColor: c => c.p1.parsed.y < 0 ? crit : s1 } },
-    { label: 'No shock', data: pr.bp.map(Math.round), borderColor: muted, borderWidth: 1.5, borderDash: [4, 4], pointRadius: 0, pointHoverRadius: 3 },
+    { label: 'No scenario', data: pr.bp.map(Math.round), borderColor: muted, borderWidth: 1.5, borderDash: [4, 4], pointRadius: 0, pointHoverRadius: 3 },
   ] }, plugins: [shadePlugin], options: baseOpts({
     scales: { y: { ticks: { callback: moneyTick }, grid: { color: c => c.tick.value === 0 ? ink : V('--line'), lineWidth: c => c.tick.value === 0 ? 1.5 : 1 } } },
     plugins: { shade: incomeShock ? { from: sh.ei + 1, color: alpha(V('--ink'), .04), label: sh.after === 'back' ? 'Back at work' : 'EI over', ink: V('--muted') } : {},
@@ -566,6 +587,7 @@ RENDER.shock = () => {
     }).join('')}</div>`).join('');
   $$('#heat .cell').forEach(c => c.onclick = () => { st.shock.inc = +c.dataset.i; st.shock.bills = +c.dataset.b; st.shock.preset = 'custom'; RENDER.shock(); });
   emit('shock', { preset: sh.preset, v: r.v, need: incomeShock ? sh.ei : 6, none: isNoShock(sh) });
+  RENDER.plan(); // emergency fund tiles at the top of the same page
 };
 function bindShock() {
   const upd = fn => e => { fn(+e.target.value); st.shock.preset = 'custom'; RENDER.shock(); };
@@ -628,7 +650,7 @@ RENDER.plan = () => {
   const pc = $('#pCut'); pc.value = st.plan.cut; setRangeFill(pc); $('#oCut').textContent = st.plan.cut + '%';
   const sd = $('#pSide'); sd.value = st.plan.side; setRangeFill(sd); $('#oSide').textContent = money(st.plan.side);
   const { sh, list } = levers(a);
-  $('#backupSub').textContent = 'If you lost your job, with and without Employment Insurance (EI).' + (isNoShock(st.shock) ? '' : ' Includes the other changes you set in Plan ahead.');
+  $('#backupSub').textContent = 'If you lost your job, with and without Employment Insurance (EI).' + (isNoShock(st.shock) ? '' : ' Includes the other changes from the scenario you picked below.');
   const eiStep = sh.inc < 100 ? `<div class="step"><span class="no"></span><div><h3>Apply for EI the week the job ends</h3><p>Apply even before the record of employment arrives. Waiting more than 4 weeks after the last day of work can cost benefits.</p></div><div class="gain">${sh.inc}%<small>of income back</small></div></div>` : '';
   $('#backupSteps').innerHTML = eiStep + list.slice(1).map((l, i) => {
     const prev = list[i].r, now = l.r; const gain = now.v === Infinity ? 'No gap left' : `${rwText(prev)} → ${rwText(now)} mo`;
@@ -647,11 +669,29 @@ RENDER.plan = () => {
     return `<div class="verdict ${good ? 'good' : 'crit'}">${good ? ICON.check : ICON.alert}<div><strong>${title}: emergency fund goes from ${rwLong(f)} to ${rwLong(l)}</strong><p>${note} ${tail}</p></div></div>`;
   };
   $('#backupResult').innerHTML = `<div class="verdict-pair">${jobCase(55, 'With EI', 'EI pays 55% of your usual income.')}${jobCase(0, 'With no EI', 'No income comes in at all.')}</div>`;
-  const mx = 24;
-  $('#leverBars').innerHTML = list.map((l, i) => `<div class="bar-row"><div class="lab">${i === 0 ? 'Shock only' : '+ ' + esc(l.name.replace(/^(Cut|Ask|Trim|Side)/, m => m.toLowerCase()))}</div>
-    <div class="track"><div class="fill" data-w="${l.r.v === Infinity ? 100 : Math.min(100, l.r.v / mx * 100)}" style="--c:var(--${l.r.v === Infinity ? 'good' : status(l.r.v)})"></div>${needM <= mx ? `<div class="base" style="left:${needM / mx * 100}%"></div>` : ''}</div>
-    <div class="val">${rwText(l.r)}</div></div>`).join('') + `<p class="note">Dashed line: ${needM} months${sh.inc < 100 ? ', when EI ends' : ''}. Bars run to 24 months; longer runways fill the bar.</p>`;
-  $$('#leverBars .bar-row').forEach(r => r.style.gridTemplateColumns = 'minmax(120px, 260px) minmax(0, 1fr) 56px');
+  // "How long your emergency fund lasts after each move": numbered steps, labelled scale and goal, two colours with a key
+  const mx = 24, pct = v => v === Infinity ? 100 : Math.min(100, v / mx * 100);
+  const goalTxt = sh.inc < 100 ? `Goal: ${needM} months, when EI ends` : `Goal: ${needM} months`;
+  const months1 = r => r.v === Infinity ? 'Never runs out' : `${r.v.toFixed(1)} months`;
+  const reach = r => r.v === Infinity || r.v >= needM;
+  const ticks = [0, 6, 12, 18, 24];
+  const scale = `<div class="lv-row lv-scale" aria-hidden="true"><div></div><div class="lv-track">${ticks.map(t => `<span class="tk" style="left:${t / mx * 100}%">${t === mx ? '24+ mo' : t}</span>`).join('')}${needM <= mx ? `<span class="lv-goal" style="left:${needM / mx * 100}%">${esc(goalTxt)}</span>` : ''}</div><div class="lv-h">Lasts</div></div>`;
+  const rows = list.map((l, i) => {
+    const prev = i ? list[i - 1].r : null;
+    const gain = prev && l.r.v !== Infinity && prev.v !== Infinity ? l.r.v - prev.v : null;
+    const name = i === 0 ? 'If the scenario happens' : esc(l.name);
+    const sub = i === 0 ? 'Before any moves' : l.save ? `Saves ${money(l.save)} a month` : '';
+    return `<div class="lv-row${reach(l.r) ? ' ok' : ''}"><div class="lv-lab"><span class="lv-no">${i + 1}</span><span><b>${name}</b>${sub ? `<small>${sub}</small>` : ''}</span></div>
+      <div class="lv-track" role="img" aria-label="${esc(i === 0 ? 'If the scenario happens' : l.name)}: ${months1(l.r)}${reach(l.r) ? ', reaches the goal' : ', short of the goal'}"><div class="fill" data-w="${pct(l.r.v)}"></div>${needM <= mx ? `<div class="lv-line" style="left:${needM / mx * 100}%"></div>` : ''}</div>
+      <div class="lv-val"><b>${months1(l.r)}</b>${gain != null && gain > 0.05 ? `<small>+${gain.toFixed(1)}</small>` : l.r.v === Infinity && prev && prev.v !== Infinity ? '<small>No gap left</small>' : ''}</div></div>`;
+  }).join('');
+  const f0 = list[0].r, fN = list[list.length - 1].r, nMoves = list.length - 1;
+  const more = fN.v === Infinity ? 'your money no longer runs out' : f0.v === Infinity ? '' : `${(fN.v - f0.v).toFixed(1)} more than with no moves`;
+  const summary = nMoves === 0 ? 'Move the sliders in "Your moves" to see how each change helps.'
+    : fN.v === Infinity ? `${nMoves === 1 ? 'With that move' : `With all ${nMoves} moves`}, <b>your money no longer runs out</b>: what comes in covers what goes out.`
+    : `${nMoves === 1 ? 'With that move' : `With all ${nMoves} moves`}, your fund lasts <b>${months1(fN)}</b>${more ? `, ${more}` : ''}. ${reach(fN) ? `That gets you past your ${needM}-month goal.` : `That's still short of your ${needM}-month goal.`}`;
+  $('#leverBars').innerHTML = `<div class="lv-key"><span><i class="ok"></i>Reaches your goal</span><span><i></i>Short of your goal</span><span><i class="ln"></i>${esc(goalTxt)}</span></div>`
+    + scale + rows + `<p class="lv-sum">${summary}</p><p class="note">Bars stop at 24 months; a full bar means 24 months or more.</p>`;
   animBars('#leverBars');
   emit('plan', { ok, need, needM, mtg, first: first.v, last: last.v });
 };
@@ -710,8 +750,6 @@ RENDER.budget = () => {
   else { $('#ruleCompare').innerHTML = '<p class="ink2">The zero-based planner is below. Every row starts at this account\'s monthly average.</p>'; $('#ruleAdvice').innerHTML = `<strong>Left to assign: ${money(zbLeft(a))}.</strong> Give it to the emergency fund first.`; }
 
   const scored = RULES.filter(r => r.parts).map(r => ({ r, g: ruleGap(r, act, inc) })).sort((x, y) => x.g - y.g);
-  $('#ruleTable').innerHTML = `<thead><tr><th>Rule</th><th class="r">Money to move each month</th></tr></thead><tbody>${scored.map((s, i) =>
-    `<tr${i === 0 ? ' class="best"' : ''}><td>${s.r.name}${i === 0 ? ' <span class="pill info" style="margin-left:6px">Closest fit</span>' : ''}</td><td class="r">${money(s.g)}</td></tr>`).join('')}</tbody>`;
   renderZB(a);
   emit('budget', { rule: st.budget.rule, best: scored[0] && scored[0].r.id });
 };

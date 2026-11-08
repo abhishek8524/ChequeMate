@@ -1,6 +1,6 @@
 /* ChequeMate (iOS UI) live layer.
    The iOS pages answer instantly in the browser; this file asks the FastAPI backend (TigerData) the same
-   question and shows the server's answer beside it, so every figure on Customer and Plan ahead is checked live.
+   question and shows the server's answer beside it, so every figure on Customer and Emergency fund is checked live.
    It also applies twists linked from the landing page (?twist=ei|furnace|combo). */
 (() => {
 'use strict';
@@ -50,7 +50,7 @@ function customer() {
   }, e => { if (g === gC) strip(host, head, 'off', offline(e)); });
 }
 
-/* ---------- Plan ahead: the runway ---------- */
+/* ---------- Emergency fund: the runway ---------- */
 let gS = 0;
 function shock() {
   if (!ios() || CM.view !== 'shock') return;

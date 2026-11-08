@@ -1,4 +1,4 @@
-/* ChequeMate Quests: points, chess ranks, badges, missions, resilience score, and Mate the coach.
+/* ChequeMate Challenges: points, chess ranks, badges, missions, resilience score, and Mate the coach.
    Listens to cm:* events from app.js. Progress lives in this browser only. */
 (() => {
 'use strict';
@@ -58,15 +58,15 @@ const BADGES = [
 ];
 const BADGE = Object.fromEntries(BADGES.map(b => [b.id, b]));
 const MISSIONS = [
-  { id: 'layoff', name: 'Run the layoff', desc: 'Apply the "Laid off, EI at 55%" card in Plan ahead.', go: 'shock', preset: 'layoff' },
+  { id: 'layoff', name: 'Run the layoff', desc: 'Apply the "Laid off, EI at 55%" card on the Emergency fund page.', go: 'shock', preset: 'layoff' },
   { id: 'stress', name: 'Stress test three ways', desc: 'Try three different shock cards on this customer.', go: 'shock' },
-  { id: 'rescue', name: 'Write the rescue plan', desc: 'On the Plan page, stack moves until runway clears the EI period.', go: 'plan' },
+  { id: 'rescue', name: 'Write the rescue plan', desc: 'On the Emergency fund page, stack moves until your fund lasts past the EI period.', go: 'shock' },
   { id: 'fit', name: 'Find the right budget', desc: 'Select the rule marked "Closest fit" on the Budget page.', go: 'budget' },
   { id: 'ask', name: 'Ask Rookie', desc: 'Ask the coach anything about this customer.', go: 'coach' },
   { id: 'kyc', name: 'Fill in the profile', desc: "Save the details the bank's data can't know.", go: 'profile' },
 ];
 const SHOCK_IDS = CM.SHOCKS.filter(s => s.id !== 'none').map(s => s.id);
-const ALL_VIEWS = ['paradox', 'customer', 'shock', 'plan', 'budget', 'invest', 'coach', 'data', 'resources', 'profile', 'arena', 'play'];
+const ALL_VIEWS = ['paradox', 'customer', 'shock', 'budget', 'invest', 'coach', 'data', 'resources', 'profile', 'arena'];
 
 /* ---------------- state ---------------- */
 const KEY = 'cm.game';
@@ -85,8 +85,8 @@ function scoreOf(a) {
   const sr = a.I > 0 ? clamp((a.I - a.S) / a.I, 0, .25) / .25 : 0;
   const ng = a.neg > 0 ? clamp(1 - a.neg / 20, 0, 1) : 1;
   const parts = [
-    { k: 'Runway on EI', max: 45, v: r, tip: 'Cut spending or add side income on the Plan page to stretch the runway.', go: 'plan' },
-    { k: 'Safety net', max: 25, v: bm, tip: 'Grow the buffer toward 6 months of spending with a payday transfer.', go: 'plan' },
+    { k: 'Runway on EI', max: 45, v: r, tip: 'Cut spending or add side income on the Emergency fund page to make your fund last longer.', go: 'shock' },
+    { k: 'Safety net', max: 25, v: bm, tip: 'Grow the buffer toward 6 months of spending with a payday transfer.', go: 'shock' },
     { k: 'Saving rate', max: 20, v: sr, tip: 'Keep 25% of income each month. The Budget page shows where it can come from.', go: 'budget' },
     { k: 'Never overdrawn', max: 10, v: ng, tip: 'Days below zero are the earliest warning sign in the data. Keep a small floor in the account.', go: 'customer' },
   ].map(p => Object.assign(p, { pts: Math.round(p.v * p.max) }));
@@ -230,7 +230,7 @@ function hudRender() {
   const i = rankIdx(G.xp), r = RANKS[i], nx = RANKS[i + 1];
   const p = nx ? (G.xp - r.xp) / (nx.xp - r.xp) : 1;
   const tb = $('#tbXp'); if (tb) { tb.innerHTML = `<span class="tbx-fill" style="width:${(p * 100).toFixed(1)}%" aria-hidden="true"></span>${pieceImg(r.id, 'sm')}<span class="tbx-t"><b>${r.name}</b><span>${G.xp} points</span></span>`;
-    tb.setAttribute('aria-label', `${r.name}, ${G.xp} points. ${nx ? `${Math.round(p * 100)}% of the way to ${nx.name}` : 'Top rank reached'}. Open quests and ranks`); }
+    tb.setAttribute('aria-label', `${r.name}, ${G.xp} points. ${nx ? `${Math.round(p * 100)}% of the way to ${nx.name}` : 'Top rank reached'}. Open challenges and ranks`); }
   const sp = $('#sidePlayer'); if (sp) sp.innerHTML = `${pieceImg(r.id, 'md')}<span class="spl-t"><b>${r.name}</b><span>${nx ? `${nx.xp - G.xp} points to ${nx.name}` : 'Top rank reached'}</span><span class="spl-bar"><i style="width:${(p * 100).toFixed(1)}%"></i></span></span>`;
 }
 
@@ -303,7 +303,7 @@ function renderScore() {
       <span class="eyebrow">Resilience score</span>
       <div class="score-tier"><span class="pill ${t.tone}">${t.name}</span>${pieceImg(['pawn', 'knight', 'bishop', 'rook', 'queen', 'king'][Math.min(5, Math.floor(s.score / 17))], 'sm')}</div>
       <p>Scores higher than <b>${pct(b)}</b> of the bank's customers. It blends runway on EI, safety net, saving rate and overdraft history.</p>
-      <p class="score-tip"><b>Biggest gain:</b> ${esc(w.tip)} <a href="#${w.go}">Open ${esc(w.go === 'plan' ? 'Plan' : w.go === 'budget' ? 'Budget' : 'details')}</a></p>
+      <p class="score-tip"><b>Biggest gain:</b> ${esc(w.tip)} <a href="#${w.go}">Open ${esc(w.go === 'shock' ? 'Emergency fund' : w.go === 'budget' ? 'Budget' : 'details')}</a></p>
     </div>
     <div class="score-rings">${s.parts.map(p => { const C = 2 * Math.PI * 16; return `<div class="sr" style="--c:var(--${p.v >= .66 ? 'good' : p.v >= .33 ? 'warn' : 'crit'})"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="16" class="bg"/><circle cx="20" cy="20" r="16" class="fg" transform="rotate(-90 20 20)" style="stroke-dasharray:${C.toFixed(1)};stroke-dashoffset:${C.toFixed(1)}" data-off="${(C * (1 - p.pts / p.max)).toFixed(1)}"/></svg><b>${p.pts}<small>/${p.max}</small></b><span>${p.k}</span></div>`; }).join('')}</div>
   </div>`;

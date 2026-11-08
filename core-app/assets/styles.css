@@ -768,3 +768,158 @@ section[data-view="customer"] .cust-hero .laid-off { display: flex; flex-directi
 /* sample-data banner sits under the toolbar, aligned with the content column */
 :root:not([data-ui="rr"]) .rr-live { margin: 12px max(28px, env(safe-area-inset-right, 0px)) 0 max(28px, env(safe-area-inset-left, 0px)); font-family: var(--font); }
 @media (max-width: 900px) { :root:not([data-ui="rr"]) .rr-live { margin: 10px 16px 0; } }
+
+/* ===== Emergency fund page ===== */
+/* "good" reads as orange here (month blocks, pills, stress grid); the verdict box keeps its green ("They absorb it") */
+:root { --good-green: #0C8F6F; --good-green-t: #0A6E56; --good-green-soft: rgba(15, 163, 127, .14); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --good-green: #2BD4A4; --good-green-t: #4FE0B6; --good-green-soft: rgba(43, 212, 164, .18); } }
+:root[data-theme="dark"] { --good-green: #2BD4A4; --good-green-t: #4FE0B6; --good-green-soft: rgba(43, 212, 164, .18); }
+.view[data-view="shock"] { --good: var(--accent); --good-t: var(--accent-t); --good-soft: var(--accent-soft); }
+.view[data-view="shock"] #verdict { --good: var(--good-green); --good-t: var(--good-green-t); --good-soft: var(--good-green-soft); }
+/* the stress grid's white figures on orange: use the deeper orange so they stay readable */
+.view[data-view="shock"] .heat .cell.c4 { background: var(--accent); color: var(--accent-ink); }
+/* instruction in the "How long your emergency fund lasts" panel */
+.pick-hint { display: flex; align-items: flex-start; gap: 8px; margin: -4px 0 4px; padding: 10px 12px; border-radius: 12px; background: var(--accent-soft); color: var(--ink); font-size: 13.5px; line-height: 1.4; }
+.pick-hint svg { width: 18px; height: 18px; flex: none; margin-top: 1px; fill: none; stroke: var(--accent-t); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+/* scenario cards: one icon style for all, light orange background when selected */
+:root:not([data-ui="rr"]) .twist .ic { background: var(--ico-bg); }
+:root:not([data-ui="rr"]) .twist .ic svg { stroke: var(--ico-ink); }
+:root:not([data-ui="rr"]) .twist[aria-pressed="true"] { background: color-mix(in srgb, var(--accent) 12%, var(--surface)); box-shadow: 0 0 0 2px var(--accent), var(--shadow-m); }
+:root:not([data-ui="rr"]) .twist[aria-pressed="true"] .ic { background: var(--accent); }
+:root:not([data-ui="rr"]) .twist[aria-pressed="true"] .ic svg { stroke: var(--accent-ink); }
+.view[data-view="shock"] > .pick-hint { margin: 0; }
+/* bigger, more noticeable "pick a scenario" prompt */
+.view[data-view="shock"] > .pick-hint { padding: 16px 20px; border-radius: 16px; font-size: 17px; font-weight: 700; line-height: 1.4; color: var(--accent-t);
+  background: color-mix(in srgb, var(--accent) 14%, var(--surface)); box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--accent) 45%, transparent); }
+@media (max-width: 600px) { .view[data-view="shock"] > .pick-hint { font-size: 15.5px; padding: 14px 16px; } }
+/* "pick a scenario" prompt in blue (same family as the footer's light blue) */
+:root { --pick-bg: #E3EEFF; --pick-ink: #1F4FA8; --pick-edge: #8DB5F5; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --pick-bg: #1E2A5C; --pick-ink: #C2D6FF; --pick-edge: #4F74C9; } }
+:root[data-theme="dark"] { --pick-bg: #1E2A5C; --pick-ink: #C2D6FF; --pick-edge: #4F74C9; }
+.view[data-view="shock"] > .pick-hint { background: var(--pick-bg); color: var(--pick-ink); box-shadow: inset 0 0 0 1.5px var(--pick-edge); }
+
+/* merged Emergency fund page: section title between the fund tiles and the scenarios */
+.view[data-view="shock"] > .sec-title { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; margin: 12px 0 -4px; }
+.view[data-view="shock"] .plan-bento { margin-bottom: 0; }
+/* emergency fund bento: both columns end level, so no blank space above "Test a scenario" */
+.view[data-view="shock"] .plan-bento { align-items: stretch; }
+.view[data-view="shock"] .plan-bento .b-col { display: flex; flex-direction: column; gap: 16px; }
+.view[data-view="shock"] .plan-bento .b-col > :last-child { flex: 1 1 auto; }
+.view[data-view="shock"] > .sec-title { margin-top: 4px; }
+@media (max-width: 1000px) { .view[data-view="shock"] .plan-bento .b-col > :last-child { flex: none; } }
+
+/* ===== You page: icons match the site's indigo tile style ===== */
+/* stat cards: one tile style instead of a different gradient per card */
+:root:not([data-ui="rr"]) .ledger .lic { background: var(--ico-bg); color: var(--ico-ink); box-shadow: none; }
+/* insights: same soft-tile shape; status still shown by tint (good / warning / critical), info uses the standard indigo */
+:root:not([data-ui="rr"]) .insight svg { background: var(--ic-bg); stroke: var(--ic-ink); stroke-width: 2.2; }
+:root:not([data-ui="rr"]) .insight.info { --ic-bg: var(--ico-bg); --ic-ink: var(--ico-ink); }
+:root:not([data-ui="rr"]) .insight.good { --ic-bg: var(--good-soft); --ic-ink: var(--good-t); }
+:root:not([data-ui="rr"]) .insight.warn { --ic-bg: var(--warn-soft); --ic-ink: var(--warn-t); }
+:root:not([data-ui="rr"]) .insight.crit { --ic-bg: var(--crit-soft); --ic-ink: var(--crit-t); }
+
+/* ===== "How we worked this out": plain-language calculation ===== */
+.fx-head h3 { font-size: 17px; font-weight: 800; margin: 4px 0 2px; }
+.fx-head p { margin: 0; font-size: 13.5px; color: var(--ink-2); line-height: 1.45; }
+.fx { display: grid; border-radius: 14px; background: var(--surface-2); overflow: hidden; }
+.fx-group { padding: 10px 16px 4px; font-size: 11.5px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.fx-group:not(:first-child) { margin-top: 6px; border-top: .5px solid var(--line); padding-top: 14px; }
+.fx-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 16px; align-items: center; padding: 9px 16px; }
+.fx-row + .fx-row { border-top: .5px solid var(--line); }
+.fx-k { display: grid; gap: 2px; min-width: 0; }
+.fx-k b { font-size: 14.5px; font-weight: 700; }
+.fx-k span { font-size: 12.5px; color: var(--ink-2); line-height: 1.4; }
+.fx-v { font-size: 15.5px; font-weight: 700; white-space: nowrap; text-align: right; display: flex; align-items: baseline; gap: 8px; justify-content: flex-end; }
+.fx-v .op { font-style: normal; font-weight: 800; color: var(--muted); width: 1ch; text-align: center; }
+.fx-row.sub { background: color-mix(in srgb, var(--surface) 55%, transparent); }
+.fx-row.total { margin-top: 6px; padding: 14px 16px; background: var(--accent-soft); border-top: 0; }
+.fx-row.total .fx-k b { color: var(--accent-t); font-size: 15.5px; }
+.fx-row.total .fx-v { color: var(--accent-t); font-size: 19px; font-weight: 800; }
+:root[data-style="glass"] .fx { background-color: var(--surface-2); }
+@media (max-width: 600px) { .fx-row { grid-template-columns: minmax(0, 1fr); } .fx-v { justify-content: flex-start; } }
+
+/* You page card: savings buffer in the top-left corner, larger; no logo */
+.wcard.wc-you .wc-top { align-items: flex-start; }
+.wc-amt { display: grid; gap: 2px; min-width: 0; }
+.wc-amt small { font-size: 14px; font-weight: 600; opacity: .92; }
+.wc-amt strong { font-family: var(--font-r); font-size: clamp(40px, 5.2vw, 60px); font-weight: 800; letter-spacing: -0.03em; line-height: 1; overflow-wrap: anywhere; }
+@media (max-width: 600px) { .wc-amt strong { font-size: 40px; } }
+
+/* Quests page: the games sit below the ranks and badges */
+.view[data-view="arena"] > .play-head { margin-top: 20px; padding-top: 22px; border-top: 1px solid var(--line); }
+.view[data-view="arena"] > .play-head h2 { font-size: clamp(24px, 3vw, 32px); font-weight: 800; letter-spacing: -0.025em; }
+
+/* ===== "after each move" chart: readable rows, labelled scale and goal ===== */
+#leverBars { gap: 10px; }
+.lv-key { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12.5px; color: var(--ink-2); }
+.lv-key span { display: inline-flex; align-items: center; gap: 6px; }
+.lv-key i { width: 12px; height: 12px; border-radius: 4px; background: var(--lv-short); }
+.lv-key i.ok { background: var(--accent); }
+.lv-key i.ln { width: 0; height: 14px; border-radius: 0; border-left: 2px dashed var(--accent-t); background: none; }
+:root { --lv-short: #8C83C9; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --lv-short: #6F66B8; } }
+:root[data-theme="dark"] { --lv-short: #6F66B8; }
+.lv-row { display: grid; grid-template-columns: minmax(150px, 240px) minmax(0, 1fr) 96px; gap: 14px; align-items: center; }
+.lv-lab { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.lv-lab b { display: block; font-size: 14px; font-weight: 700; line-height: 1.25; }
+.lv-lab small { display: block; font-size: 12px; color: var(--ink-2); }
+.lv-no { flex: none; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 800; background: var(--ico-bg); color: var(--ico-ink); }
+.lv-row.ok .lv-no { background: var(--accent); color: var(--accent-ink); }
+.lv-track { position: relative; height: 14px; border-radius: 999px; background: var(--fill); }
+.lv-track .fill { position: absolute; inset: 0 auto 0 0; min-width: 14px; border-radius: 999px; background: var(--lv-short); transition: width 1s cubic-bezier(.2, .8, .2, 1); }
+.lv-row.ok .lv-track .fill { background: var(--accent); }
+.lv-line { position: absolute; top: -6px; bottom: -6px; width: 0; border-left: 2px dashed var(--accent-t); }
+.lv-val { text-align: right; display: grid; line-height: 1.2; }
+.lv-val b { font-size: 14.5px; font-weight: 800; white-space: nowrap; }
+.lv-val small { font-size: 12px; font-weight: 700; color: var(--accent-t); }
+.lv-scale { margin-top: 18px; }
+.lv-scale .lv-track { height: 18px; background: none; border-top: 1px solid var(--line); border-radius: 0; }
+.lv-scale .tk { position: absolute; top: 3px; transform: translateX(-50%); font-size: 11px; color: var(--muted); white-space: nowrap; }
+.lv-scale .tk:first-child { transform: none; } .lv-scale .tk:last-of-type { transform: translateX(-100%); }
+.lv-goal { position: absolute; bottom: calc(100% + 4px); transform: translateX(-50%); padding: 2px 8px; border-radius: 999px; background: var(--accent-soft); color: var(--accent-t); font-size: 11.5px; font-weight: 700; white-space: nowrap; }
+.lv-h { text-align: right; font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+.lv-sum { margin: 6px 0 0; padding: 12px 14px; border-radius: 12px; background: var(--surface-2); font-size: 14px; line-height: 1.45; }
+.lv-sum b { color: var(--accent-t); }
+@media (max-width: 700px) {
+  .lv-row { grid-template-columns: minmax(0, 1fr) auto; }
+  .lv-row .lv-track { grid-column: 1 / -1; grid-row: 2; }
+  .lv-scale { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .lv-track .fill { transition: none; } }
+
+/* ===== slightly larger body text (headings, numbers and buttons unchanged) ===== */
+:root:not([data-ui="rr"]) body { font-size: 16px; }
+:root:not([data-ui="rr"]) :is(.head p) { font-size: 17px; }
+:root:not([data-ui="rr"]) :is(.panel-head p, .step p, .plan-shock .panel-head p, .plan-shock .steps) { font-size: 14.5px; }
+:root:not([data-ui="rr"]) :is(.callout, .insight, .field > label, .field > .lab, .plan-shock .field label, .fx-head p, .pick-hint ~ * .d) { font-size: 15px; }
+:root:not([data-ui="rr"]) :is(.small, .hint, .twist .d, .fx-k span, .lv-lab small, .ledger .s, .goal-custom label) { font-size: 14px; }
+:root:not([data-ui="rr"]) :is(.note) { font-size: 13.5px; }
+:root:not([data-ui="rr"]) .b-fund-chart #goalText { font-size: 15.5px; }
+
+/* ===== type pairing: Bricolage Grotesque for headings and headline figures, Manrope for everything else ===== */
+:root { --font-d: "Bricolage Grotesque", "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+:root:not([data-ui="rr"]) :is(h1, h2, .sec-title, .fx-head h3, .tb-title, .brand-name) { font-family: var(--font-d); font-optical-sizing: auto; letter-spacing: -0.02em; }
+:root:not([data-ui="rr"]) :is(h1) { letter-spacing: -0.03em; }
+/* headline money figures get the display face; small numbers in tables, labels and inputs stay in Manrope */
+:root:not([data-ui="rr"]) :is(.wc-amt strong, .wc-mid strong, .ledger .v, .strip-big .n, .finding .big, .zb-left .v, .acct-card .lim, .ring-legend .v, .gauge-n, .fx-row.total .fx-v) {
+  font-family: var(--font-d); font-optical-sizing: auto; letter-spacing: -0.02em; }
+
+
+/* Budget: two columns on wide screens so the panel has no empty half */
+.bm-left, .bm-right { display: grid; gap: 14px; align-content: start; min-width: 0; }
+@media (min-width: 1001px) {
+  .budget-main { grid-template-columns: minmax(280px, 1fr) minmax(0, 1.45fr); column-gap: 28px; align-items: start; }
+}
+
+/* Budget: larger rule buttons */
+#ruleSeg { gap: 4px; padding: 4px; border-radius: 14px; }
+#ruleSeg button { height: 44px; padding: 0 18px; border-radius: 11px; font-size: 15.5px; font-weight: 700; font-family: var(--font-d); letter-spacing: -0.01em; }
+#ruleSeg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); box-shadow: 0 4px 12px -4px color-mix(in srgb, var(--accent) 60%, transparent); }
+@media (max-width: 600px) { #ruleSeg button { height: 40px; padding: 0 14px; font-size: 14.5px; } }
+/* Budget: rule buttons stacked vertically */
+#ruleSeg { display: flex; flex-direction: column; align-items: stretch; width: 100%; max-width: 360px; }
+#ruleSeg button { width: 100%; justify-content: flex-start; text-align: left; }
+@media (max-width: 1000px) { #ruleSeg { max-width: none; } }
+/* Budget: heading above the rule list */
+.rule-head h3 { font-family: var(--font-d); font-size: 18px; font-weight: 800; letter-spacing: -0.02em; margin: 4px 0 4px; }
+.rule-head p { margin: 0; font-size: 14.5px; color: var(--ink-2); line-height: 1.45; max-width: 42ch; }

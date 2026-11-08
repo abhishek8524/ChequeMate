@@ -1,10 +1,9 @@
-/* Landing-page footer in the app: rising sparks, logo burst, back to top. Copied from home.js. */
+/* Landing-page footer in the app: logo burst and back to top. Copied from home.js. */
 (function () {
   const $ = s => document.querySelector(s);
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const host = $('#appFoot .ds-sparks'); if (!host) return;
+  if (!$('#appFoot')) return;
   const cols = ['#FFD36B', '#FF5E62', '#7C5CFF', '#FF9A4D', '#5CC8FF'];
-  for (let k = 0; k < 26; k++) { const i = document.createElement('i'); i.style.cssText = `--x:${(Math.random() * 100).toFixed(1)}%;--s:${(3 + Math.random() * 5).toFixed(1)}px;--c:${cols[k % cols.length]};--d:${(Math.random() * 6).toFixed(2)}s;--t:${(4 + Math.random() * 5).toFixed(2)}s;--dx:${((Math.random() - .5) * 120).toFixed(0)}px`; host.append(i); }
   const top = $('#appFoot [data-ds-top]');
   if (top) top.addEventListener('click', e => { e.preventDefault(); window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }); const m = $('#main'); if (m && m.scrollTop) m.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }); });
   const logo = $('#appFoot .ds-logo'); if (!logo) return;
