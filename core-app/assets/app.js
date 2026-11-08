@@ -228,14 +228,16 @@ function micrHTML(a) {
 }
 function renderMicr() { const a = acc(); if (!a) return; const h = micrHTML(a); $$('[data-micr]').forEach(el => el.innerHTML = h); const p = profile(a.id); $('#tbAcct').innerHTML = `<span class="avatar sm">${initials(p, a.id)}</span><span>${esc(p.name)}</span>`; }
 
-const TITLES = { paradox: 'The paradox', customer: 'Customer', shock: 'Shock lab', plan: 'Plan', budget: 'Budget', invest: 'Investing', coach: 'Coach', data: 'Your data', resources: 'Resources', profile: 'Profile', arena: 'Quests', play: 'Play' };
+const TITLES = { paradox: 'The paradox', customer: 'Customer', shock: 'Shock lab', plan: 'Plan', budget: 'Budget', invest: 'Investing', coach: 'Coach', data: 'Your data', resources: 'Resources', profile: 'Profile', arena: 'Quests', play: 'Play', overview: 'Overview', investing: 'Investing', yourdata: 'Your money', situations: 'Situations', saving: 'Saving plan', paradox: 'Findings' };
 function openSheet() { $('#sheet').hidden = false; $('#sheetBg').hidden = false; }
 function closeSheet() { const s = $('#sheet'); if (s) { s.hidden = true; $('#sheetBg').hidden = true; } }
-const VIEWS = ['paradox', 'customer', 'shock', 'plan', 'budget', 'invest', 'coach', 'data', 'resources', 'profile', 'arena', 'play'];
+const VIEWS = ['paradox', 'customer', 'shock', 'plan', 'budget', 'invest', 'coach', 'data', 'resources', 'profile', 'arena', 'play', 'overview', 'investing', 'yourdata', 'situations', 'saving'];
 const RENDER = {};
 let currentView = null;
 function route() {
-  let v = location.hash.slice(1); if (!VIEWS.includes(v)) v = 'paradox';
+  let v = location.hash.slice(1); const ios = document.documentElement.getAttribute('data-ui') !== 'rr';
+  if (ios) v = ({ overview: 'customer', situations: 'shock', saving: 'plan', yourdata: 'data', investing: 'invest' })[v] || v;
+  if (!VIEWS.includes(v)) v = ios ? 'customer' : 'overview';
   currentView = v;
   $$('.view').forEach(s => s.hidden = s.dataset.view !== v);
   $$('#nav a, #tabbar a').forEach(a => { if (a.getAttribute('href') === '#' + v) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
@@ -727,8 +729,11 @@ function bindInvest() {
 }
 
 /* ================= VIEW: COACH ================= */
-function aiCfg() { const c = Object.assign({ key: '', model: 'gemini-2.5-flash' }, store.get('cm.ai', {})); if (c.model === 'gemini-flash-latest') c.model = 'gemini-2.5-flash'; return c; }
+/* No provider keys in the browser: Gemini runs server-side. Purge any key saved by older builds. */
+(() => { const c = store.get('cm.ai', null); if (c && c.key) { delete c.key; store.set('cm.ai', c); } })();
+function aiCfg() { const c = Object.assign({ model: 'gemini-2.5-flash' }, store.get('cm.ai', {})); if (c.model === 'gemini-flash-latest') c.model = 'gemini-2.5-flash'; c.key = ''; return c; }
 function contextText() {
+  const live = window.CMLive && window.CMLive.contextText && window.CMLive.contextText(); if (live) return live;
   const a = acc(), pf = profile(), sh = st.shock, P = shockParams(a, sh), r = runway(a.B, a.I, a.S, P);
   const ei = runway(a.B, a.I, a.S, { mult: .55 }), base = runway(a.B, a.I, a.S);
   const { list } = levers(a); const act = actuals(a, a.I);
@@ -1096,7 +1101,7 @@ function boot() {
   $('#acctForm').onsubmit = e => {
     e.preventDefault(); const v = $('#acctInput').value.replace(/\D/g, '');
     if (!setAccount(v)) { $('#acctInput').setAttribute('aria-invalid', 'true'); const er = $('#acctErr'); er.hidden = false; er.textContent = v ? `No account ${v} in this data. IDs run from ${IDS[0]} to ${IDS[IDS.length - 1]}.` : 'Type an account number.'; }
-    else if (currentView === 'paradox' || currentView === 'data' || currentView === 'resources') go('customer');
+    else if (['paradox', 'data', 'resources'].includes(currentView)) go('customer');
   };
   $('#acctRandom').onclick = () => { setAccount(IDS[Math.floor(Math.random() * IDS.length)]); if (['paradox', 'data', 'resources'].includes(currentView)) go('customer'); };
   $$('[data-theme-set]').forEach(b => b.onclick = () => applyTheme(b.dataset.themeSet));
@@ -1114,6 +1119,6 @@ function boot() {
 }
 // expose engine for testing in the console
 window.ChequeMate = { runway, get data() { return DATA; }, get builtin() { return BUILTIN; }, get ids() { return IDS; }, get src() { return SRC; }, get view() { return currentView; },
-  st, acc, profile, shockParams, SHOCKS, money, pct, esc, toast, go, setAccount, applyPreset, rwText, rwLong, status, tone, eiPercentile, levers, isNoShock, ICON, reduceMotion, store };
+  st, acc, profile, shockParams, SHOCKS, send, mdLite, actuals, RULES, projection, get ins() { return INS; }, money, pct, esc, toast, go, setAccount, applyPreset, rwText, rwLong, status, tone, eiPercentile, levers, isNoShock, ICON, reduceMotion, store };
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
 })();

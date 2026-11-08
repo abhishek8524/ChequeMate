@@ -537,3 +537,14 @@ input[type="range"]:disabled { opacity: .4; }
   *, *::before, *::after { transition: none !important; animation: none !important; }
   .wcard { transform: none !important; }
 }
+
+/* live server check (iOS UI) */
+.live-check { display: flex; align-items: center; gap: 12px; margin: 12px 0; padding: 12px 16px; border-radius: var(--r-m); background: var(--surface); box-shadow: var(--shadow-s); border: 1px solid var(--line); font-size: 13px; }
+.live-check > div { display: grid; gap: 2px; min-width: 0; flex: 1; } .live-check b { font-weight: 600; font-size: 14px; } .live-check span:not(.lc-dot) { color: var(--ink-2); }
+.live-check em { font: 600 11px var(--font); font-style: normal; color: var(--muted); background: var(--fill-2); padding: 3px 8px; border-radius: 999px; white-space: nowrap; }
+.lc-dot { width: 10px; height: 10px; border-radius: 5px; flex: none; background: var(--muted); }
+.live-check.ok .lc-dot { background: var(--good); box-shadow: 0 0 0 4px var(--good-soft); } .live-check.ok b { color: var(--good-t); }
+.live-check.warn .lc-dot { background: var(--warn); box-shadow: 0 0 0 4px var(--warn-soft); } .live-check.warn b { color: var(--warn-t); }
+.live-check.off .lc-dot { background: var(--crit); }
+.live-check.wait .lc-dot { animation: lcpulse 1s ease-in-out infinite alternate; } @keyframes lcpulse { to { opacity: .3; } }
+@media (max-width: 600px) { .live-check { flex-wrap: wrap; } .live-check em { margin-left: 22px; } }

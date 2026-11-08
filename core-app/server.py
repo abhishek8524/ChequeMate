@@ -93,6 +93,11 @@ class Handler(SimpleHTTPRequestHandler):
             return self._json(200, {'ok': bool(KEY), 'model': DEFAULT_MODEL})
         if self._blocked():
             return self.send_error(404)
+        path, _, query = self.path.partition('?')
+        if path == '/':  # landing page first; the engine lives at /index.html (alias /app)
+            self.path = '/home.html' + ('?' + query if query else '')
+        elif path == '/app':
+            self.path = '/index.html' + ('?' + query if query else '')
         return super().do_GET()
 
     def do_HEAD(self):

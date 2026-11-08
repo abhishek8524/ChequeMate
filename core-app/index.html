@@ -3,13 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>ChequeMate</title>
+<title>Resilience Rewired</title>
 <meta name="description" content="ChequeMate: financial resilience engine. Runway, shocks, plans, budgets and investing for any bank customer.">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="assets/styles.css?v=ce110671">
-<link rel="stylesheet" href="assets/game.css?v=ce110671">
-<link rel="stylesheet" href="assets/play.css?v=ce110671">
-<link rel="stylesheet" href="assets/glass.css?v=ce110671">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600&display=swap">
+<link rel="stylesheet" href="assets/styles.css?v=1ed1f141">
+<link rel="stylesheet" href="assets/game.css?v=1ed1f141">
+<link rel="stylesheet" href="assets/play.css?v=1ed1f141">
+<link rel="stylesheet" href="assets/glass.css?v=1ed1f141">
+<link rel="stylesheet" href="assets/rr.css?v=1ed1f141">
+<script>(function(){var r=document.documentElement;try{var q=new URLSearchParams(location.search).get('ui');if(q==='rr'||q==='ios')localStorage.setItem('cm.ui',JSON.stringify(q));}catch(e){}var ui='ios';try{ui=JSON.parse(localStorage.getItem('cm.ui')||'"ios"');}catch(e){}r.setAttribute('data-ui',ui==='rr'?'rr':'ios');try{var t=JSON.parse(localStorage.getItem('cm.theme')||'"system"');var d=t==='dark'||(t==='system'&&matchMedia('(prefers-color-scheme: dark)').matches);r.setAttribute('data-rr-theme',d?'dark':'light');r.setAttribute('data-text',JSON.parse(localStorage.getItem('cm.rr.text')||'"standard"'));}catch(e){}})();</script>
 </head>
 <body>
 <div class="app">
@@ -51,6 +53,35 @@
   </aside>
 
   <div class="main">
+    <div class="rr-only rr-top" id="rrTop">
+      <div class="rr-brand">
+        <a class="rr-logo" href="#overview" aria-label="Resilience Rewired home"><svg viewBox="0 0 24 24" fill="none" stroke="#DDFF55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 19h8M9.2 16.6h5.6l-.8-5h-4zM9.6 11.6C8.2 10.8 7.8 9.2 8.7 8c.8-1 2.3-1.3 3.3-.4.9-.9 2.4-.6 3.3.4.9 1.2.5 2.8-.9 3.6"/></svg></a>
+        <div class="rr-greet">
+          <div class="rr-greet-t"><h1 id="rrGreet">Good morning</h1><img class="rr-ico" id="rrTod" src="assets/rr/time-morning.svg" width="32" height="32" alt=""></div>
+          <p id="rrSub">Do something today your future self will thank you for.</p>
+        </div>
+      </div>
+      <div class="rr-actions">
+        <form class="rr-lookup" id="rrLookup" autocomplete="off"><label for="rrAcct">Account number</label><input id="rrAcct" inputmode="numeric" aria-describedby="rrAcctErr"><div class="rr-err" id="rrAcctErr" hidden></div></form>
+        <button class="rr-iconbtn rr-shuffle" type="button" id="rrShuffle" aria-label="Open a random customer" title="Random customer"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 7h3.5c2 0 3.2 1 4.3 2.6l2.4 3.8C14.3 15 15.5 16 17.5 16H21M3 16h3.5c1.4 0 2.4-.5 3.2-1.4M21 7h-3.5c-1.4 0-2.4.5-3.2 1.4M18.5 4.5 21 7l-2.5 2.5M18.5 13.5 21 16l-2.5 2.5"/></svg></button>
+        <button class="rr-iconbtn" type="button" id="rrSettingsBtn" aria-label="Settings"><img class="rr-ico" src="assets/rr/settings.svg" width="20" height="20" alt=""></button>
+        <button class="rr-iconbtn" type="button" id="rrThemeBtn" aria-label="Switch to dark mode" aria-pressed="false"><img class="rr-ico" id="rrThemeIco" src="assets/rr/moon.svg" width="20" height="20" alt=""></button>
+      </div>
+    </div>
+    <nav class="rr-only rr-nav" id="rrNav" aria-label="Main">
+      <a class="rr-tab" href="#overview" data-v="overview"><img class="rr-ico on" src="assets/rr/nav-overview-on.svg" width="18" height="18" alt=""><img class="rr-ico off" src="assets/rr/nav-overview-off.svg" width="18" height="18" alt="">Overview</a>
+      <a class="rr-tab" href="#situations" data-v="situations">Situations</a>
+      <a class="rr-tab" href="#saving" data-v="saving">Saving plan</a>
+      <a class="rr-tab" href="#yourdata" data-v="yourdata"><img class="rr-ico on" src="assets/rr/nav-your-data-on.svg" width="18" height="18" alt=""><img class="rr-ico off" src="assets/rr/nav-your-data-off.svg" width="18" height="18" alt="">Your money</a>
+      <a class="rr-tab" href="#investing" data-v="investing"><img class="rr-ico on" src="assets/rr/nav-investing-on.svg" width="18" height="18" alt=""><img class="rr-ico off" src="assets/rr/nav-investing-off.svg" width="18" height="18" alt="">Investing</a>
+      <a class="rr-tab" href="#paradox" data-v="paradox">Findings</a>
+      <div class="rr-more"><button class="rr-tab" type="button" id="rrMoreBtn" aria-haspopup="menu" aria-expanded="false" aria-controls="rrMenu">Extras <img class="rr-ico caret" src="assets/rr/arrow-down.svg" width="12" height="12" alt=""></button>
+        <div class="rr-menu" id="rrMenu" role="menu" hidden><h4>Extra features</h4><a href="#customer" role="menuitem" data-v="customer">Customer deep-dive<span>Score, rings, money flow and insights</span></a><a href="#shock" role="menuitem" data-v="shock">Shock lab<span>Every situation, boss rush, 3D terrain</span></a><a href="#plan" role="menuitem" data-v="plan">Plan builder<span>Goal and backup plans in detail</span></a><a href="#budget" role="menuitem" data-v="budget">Budget rules<span>Six rules and a zero-based planner</span></a><a href="#coach" role="menuitem" data-v="coach">Coach Mate<span>The 3D pawn coach</span></a><a href="#arena" role="menuitem" data-v="arena">Quests and ranks<span>XP, badges, missions, leaderboards</span></a><a href="#play" role="menuitem" data-v="play">Play<span>Runway Run and Who lasts longer?</span></a><a href="#data" role="menuitem" data-v="data">Upload your data<span>Score a whole CSV in your browser</span></a><a href="#resources" role="menuitem" data-v="resources">Resources<span>Official Canadian sources</span></a><a href="#profile" role="menuitem" data-v="profile">Profile<span>Details the bank data can’t know</span></a></div></div>
+      <span class="rr-spacer"></span>
+      <div class="rr-search" id="rrSearchBox"><img class="rr-ico" src="assets/rr/search.svg" width="18" height="18" alt=""><input id="rrSearch" type="search" placeholder="Search accounts, payments, help…" aria-label="Search accounts, payments, plans and help" aria-controls="rrResults" aria-expanded="false" autocomplete="off"><kbd>/</kbd><div class="rr-results" id="rrResults" role="listbox" hidden></div></div>
+      <div class="rr-bellwrap"><button class="rr-bell" type="button" id="rrBell" aria-label="Notifications" aria-expanded="false"><img class="rr-ico" src="assets/rr/bell.svg" width="20" height="20" alt=""><span class="dot" id="rrBellDot"></span></button><div class="rr-notes" id="rrNotes" hidden></div></div>
+    </nav>
+    <div class="rr-only rr-jump" id="rrJump"></div>
     <header class="toolbar">
       <span class="tb-title" id="tbTitle">The paradox</span>
       <span class="tb-space"></span>
@@ -71,6 +102,57 @@
 
     <main class="content" id="main">
       <div class="loading" id="loading">Loading 4,500 accounts…</div>
+      <!-- RESILIENCE REWIRED: 1 · OVERVIEW -->
+      <section class="view rr-view" data-view="overview" hidden>
+        <nav class="rr-journey" aria-label="Your three steps"><a href="#overview" aria-current="step"><span class="n">1</span><span class="t"><b>Check your money</b><small>What comes in, goes out, and what you have saved</small></span></a><a href="#situations"><span class="n">2</span><span class="t"><b>Test a situation</b><small>Job loss, higher bills or a surprise cost</small></span></a><a href="#saving"><span class="n">3</span><span class="t"><b>Build your plan</b><small>Safety-net savings and recovery options</small></span></a></nav>
+        <div class="rr-row rr-row1" id="rr-accounts">
+          <article class="rr-tile" id="rrChequing"></article>
+          <article class="rr-tile" id="rrSavings"></article>
+          <article class="rr-tile rr-ai" id="rrAiOffer">
+            <div class="rr-tile-head"><span class="rr-pill">New · 5 min walkthrough</span><img class="rr-ico" src="assets/rr/sparkle.svg" width="22" height="21" alt=""></div>
+            <h2>Give every dollar a job</h2>
+            <p>Our AI looks at your last 6 months and suggests separate accounts for rent, bills, health and travel, then moves money there on payday.</p>
+            <div class="rr-pills"><span class="rr-pill">Rent</span><span class="rr-pill">Bills</span><span class="rr-pill">Health</span><span class="rr-pill">Travel</span><span class="rr-pill">+ more</span></div>
+            <p class="small">You stay in control: nothing moves until you approve it.</p>
+            <div class="rr-btns" style="align-items:center;gap:10px"><button class="rr-btn" type="button" data-rr-walk>Start walkthrough</button><button class="rr-link" type="button" id="rrMaybe">Maybe later</button></div>
+          </article>
+        </div>
+        <div class="rr-row rr-row2" id="rr-summary">
+          <article class="rr-tile pad22" id="rrSummary"></article>
+          <article class="rr-tile rr-finding" id="rrFinding"></article>
+        </div>
+      </section>
+
+      <!-- RESILIENCE REWIRED: 2 · SITUATIONS -->
+      <section class="view rr-view" data-view="situations" hidden>
+        <nav class="rr-journey" aria-label="Your three steps"><a href="#overview"><span class="n">1</span><span class="t"><b>Check your money</b><small>What comes in, goes out, and what you have saved</small></span></a><a href="#situations" aria-current="step"><span class="n">2</span><span class="t"><b>Test a situation</b><small>Job loss, higher bills or a surprise cost</small></span></a><a href="#saving"><span class="n">3</span><span class="t"><b>Build your plan</b><small>Safety-net savings and recovery options</small></span></a></nav>
+        <div class="rr-page-head"><h1>Situations</h1><p>Test what happens to your savings if something changes. Pick one or more situations below; every number is worked out from your own account.</p></div>
+        <div class="rr-row rr-row2" id="rr-ahead">
+          <article class="rr-tile" id="rrRunway"></article>
+          <div class="rr-col" id="rr-breath">
+            <article class="rr-tile rr-breath" id="rrBreath"></article>
+            <article class="rr-tile" id="rrSitNext"><div class="rr-tile-head"><h3>Next: build your plan</h3></div><p class="rr-hint">See how much extra savings would carry you to your target, and compare recovery options side by side.</p><a class="rr-btn" href="#saving">Go to Saving plan →</a></article>
+          </div>
+        </div>
+      </section>
+
+      <!-- RESILIENCE REWIRED: 3 · SAVING PLAN -->
+      <section class="view rr-view" data-view="saving" hidden>
+        <nav class="rr-journey" aria-label="Your three steps"><a href="#overview"><span class="n">1</span><span class="t"><b>Check your money</b><small>What comes in, goes out, and what you have saved</small></span></a><a href="#situations"><span class="n">2</span><span class="t"><b>Test a situation</b><small>Job loss, higher bills or a surprise cost</small></span></a><a href="#saving" aria-current="step"><span class="n">3</span><span class="t"><b>Build your plan</b><small>Safety-net savings and recovery options</small></span></a></nav>
+        <div class="rr-page-head"><h1>Saving plan</h1><p>Your plan for the situations you chose: the savings that would get you to a target, and recovery options compared side by side.</p></div>
+        <div class="rr-row rr-row3" id="rr-fund">
+          <article class="rr-tile pad22" id="rrFund"></article>
+          <article class="rr-tile pad22" id="rr-job"></article>
+        </div>
+        <article class="rr-tile pad22" id="rr-steps"></article>
+      </section>
+
+      <!-- RESILIENCE REWIRED: INVESTING -->
+      <section class="view rr-view" data-view="investing" hidden><div id="rrInvest"></div></section>
+
+      <!-- RESILIENCE REWIRED: YOUR DATA -->
+      <section class="view rr-view" data-view="yourdata" hidden><div id="rrData"></div></section>
+
 
       <!-- THE PARADOX -->
       <section class="view" data-view="paradox" hidden>
@@ -173,7 +255,7 @@
             <h2>Size the shock</h2>
             <div class="field"><label for="sInc">Income kept <output id="oInc"></output></label><input type="range" id="sInc" min="0" max="100" step="5"><span class="hint">EI regular benefits pay 55% of insurable earnings, up to $729 a week in 2026.</span></div>
             <div class="field"><label for="sEi">How long EI pays <output id="oEi"></output></label><input type="range" id="sEi" min="1" max="12" step="1"></div>
-            <div class="field"><label for="sBills">Household bills change <output id="oBills"></output></label><input type="range" id="sBills" min="-20" max="60" step="5"></div>
+            <div class="field"><label for="sBills">Household bills change <output id="oBills"></output></label><input type="range" id="sBills" min="0" max="60" step="5"></div>
             <div class="field"><label for="sExtra">New monthly cost <output id="oExtra"></output></label><input type="range" id="sExtra" min="0" max="2500" step="50"><span class="hint">A rent hike, a car payment, childcare.</span></div>
             <div class="field"><label for="sOne">One-off cost <output id="oOne"></output></label><input type="range" id="sOne" min="0" max="40000" step="250">
               <div class="seg" id="oneQuick"><button type="button" data-m="0.5">½ month</button><button type="button" data-m="1">1 month</button><button type="button" data-m="2">2 months</button></div></div>
@@ -370,7 +452,7 @@
             <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" type="submit">Save profile</button><button class="btn" type="button" id="pfClear">Reset</button></div>
           </form>
           <div class="grid" style="align-content:start">
-            <form class="panel" id="aiForm">
+            <form class="panel" id="aiForm" hidden>
               <h2>Gemini coach</h2>
               <div class="field"><label for="aiKey">API key</label><input class="input" id="aiKey" type="password" placeholder="Paste a Google AI Studio key"><span class="hint">Stored only in this browser. Get a key at aistudio.google.com. Never commit keys to the repo.</span></div>
               <div class="field"><label for="aiModel">Model</label><input class="input" id="aiModel" list="aiModels"><datalist id="aiModels"><option value="gemini-flash-latest"></option><option value="gemini-2.5-flash"></option><option value="gemini-2.5-pro"></option><option value="gemini-2.5-flash-lite"></option></datalist></div>
@@ -465,6 +547,16 @@
         </div>
       </section>
     </main>
+    <footer class="rr-only rr-footer" id="rrFooter">
+      <div class="top">
+        <div class="rr-fbrand"><div class="t"><img class="rr-ico" src="assets/rr/footer-logo.svg" width="36" height="36" alt="">Resilience Rewired</div><p>Do something today your future self will thank you for.</p><button class="tipbtn" type="button" id="rrTipBtn">✦  Get one money tip a week</button></div>
+        <div class="col"><h4>Your money</h4><a href="#overview">Overview</a><a href="#situations">Situations</a><a href="#saving">Saving plan</a><a href="#yourdata">Your money</a><a href="#investing">Investing</a></div>
+        <div class="col"><h4>Help</h4><button type="button" data-rr-chat>Help centre</button><button type="button" data-rr-chat>Contact us</button><a href="#resources">Accessibility</a><a href="#resources">Security tips</a></div>
+        <div class="col"><h4>About</h4><a href="#resources">Privacy</a><a href="#resources">Terms of use</a><button type="button" id="rrCookies">Cookie settings</button></div>
+      </div>
+      <div class="div"></div>
+      <div class="bot"><p>Eligible deposits are protected by CDIC up to $100,000 per insured category. AI suggestions are estimates, not financial advice.</p><span>© 2026 Resilience Rewired · Sample data</span></div>
+    </footer>
   </div>
 
   <nav class="tabbar" id="tabbar" aria-label="Sections">
@@ -497,6 +589,16 @@
   </div>
 </div>
 <div class="toast" id="toast" role="status"></div>
+<button class="rr-only rr-chatbtn" type="button" id="rrChatBtn" aria-label="Chat with AI helper" aria-expanded="false" aria-controls="rrChat"><img src="assets/rr/ai-chat-button.svg" width="112" height="112" alt=""></button>
+<section class="rr-chat" id="rrChat" role="dialog" aria-label="Money helper" hidden>
+  <div class="rr-chat-h"><span class="av"><img src="assets/rr/chat-avatar.svg" width="16" height="16" alt=""></span><div class="t"><b>Money helper</b><span><img src="assets/rr/online-dot.svg" width="8" height="8" alt="">AI · replies in seconds</span></div><button class="rr-x" type="button" id="rrChatClose" aria-label="Close chat">✕</button></div>
+  <div class="rr-chat-m" id="rrChatMsgs" aria-live="polite"></div>
+  <div class="rr-chat-c"><form id="rrChatForm"><input id="rrChatIn" placeholder="Type your question…" aria-label="Type your question"><button class="send" type="submit" aria-label="Send">↑</button></form><p>AI can make mistakes. For security or fraud issues, tap "Talk to a person".</p></div>
+</section>
+<div class="rr-scrim" id="rrSettingsScrim" hidden><section class="rr-settings" id="rrSettings" role="dialog" aria-modal="true" aria-labelledby="rrSettingsT"></section></div>
+<div class="rr-scrim" id="rrWalkScrim" hidden><section class="rr-settings rr-walk" id="rrWalk" role="dialog" aria-modal="true" aria-label="AI saving plan walkthrough"></section></div>
+<div class="rr-toast" id="rrToast" role="status" aria-live="polite"></div>
+
 <div class="mate-dock-wrap" id="mateWrap">
   <div class="mate-bubble" id="mateBubble" role="status" hidden>
     <button class="mb-x" type="button" id="mateClose" aria-label="Close tip"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
@@ -510,16 +612,21 @@
 <div class="xp-pop" id="xpPop" aria-hidden="true"></div>
 <canvas class="confetti" id="confetti" aria-hidden="true"></canvas>
 
-<script src="assets/vendor/chart.umd.min.js?v=ce110671"></script>
-<script src="assets/vendor/papaparse.min.js?v=ce110671"></script>
-<script src="assets/vendor/three.min.js?v=ce110671"></script>
-<script src="assets/mate3d.js?v=ce110671"></script>
-<script src="assets/fx.js?v=ce110671"></script>
-<script src="data/insights.js?v=ce110671"></script>
-<script src="data/accounts.js?v=ce110671"></script>
-<script src="assets/app.js?v=ce110671"></script>
-<script src="assets/game.js?v=ce110671"></script>
-<script src="assets/play.js?v=ce110671"></script>
-<script src="assets/viz.js?v=ce110671"></script>
+<script src="assets/vendor/chart.umd.min.js?v=1ed1f141"></script>
+<script src="assets/vendor/papaparse.min.js?v=1ed1f141"></script>
+<script src="assets/vendor/three.min.js?v=1ed1f141"></script>
+<script src="assets/mate3d.js?v=1ed1f141"></script>
+<script src="assets/fx.js?v=1ed1f141"></script>
+<script src="data/insights.js?v=1ed1f141"></script>
+<script src="data/accounts.js?v=1ed1f141"></script>
+<script src="assets/app.js?v=1ed1f141"></script>
+<script src="assets/game.js?v=1ed1f141"></script>
+<script src="assets/play.js?v=1ed1f141"></script>
+<script src="assets/viz.js?v=1ed1f141"></script>
+<script src="assets/rr.js?v=1ed1f141"></script>
+<script src="assets/rr2.js?v=1ed1f141"></script>
+<script src="assets/api.js?v=1ed1f141"></script>
+<script src="assets/live.js?v=1ed1f141"></script>
+<script src="assets/live-ios.js?v=1ed1f141"></script>
 </body>
 </html>

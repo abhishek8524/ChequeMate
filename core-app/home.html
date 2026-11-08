@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ChequeMate · Will the money last?</title>
+<meta name="description" content="ChequeMate reads a customer's own bank history, throws a shock at it, and shows how long their savings last, then builds the plan to get through it.">
+<meta name="theme-color" content="#F2F2F7">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%236CBBFF'/%3E%3Cstop offset='1' stop-color='%233A2FD6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='8' fill='url(%23g)'/%3E%3Ccircle cx='16' cy='10.5' r='3.6' fill='%23fff'/%3E%3Cpath d='M12.6 25.5h6.8l-1.3-9.2h-4.2z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/home.css">
+<script>(function(){var r=document.documentElement,d=matchMedia('(prefers-color-scheme: dark)').matches;try{var t=JSON.parse(localStorage.getItem('cm.theme')||'"system"');if(t==='dark')d=true;if(t==='light')d=false;}catch(e){}r.setAttribute('data-theme',d?'dark':'light');})();</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="nav">
+  <a class="brand" href="./" aria-label="ChequeMate home"><span class="appicon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="7.6" r="2.9"/><path d="M9.3 19.5h5.4l-1-7.2h-3.4z"/><rect x="7.6" y="19" width="8.8" height="2" rx="1"/></svg></span>ChequeMate</a>
+  <nav aria-label="Sections"><a href="#how">How it works</a><a href="#paradox">The paradox</a><a href="#field">Everyone</a><a href="#method">Method</a></nav>
+  <div class="nav-r">
+    <button class="round" type="button" id="themeBtn" aria-label="Switch light or dark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg></button>
+    <a class="pill blue" href="index.html#customer">Open the app</a>
+  </div>
+</header>
+
+<main id="main">
+<section class="hero">
+  <div class="mesh" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+  <div class="hero-in">
+    <div class="hero-copy">
+      <div class="stickers" aria-label="Made at Sheridan Datathon 2026, Tangerine track">
+        <span class="sticker s1">Sheridan Datathon '26</span><span class="sticker s2">Tangerine track</span><span class="sticker s3"><i></i>Live on real data</span>
+      </div>
+      <h1>A bigger paycheque doesn't buy <span class="grad">more time.</span></h1>
+      <p class="lede">ChequeMate reads a customer's real bank history, throws a shock at it (a layoff, a rent hike, a dead furnace) and tells you how many months the savings last. Then it builds the plan to get through.</p>
+      <form class="search" id="heroForm" autocomplete="off" role="search">
+        <label class="sr" for="heroAcct">Account number</label>
+        <span class="field-wrap"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg><input id="heroAcct" inputmode="numeric" pattern="[0-9]*" placeholder="Account number, e.g. 28754"></span>
+        <button class="pill blue big" type="submit">Check their runway</button>
+        <button class="pill ghost big sq" type="button" id="heroRandom" aria-label="Shuffle: pick a random account" title="Shuffle"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h3.5c2 0 3.2 1 4.3 2.6l2.4 3.8C14.3 15 15.5 16 17.5 16H21M3 16h3.5c1.4 0 2.4-.5 3.2-1.4M21 7h-3.5c-1.4 0-2.4.5-3.2 1.4M18.5 4.5 21 7l-2.5 2.5M18.5 13.5 21 16l-2.5 2.5"/></svg></button>
+      </form>
+      <p class="hint">Any of 4,500 real, anonymized accounts. Every number comes from the account itself.</p>
+    </div>
+
+    <div class="devices" aria-label="ChequeMate on an iPhone-style and a Galaxy-style phone, showing account 28754">
+      <div class="phone ios" aria-hidden="true">
+        <div class="screen">
+          <div class="sbar"><span>9:41</span><span class="island"></span><span class="sig"><i></i><i></i><i></i><b></b></span></div>
+          <p class="large">Shock lab</p>
+          <div class="wallet"><small>Savings buffer</small><b>$24,343</b><span>Account 28754</span><em>Runway on EI<br><strong>4.7 mo</strong></em></div>
+          <div class="chip on"><span class="dot" style="--c:#FF2D55"></span>Layoff + bills up 15%</div>
+          <div class="res"><small>Runway</small><b>4.3<span> months</span></b><span class="bad">Runs out before EI ends</span>
+            <div class="strip"><i style="--w:18%"></i><u style="left:25%"></u></div></div>
+          <div class="ok"><span></span>Server agrees · 4.3 months</div>
+        </div>
+      </div>
+      <div class="phone galaxy" aria-hidden="true">
+        <div class="screen">
+          <div class="sbar"><span>12:45</span><span class="hole"></span><span class="sig"><i></i><i></i><i></i><b></b></span></div>
+          <div class="oneui-top"><p>Plan</p><small>Account 28754</small></div>
+          <div class="card"><small>Goal plan · 6-month safety net</small><b>+$7,021</b><span>more savings to reach it</span><div class="bar"><i style="--w:78%"></i></div></div>
+          <div class="card list"><small>Backup plan if it hits</small>
+            <div class="row"><span class="ic" style="--c:#34C759">✓</span>Add $7,021 savings<em>6.0 mo</em></div>
+            <div class="row"><span class="ic" style="--c:#007AFF">−</span>Cut money out 10%<em>6.2 mo</em></div>
+            <div class="row"><span class="ic" style="--c:#FF9500">↺</span>Income back to 100%<em>never runs out</em></div>
+          </div>
+        </div>
+      </div>
+      <span class="sticker float f1">Real numbers · account 28754</span>
+    </div>
+  </div>
+  <div class="ticker" aria-hidden="true"><div><span>4,500 accounts</span><span>1.06M transactions</span><span>682 loans with outcomes</span><span>0 mismatches vs. the judges' formula</span><span>Sheridan Datathon 2026</span><span>Tangerine track</span><span>4,500 accounts</span><span>1.06M transactions</span><span>682 loans with outcomes</span><span>0 mismatches vs. the judges' formula</span><span>Sheridan Datathon 2026</span><span>Tangerine track</span></div></div>
+</section>
+
+<section class="widgets" aria-label="The data behind it">
+  <div class="w"><span class="ico" style="--c:#007AFF"><svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c.8-3.7 3.6-5.5 7-5.5s6.2 1.8 7 5.5"/></svg></span><b data-count="4500">4,500</b><span>real, anonymized accounts</span></div>
+  <div class="w"><span class="ico" style="--c:#FF9500"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/></svg></span><b>1.06M</b><span>transactions, 2020 to 2025</span></div>
+  <div class="w"><span class="ico" style="--c:#AF52DE"><svg viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="12" rx="2.5"/><path d="M4 10h16"/></svg></span><b data-count="682">682</b><span>loans with known outcomes</span></div>
+  <div class="w"><span class="ico" style="--c:#34C759"><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span><b data-count="0">0</b><span>mismatches vs. the judges' formula in 1,200 checks</span></div>
+</section>
+
+<section class="sec" id="how">
+  <header class="sec-h"><p class="kicker">How it works</p><h2>Three moves. Checkmate.</h2><p>Know the customer, take the shock, make the plan. Each one is a screen in the app.</p></header>
+  <div class="moves">
+    <article class="move">
+      <span class="tile" style="--c1:#6CBBFF;--c2:#007AFF"><svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c.8-3.7 3.6-5.5 7-5.5s6.2 1.8 7 5.5"/></svg></span>
+      <small>Move 1</small><h3>Know the customer</h3><p>Six numbers from their own monthly history.</p>
+      <ul class="defs">
+        <li><b style="--c:#007AFF">I</b>Money in<span>median / month</span></li>
+        <li><b style="--c:#FF9500">S</b>Money out<span>median / month</span></li>
+        <li><b style="--c:#AF52DE">F</b>Fixed costs<span>bills, insurance, loan</span></li>
+        <li><b style="--c:#FF2D55">H</b>Household bills<span>what rent shocks move</span></li>
+        <li><b style="--c:#34C759">B</b>Savings buffer<span>avg balance, last 6 mo</span></li>
+        <li><b style="--c:#5856D6">P</b>Loan payment<span>if still running</span></li>
+      </ul>
+    </article>
+    <article class="move">
+      <span class="tile" style="--c1:#FFC56B;--c2:#FF9500"><svg viewBox="0 0 24 24"><path d="M13 3 5 13.5h6.5L10.5 21 19 10.5h-6.5z"/></svg></span>
+      <small>Move 2</small><h3>Take a shock</h3><p>Tap a twist, then drag it bigger or smaller.</p>
+      <div class="twists">
+        <a class="twist" href="index.html?twist=ei#shock"><span class="ic" style="--c:#007AFF"><svg viewBox="0 0 24 24"><rect x="3.5" y="7.5" width="17" height="12" rx="2.5"/><path d="M9 7.5V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v1.5"/></svg></span><span><b>Laid off, EI at 55%</b><em>for 6 months. Do they make it?</em></span><i aria-hidden="true">›</i></a>
+        <a class="twist" href="index.html?twist=furnace#shock"><span class="ic" style="--c:#FF9500"><svg viewBox="0 0 24 24"><path d="M12 21c-3.6 0-6-2.4-6-5.6 0-3.4 3-5.4 3.6-9.4 2 1.4 3 3.2 3.2 5 1-.6 1.7-1.6 2-3 1.6 1.6 3.2 4 3.2 7.2 0 3.4-2.4 5.8-6 5.8z"/></svg></span><span><b>The furnace dies</b><em>repair costs a month of spending</em></span><i aria-hidden="true">›</i></a>
+        <a class="twist" href="index.html?twist=combo#shock"><span class="ic" style="--c:#FF2D55"><svg viewBox="0 0 24 24"><path d="M13 3 5 13.5h6.5L10.5 21 19 10.5h-6.5z"/></svg></span><span><b>Layoff + bills up 15%</b><em>in the same month</em></span><i aria-hidden="true">›</i></a>
+      </div>
+    </article>
+    <article class="move">
+      <span class="tile" style="--c1:#7BE495;--c2:#34C759"><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span>
+      <small>Move 3</small><h3>Make a plan</h3><p>Two plans, priced in the customer's own dollars.</p>
+      <div class="plans">
+        <div><b>Goal plan</b><span>The emergency fund for 3, 6, 9 or 12 months, and how far away it is.</span></div>
+        <div><b>Backup plan</b><span>If the shock hits anyway: spend less, wait for income, or draw on the fund. Compared side by side.</span></div>
+      </div>
+    </article>
+  </div>
+  <div class="formula">
+    <div><p class="kicker">The rule behind every answer</p>
+    <p class="eq">Runway = <span class="frac"><span>savings − one-off costs</span><span>money out − money in</span></span></p></div>
+    <ul><li><b>0 months</b> if one-off costs eat the savings</li><li><b>No shortfall</b> if money in still covers money out</li><li>Otherwise <b>capped at 120</b>, one decimal</li></ul>
+  </div>
+</section>
+
+<section class="sec" id="paradox">
+  <div class="paradox-head">
+    <header class="sec-h"><p class="kicker">Biggest finding · The Paycheque Paradox</p><h2>The king falls first.</h2>
+      <p>On EI at 55%, <b data-stat="q5">70%</b> of the highest earners run out of savings before month six, against <b data-stat="q1">4%</b> of the lowest. Bigger savings, but losing 45% of a big income opens a gap they can't cover: <b data-stat="gap5">$7,543</b> a month, against <b data-stat="gap1">$309</b>.</p></header>
+    <div class="chess3d" id="chess3d" aria-hidden="true"></div>
+  </div>
+  <article class="card big"><h3>Run out before month 6 on EI, by income fifth</h3><div class="chart" id="chQuint" role="img" aria-label="Share who run out before six months on EI, by income fifth"></div></article>
+  <div class="grid2">
+    <article class="card"><span class="badge" style="--c:#34C759">Validated</span><h3>Our runway predicts real loan defaults.</h3>
+      <p>The engine never saw loan outcomes. Still, borrowers with under 3 months of EI runway defaulted <b data-stat="dratio">5.5×</b> as often as those with 6 or more.</p>
+      <div class="chart" id="chDefault" role="img" aria-label="Loan default rate by months of runway on EI"></div></article>
+    <article class="card"><span class="badge" style="--c:#FF9500">One shock away</span><h3>A quarter sit right on the edge.</h3>
+      <p><b data-stat="mid">25%</b> of customers would last 3 to 6 months on EI, close enough that one repair bill decides it.</p>
+      <div class="chart" id="chHist" role="img" aria-label="How long savings last on EI, share of customers"></div></article>
+    <article class="card"><span class="badge" style="--c:#AF52DE">Surprise</span><h3>Low unemployment isn't protection.</h3>
+      <p>Prague has the lowest unemployment in the data, yet the second-highest share who fall short.</p>
+      <div class="chart" id="chRegion" role="img" aria-label="Share who run out before six months on EI, by region"></div></article>
+    <article class="card"><span class="badge" style="--c:#FF2D55">Boss rush</span><h3>The judges' three twists, on everyone.</h3>
+      <ul class="tw" id="twResults"></ul><p class="note">Same rule as the engine, over all 4,500 accounts.</p></article>
+  </div>
+</section>
+
+<section class="sec" id="field">
+  <figure class="fieldcard" id="fieldBox" aria-labelledby="fieldCap">
+    <div class="field-head"><p class="kicker">Everyone, at once</p><h2>4,500 customers. One board.</h2>
+      <p id="fieldCap">Each column is one real account. Height is how long its savings last if money in drops to 55%. Lower incomes on the left, higher on the right. Drag across it to see who's who.</p>
+      <div class="lg"><span><i style="background:#FF453A"></i>under 3 months</span><span><i style="background:#FF9F0A"></i>3 to 6 months</span><span><i style="background:#0A84FF"></i>6+ months</span></div></div>
+    <div class="field-stage"><canvas id="fieldCanvas" aria-hidden="true"></canvas><div class="field-tip" id="fieldTip" hidden></div><div class="field-line" id="fieldLine" hidden>6-month line</div></div>
+  </figure>
+</section>
+
+<section class="sec try" id="try">
+  <div class="try-in">
+    <div class="mate-wrap"><div class="mate3d" id="mate3d" aria-hidden="true"></div><p class="bubble">Pick an account and a twist. I'll run the numbers live.</p></div>
+    <form class="try-form" id="tryForm" autocomplete="off">
+      <h2>Your move.</h2>
+      <label for="tryAcct">Account number</label>
+      <input id="tryAcct" inputmode="numeric" pattern="[0-9]*" placeholder="e.g. 35412">
+      <fieldset><legend>Twist</legend>
+        <label><input type="radio" name="tw" value="ei" checked><span>EI at 55%, 6 months</span></label>
+        <label><input type="radio" name="tw" value="furnace"><span>Furnace repair</span></label>
+        <label><input type="radio" name="tw" value="combo"><span>EI + bills up 15%</span></label>
+        <label><input type="radio" name="tw" value="none"><span>No shock</span></label>
+      </fieldset>
+      <button class="pill blue big" type="submit">Run it</button>
+      <p class="err" id="tryErr" role="alert" hidden></p>
+    </form>
+  </div>
+</section>
+
+<section class="sec" id="method">
+  <header class="sec-h"><p class="kicker">Method and sources</p><h2>Built to be checked.</h2></header>
+  <div class="grid3">
+    <div class="card"><h3>Same definitions as the judges</h3><p>Medians of money in, money out and household bills from <code>monthly_summary.csv</code>; savings are the mean of the last six months' average daily balance. A random check of 300 accounts × 4 scenarios against the live server found 0 differences (<code>scripts/verify_runway.py</code>).</p></div>
+    <div class="card"><h3>Server is the source of truth</h3><p>Results are worked out on the server with exact decimals from the live database. The app shows a check on every Shock lab result, and the browser never touches the database.</p></div>
+    <div class="card"><h3>Sources</h3><ul class="src">
+      <li><a href="https://relational.fel.cvut.cz/dataset/Financial" rel="noopener">PKDD'99 Financial dataset</a>, CTU Prague</li>
+      <li><a href="https://www.canada.ca/en/services/benefits/ei/ei-regular-benefit.html" rel="noopener">EI regular benefits</a>, Government of Canada</li>
+      <li><a href="https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810000401" rel="noopener">Consumer Price Index</a>, Statistics Canada</li>
+    </ul><p class="note">Scenarios are what-ifs, not EI eligibility estimates.</p></div>
+  </div>
+</section>
+</main>
+
+<footer class="foot"><span>ChequeMate · made at Sheridan Datathon 2026 · Tangerine track</span><a href="index.html#customer">Open the app ›</a></footer>
+<div class="tip" id="tip" role="tooltip" hidden></div>
+<script src="assets/vendor/three.min.js"></script>
+<script src="assets/mate3d.js"></script>
+<script src="assets/home.js"></script>
+</body>
+</html>
