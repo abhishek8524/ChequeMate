@@ -1,0 +1,5 @@
+<environment_context>
+  <current_date>2026-11-08</current_date>
+  <timezone>America/Toronto</timezone>
+  <filesystem><workspace_roots><root>C:\SAVLEEN\DATATHON\ChequeMate</root></workspace_roots><permission_profile type="managed"><file_system type="restricted"><entry access="read"><special>:root</special></entry><entry access="write"><path>C:\SAVLEEN\DATATHON\ChequeMate</path></entry><entry access="write"><special>:slash_tmp</special></entry><entry access="write"><special>:tmpdir</special></entry><entry access="read"><path>C:\SAVLEEN\DATATHON\ChequeMate\.git</path></entry><entry access="read"><path>C:\SAVLEEN\DATATHON\ChequeMate\.agents</path></entry><entry access="read"><path>C:\SAVLEEN\DATATHON\ChequeMate\.codex</path></entry><entry access="read"><path>C:\SAVLEEN\DATATHON\ChequeMate\.aws</path></entry></file_system></permission_profile></filesystem>
+</environment_context>
