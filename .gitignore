@@ -1,0 +1,17 @@
+# Datasets
+*.csv
+*.parquet
+*.zip
+
+# Credentials
+.env
+.env.*
+*.pem
+*.key
+*credentials*.json
+*service-account*.json
+
+# Temporary files
+*.log
+__pycache__/
+.venv/
