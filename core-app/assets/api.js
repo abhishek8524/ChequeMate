@@ -1,5 +1,6 @@
 /* ChequeMate API client: the only path from the browser to the FastAPI backend (never to the database).
-   Base URL: ?api=<url> (remembered), else localStorage cm.api, else the same host on port 8001. */
+   Base URL: ?api=<url> (remembered), else localStorage cm.api, else the page's own origin
+   (server.py forwards /api/* to the backend), or 127.0.0.1:8001 when opened as a file. */
 (() => {
 'use strict';
 const KEY = 'cm.api';
@@ -7,7 +8,7 @@ const get = k => { try { return localStorage.getItem(k); } catch (e) { return nu
 const set = (k, v) => { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch (e) { /* storage blocked */ } };
 const fromQuery = new URLSearchParams(location.search).get('api');
 if (fromQuery) set(KEY, fromQuery.replace(/\/+$/, ''));
-const DEFAULT = `${location.protocol === 'https:' ? 'https:' : 'http:'}//${location.hostname || '127.0.0.1'}:8001`;
+const DEFAULT = /^https?:$/.test(location.protocol) ? location.origin : 'http://127.0.0.1:8001';
 let base = (get(KEY) || DEFAULT).replace(/\/+$/, '');
 
 class ApiError extends Error {
