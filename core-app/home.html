@@ -3,133 +3,166 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>ChequeMate · Will the money last?</title>
-<meta name="description" content="ChequeMate reads a customer's own bank history, throws a shock at it, and shows how long their savings last, then builds the plan to get through it.">
-<meta name="theme-color" content="#F2F2F7">
+<title>ChequeMate · Checkmate your finances</title>
+<meta name="description" content="Pick a real bank account, check its resilience score, and see how long the savings last if life throws a curveball.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23FFB347'/%3E%3Cstop offset='1' stop-color='%23FF2D55'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='24' height='24' rx='6' fill='url(%23g)'/%3E%3Cpath d='M3.8 8.4 7.4 15.6h9.2l3.6-7.2-4.5 3.4L12 5.2l-3.7 6.6z' fill='%23fff'/%3E%3Crect x='7.2' y='16.7' width='9.6' height='2.5' rx='1.25' fill='%23fff'/%3E%3Cpath d='M9.7 12.3l1.6 1.6 3-3.3' fill='none' stroke='%23FF5E62' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="assets/home.css">
-<script>(function(){var r=document.documentElement,d=matchMedia('(prefers-color-scheme: dark)').matches;try{var t=JSON.parse(localStorage.getItem('cm.theme')||'"system"');if(t==='dark')d=true;if(t==='light')d=false;}catch(e){}r.setAttribute('data-theme',d?'dark':'light');})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800&display=swap">
+<link rel="stylesheet" href="assets/home.css?v=1794143984">
 </head>
 <body>
-<a class="skip" href="#main">Skip to content</a>
+<a class="skip" href="#account">Skip to the account box</a>
 
-<header class="nav">
-  <a class="brand" href="./" aria-label="ChequeMate home"><span class="appicon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.8 8.4 7.4 15.6h9.2l3.6-7.2-4.5 3.4L12 5.2l-3.7 6.6z" fill="#fff" stroke="none"/><rect x="7.2" y="16.7" width="9.6" height="2.5" rx="1.25" fill="#fff" stroke="none"/><path d="M9.7 12.3l1.6 1.6 3-3.3" fill="none" stroke="#FF5E62" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>ChequeMate</a>
-  <nav aria-label="Sections"><a href="#how">How it works</a><a href="#paradox">The paradox</a><a href="#field">Everyone</a></nav>
-  <div class="nav-r">
-    <button class="round" type="button" id="themeBtn" aria-label="Switch light or dark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg></button>
-    <a class="pill blue" href="index.html#customer">Open the app</a>
-  </div>
+<header class="nav" id="nav">
+  <a class="brand" href="#top" aria-label="ChequeMate, back to top"><span class="appicon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.8 8.4 7.4 15.6h9.2l3.6-7.2-4.5 3.4L12 5.2l-3.7 6.6z" fill="#fff"/><rect x="7.2" y="16.7" width="9.6" height="2.5" rx="1.25" fill="#fff"/><path d="M9.7 12.3l1.6 1.6 3-3.3" fill="none" stroke="#FF5E62" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>ChequeMate</a>
+  <nav aria-label="Main" id="navLinks">
+    <a href="#account" data-sec="account">Account</a>
+    <a href="#score" data-sec="score">Score</a>
+    <a href="#dash" data-sec="dash">Dashboard</a>
+    <span class="sep" aria-hidden="true"></span>
+    <a href="index.html#customer" data-app="customer">Customer</a>
+    <a href="index.html#shock" data-app="shock">Shock lab</a>
+    <a href="index.html#plan" data-app="plan">Plan</a>
+    <a href="index.html#paradox">Findings</a>
+  </nav>
+  <div class="nav-r"><a class="pill" href="index.html#customer" id="navApp">Open the app</a>
+  <button class="burger" type="button" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="navLinks"><span></span><span></span></button></div>
 </header>
 
-<main id="main">
-<section class="hero">
-  <div class="mesh" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
-  <div class="hero-in">
+<main>
+<!-- 1 · hero -->
+<section class="sec s1" id="top" aria-label="ChequeMate">
+  <div class="sec-in hero">
     <div class="hero-copy">
-      <div class="stickers" aria-label="Highlights">
-        <span class="sticker s1">Checkmate your cash</span><span class="sticker s2">4,500 real accounts</span><span class="sticker s3"><i></i>Live on real data</span>
-      </div>
-      <h1>A bigger paycheque doesn't buy <span class="grad">more time.</span></h1>
-      <p class="lede">Throw a layoff, a rent hike or a dead furnace at a real bank account and see how many months the savings last.</p>
-      <form class="search" id="heroForm" autocomplete="off" role="search">
-        <label class="sr" for="heroAcct">Account number</label>
-        <span class="field-wrap"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg><input id="heroAcct" inputmode="numeric" pattern="[0-9]*" placeholder="Account number, e.g. 28754"></span>
-        <button class="pill blue big" type="submit">Check their runway</button>
-        <button class="pill ghost big sq" type="button" id="heroRandom" aria-label="Shuffle: pick a random account" title="Shuffle"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h3.5c2 0 3.2 1 4.3 2.6l2.4 3.8C14.3 15 15.5 16 17.5 16H21M3 16h3.5c1.4 0 2.4-.5 3.2-1.4M21 7h-3.5c-1.4 0-2.4.5-3.2 1.4M18.5 4.5 21 7l-2.5 2.5M18.5 13.5 21 16l-2.5 2.5"/></svg></button>
-      </form>
-      
+      <h1><span>Cheque</span><span>Mate</span></h1>
+      <p class="tag">Checkmate your finances before they checkmate you.</p>
+      <p class="sub">Pick a real bank account, see how long the savings would last if life throws a curveball, and get a plan to win the game.</p>
+      <a class="cta" href="#account">Make your first move<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></a>
     </div>
+    <div class="hero-art" aria-hidden="true">
+      <div class="glow"></div>
+      <div class="fan" id="fan"></div>
+      <div class="king-slot" id="kingSlot"></div>
+    </div>
+  </div>
+  <a class="scroll-cue" href="#account" aria-label="Scroll down"><span></span></a>
+</section>
 
-    <div class="devices" aria-label="ChequeMate on an iPhone-style and a Galaxy-style phone, showing account 28754">
-      <div class="phone ios" aria-hidden="true">
-        <div class="screen">
+<!-- 2 · account -->
+<section class="sec s2" id="account" aria-labelledby="accH">
+  <div class="sec-in split">
+    <form class="acct" id="acctForm" autocomplete="off" novalidate>
+      <span class="ck-edge" aria-hidden="true"></span>
+      <div class="ck-top"><span class="ck-bank"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.8 8.4 7.4 15.6h9.2l3.6-7.2-4.5 3.4L12 5.2l-3.7 6.6z" fill="currentColor" stroke="none"/><rect x="7.2" y="16.7" width="9.6" height="2.5" rx="1.25" fill="currentColor" stroke="none"/></svg>ChequeMate Bank</span><span class="ck-no">Step 1 &middot; No. 0001</span></div>
+      <label for="acct" id="accH">Account number</label>
+      <div class="ck-field" id="ckField"><span class="ck-tag">ACCT NO.</span><input id="acct" inputmode="numeric" pattern="[0-9]*" placeholder="e.g. 28754" aria-describedby="acctMsg"><span class="ck-ok" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.5 9.5 17 19 7.5"/></svg></span></div>
+      <div class="row">
+        <button class="btn ghost" type="button" id="randomBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><circle cx="8.5" cy="8.5" r="1.2" fill="currentColor"/><circle cx="15.5" cy="15.5" r="1.2" fill="currentColor"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/></svg>Random account no.</button>
+        <button class="btn solid" type="submit">Get insights</button>
+      </div>
+      <p class="msg" id="acctMsg" role="status"></p>
+      <p class="fine">Don't have one? Tap <b>Random account no.</b> to pick from 4,500 real accounts.</p>
+      <div class="acct-facts"><span><i></i>Real, anonymized history</span><span><i></i>Checked on a live server</span><span><i></i>No sign-up</span></div>
+      <div class="ck-foot" aria-hidden="true"><span class="ck-micr">:0428: 77310: 0001</span><span class="ck-sig"></span></div>
+    </form>
+    <div class="explain">
+      <h2>Enter an account number to unlock that customer's insights.</h2>
+      <p>A resilience score, how many months their savings would last after a shock, and a plan to build a safety net. Here's a preview:</p>
+      <div class="devices" aria-label="Preview of ChequeMate on an iPhone-style and a Galaxy-style phone, showing account 28754">
+        <div class="phone ios" aria-hidden="true"><div class="screen">
           <div class="sbar"><span>9:41</span><span class="island"></span><span class="sig"><i></i><i></i><i></i><b></b></span></div>
           <p class="large">Shock lab</p>
           <div class="wallet"><small>Savings buffer</small><b>$24,343</b><span>Account 28754</span><em>Runway on EI<br><strong>4.7 mo</strong></em></div>
-          <div class="chip on"><span class="dot" style="--c:#FF2D55"></span>Layoff + bills up 15%</div>
-          <div class="res"><small>Runway</small><b>4.3<span> months</span></b><span class="bad">Runs out before EI ends</span>
-            <div class="strip"><i style="--w:18%"></i><u style="left:25%"></u></div></div>
-          <div class="ok"><span></span>Checked live · 4.3 months</div>
-        </div>
-      </div>
-      <div class="phone galaxy" aria-hidden="true">
-        <div class="screen">
+          <div class="pchip"><span class="dot"></span>Layoff + bills up 15%</div>
+          <div class="res"><small>Runway</small><b>4.3<span> months</span></b><span class="bad">Runs out before EI ends</span><div class="strip"><i style="--w:18%"></i><u style="left:25%"></u></div></div>
+          <div class="okline"><span></span>Live · 4.3 months</div>
+        </div></div>
+        <div class="phone galaxy" aria-hidden="true"><div class="screen">
           <div class="sbar"><span>12:45</span><span class="hole"></span><span class="sig"><i></i><i></i><i></i><b></b></span></div>
           <div class="oneui-top"><p>Plan</p><small>Account 28754</small></div>
-          <div class="card"><small>Goal plan · 6-month safety net</small><b>+$7,021</b><span>more savings to reach it</span><div class="bar"><i style="--w:78%"></i></div></div>
-          <div class="card list"><small>Backup plan if it hits</small>
+          <div class="gcard"><small>Goal plan · 6-month safety net</small><b>+$7,021</b><span>more savings to reach it</span><div class="bar"><i style="--w:78%"></i></div></div>
+          <div class="gcard list"><small>Backup plan if it hits</small>
             <div class="row"><span class="ic" style="--c:#34C759">✓</span>Add $7,021 savings<em>6.0 mo</em></div>
             <div class="row"><span class="ic" style="--c:#007AFF">−</span>Cut money out 10%<em>6.2 mo</em></div>
-            <div class="row"><span class="ic" style="--c:#FF9500">↺</span>Income back to 100%<em>never runs out</em></div>
-          </div>
-        </div>
+            <div class="row"><span class="ic" style="--c:#FF9500">↺</span>Income back to 100%<em>never runs out</em></div></div>
+        </div></div>
+        <span class="tag-float">Real numbers · account 28754</span>
       </div>
-      <span class="sticker float f1">Real numbers · account 28754</span>
     </div>
   </div>
-  <div class="ticker" aria-hidden="true"><div><span>4,500 accounts</span><span>1.06M transactions</span><span>682 loans with outcomes</span><span>0 mismatches with the server</span><span>Checkmate your cash</span><span>Meet Rookie, your money coach</span><span>4,500 accounts</span><span>1.06M transactions</span><span>682 loans with outcomes</span><span>0 mismatches with the server</span><span>Checkmate your cash</span><span>Meet Rookie, your money coach</span></div></div>
 </section>
 
-<section class="widgets" aria-label="The data behind it">
-  <div class="w"><span class="ico" style="--c:#007AFF"><svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c.8-3.7 3.6-5.5 7-5.5s6.2 1.8 7 5.5"/></svg></span><b data-count="4500">4,500</b><span>real, anonymized accounts</span></div>
-  <div class="w"><span class="ico" style="--c:#FF9500"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/></svg></span><b>1.06M</b><span>transactions, 2020 to 2025</span></div>
-  <div class="w"><span class="ico" style="--c:#AF52DE"><svg viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="12" rx="2.5"/><path d="M4 10h16"/></svg></span><b data-count="682">682</b><span>loans with known outcomes</span></div>
-  <div class="w"><span class="ico" style="--c:#34C759"><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span><b data-count="0">0</b><span>mismatches with the server in 1,200 checks</span></div>
-</section>
-
-<section class="sec" id="how">
-  <header class="sec-h"><p class="kicker">How it works</p><h2>Three moves. Checkmate.</h2></header>
-  <div class="moves">
-    <a class="move" href="index.html#customer"><span class="tile" style="--c1:#6CBBFF;--c2:#007AFF"><svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c.8-3.7 3.6-5.5 7-5.5s6.2 1.8 7 5.5"/></svg></span><small>Move 1</small><h3>Know the customer</h3><p>Money in, money out, savings.</p></a>
-    <a class="move" href="index.html?twist=ei#shock"><span class="tile" style="--c1:#FFC56B;--c2:#FF9500"><svg viewBox="0 0 24 24"><path d="M13 3 5 13.5h6.5L10.5 21 19 10.5h-6.5z"/></svg></span><small>Move 2</small><h3>Take a shock</h3><p>See how many months they last.</p></a>
-    <a class="move" href="index.html#plan"><span class="tile" style="--c1:#7BE495;--c2:#34C759"><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span><small>Move 3</small><h3>Make a plan</h3><p>Build the safety net to survive it.</p></a>
+<!-- 3 · score -->
+<section class="sec s3" id="score" aria-labelledby="scoreH">
+  <div class="sec-in score-grid" id="scoreGrid">
+    <div class="q">
+      <span class="step">Step 2</span>
+      <h2 id="scoreH">Do you want to check this customer's resilience score?</h2>
+      <p class="fine" id="scoreFor">Enter an account above first, or grab a random one.</p>
+      <div class="btn-left" id="btnLeft"></div>
+    </div>
+    <div class="a" id="scoreRight">
+      <div class="teaser" id="teaser">
+        <div class="t-top"><div class="t-ring" aria-hidden="true"></div><div class="t-lock" aria-hidden="true"><span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg></span></div>
+          <div><h3>Your score is locked</h3><p>Five parts, 20 points each, worked out from the customer's own records.</p></div></div>
+        <div class="t-parts"><div class="t-part"><span>Shock resilience <button type="button" class="info" data-t="Shock resilience" data-tip="How long savings would last if money in dropped to 55%, like on EI. More months earn more points." aria-label="What is Shock resilience?">i</button></span><span class="t-bar" aria-hidden="true"></span></div><div class="t-part"><span>Cashflow health <button type="button" class="info" data-t="Cashflow health" data-tip="Whether money in covers money out in a typical month." aria-label="What is Cashflow health?">i</button></span><span class="t-bar" aria-hidden="true"></span></div><div class="t-part"><span>Income stability <button type="button" class="info" data-t="Income stability" data-tip="How steady money in is from month to month. Big swings lower the score." aria-label="What is Income stability?">i</button></span><span class="t-bar" aria-hidden="true"></span></div><div class="t-part"><span>Balance stress <button type="button" class="info" data-t="Balance stress" data-tip="How often the balance dipped below zero recently. Fewer days earn more points." aria-label="What is Balance stress?">i</button></span><span class="t-bar" aria-hidden="true"></span></div><div class="t-part"><span>Debt load <button type="button" class="info" data-t="Debt load" data-tip="How big the monthly loan payment is compared with money in." aria-label="What is Debt load?">i</button></span><span class="t-bar" aria-hidden="true"></span></div></div>
+        <div class="teaser-cta" id="teaserCta">
+          <button class="btn big solid" type="button" id="calcBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5 9.5 17 19 7.5"/></svg>Calculate resilience score</button>
+          <small>Takes about a second. Nothing is saved.</small>
+        </div>
+      </div>
+      <div class="metrics" id="metrics" hidden></div>
+    </div>
   </div>
 </section>
 
-<section class="sec" id="paradox">
-  <div class="paradox-head">
-    <header class="sec-h"><p class="kicker">Biggest finding · The Paycheque Paradox</p><h2>The king falls first.</h2>
-      <p>After a layoff, <b data-stat="q5">70%</b> of top earners run out of savings within six months. Only <b data-stat="q1">4%</b> of the lowest earners do.</p></header>
-    <div class="chess3d" id="chess3d" aria-hidden="true"></div>
-  </div>
-  <article class="card big"><h3>Run out within 6 months of a layoff</h3><div class="chart" id="chQuint" role="img" aria-label="Share who run out before six months on EI, by income fifth"></div></article>
-</section>
-
-<section class="sec" id="field">
-  <figure class="fieldcard" id="fieldBox" aria-labelledby="fieldCap">
-    <div class="field-head"><p class="kicker">Everyone, at once</p><h2>4,500 customers. One board.</h2>
-      <p id="fieldCap">Every column is a real customer. Taller lasts longer after a layoff.</p>
-      <div class="lg"><span><i style="background:#FF453A"></i>under 3 months</span><span><i style="background:#FF9F0A"></i>3 to 6 months</span><span><i style="background:#0A84FF"></i>6+ months</span></div></div>
-    <div class="field-stage"><canvas id="fieldCanvas" aria-hidden="true"></canvas><div class="field-tip" id="fieldTip" hidden></div><div class="field-line" id="fieldLine" hidden>6-month line</div></div>
-  </figure>
-</section>
-
-<section class="sec try" id="try">
-  <div class="try-in">
-    <div class="mate-wrap"><div class="mate3d" id="mate3d" aria-hidden="true"></div><p class="bubble"><b>Rookie</b> here. Pick an account and a twist and I'll run the numbers live.</p></div>
-    <form class="try-form" id="tryForm" autocomplete="off">
-      <h2>Your move.</h2>
-      <label for="tryAcct">Account number</label>
-      <input id="tryAcct" inputmode="numeric" pattern="[0-9]*" placeholder="e.g. 35412">
-      <fieldset><legend>Twist</legend>
-        <label><input type="radio" name="tw" value="ei" checked><span>EI at 55%, 6 months</span></label>
-        <label><input type="radio" name="tw" value="furnace"><span>Furnace repair</span></label>
-        <label><input type="radio" name="tw" value="combo"><span>EI + bills up 15%</span></label>
-        <label><input type="radio" name="tw" value="none"><span>No shock</span></label>
-      </fieldset>
-      <button class="pill blue big" type="submit">Run it</button>
-      <p class="err" id="tryErr" role="alert" hidden></p>
-    </form>
+<!-- 4 · dashboard -->
+<section class="sec s4" id="dash" aria-labelledby="dashH">
+  <div class="sec-in dash">
+    <header class="dash-h"><span class="step">Step 3</span><h2 id="dashH">The full picture</h2><p id="dashSub">Pick an account to fill this page with their numbers.</p></header>
+    <div id="dashBody" class="dash-empty"><p>Nothing to show yet. <a href="#account">Choose an account</a> and this page fills with charts, a what-if lab and cards to flip.</p></div>
   </div>
 </section>
-
 </main>
 
-<footer class="foot"><span>ChequeMate · data: <a href="https://relational.fel.cvut.cz/dataset/Financial" rel="noopener">PKDD'99 Financial dataset</a> · <a href="https://www.canada.ca/en/services/benefits/ei/ei-regular-benefit.html" rel="noopener">EI benefits</a></span><a href="index.html#customer">Open the app ›</a></footer>
+<footer class="foot ds-foot" id="foot">
+  <div class="ds-checker" aria-hidden="true"></div>
+  <div class="ds-sparks" id="dsSparks" aria-hidden="true"></div>
+  <div class="ds-in">
+    <div class="ds-brand">
+      <button class="ds-logo" id="dsLogo" type="button" aria-label="Datasparks logo. Press for sparks">
+        <svg viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="dsg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFD36B"/><stop offset=".55" stop-color="#FF5E62"/><stop offset="1" stop-color="#7C5CFF"/></linearGradient></defs>
+          <rect width="64" height="64" rx="18" fill="url(#dsg)"/>
+          <g class="orb"><circle cx="32" cy="8" r="2.6" fill="#fff"/><circle cx="56" cy="32" r="2" fill="#fff" opacity=".8"/><circle cx="10" cy="46" r="1.8" fill="#fff" opacity=".7"/></g>
+          <g class="bars" fill="#fff" opacity=".35"><rect x="14" y="40" width="5" height="10" rx="2"/><rect x="22" y="34" width="5" height="16" rx="2"/><rect x="37" y="30" width="5" height="20" rx="2"/><rect x="45" y="24" width="5" height="26" rx="2"/></g>
+          <path class="star" d="M32 11 36.2 27.8 53 32 36.2 36.2 32 53 27.8 36.2 11 32 27.8 27.8Z" fill="#fff"/>
+        </svg>
+      </button>
+      <div class="ds-txt"><small>Built with <svg class="ds-heart" viewBox="0 0 24 24" aria-label="love"><path d="M12 20.5s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7c0 5.6-7.5 10.2-7.5 10.2z" fill="#FF5E62" stroke="none"/></svg> by team</small>
+        <b class="ds-name" aria-label="Datasparks"><span class="w1" aria-hidden="true"><span style="--i:0">D</span><span style="--i:1">a</span><span style="--i:2">t</span><span style="--i:3">a</span></span><span class="w2" aria-hidden="true"><span style="--i:4">s</span><span style="--i:5">p</span><span style="--i:6">a</span><span style="--i:7">r</span><span style="--i:8">k</span><span style="--i:9">s</span></span></b>
+      </div>
+    </div>
+    <p class="ds-line">Real data. Real stakes. Zero boring dashboards.</p>
+    <a class="ds-top" href="#top">Back to the board<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg></a>
+  </div>
+</footer>
+
+<!-- the King: flies from the hero to the corner and becomes the AI coach button -->
+<div class="king-fly" id="kingFly" aria-hidden="true"><div class="kf-in" id="kingCanvas"></div></div>
+<button class="king-dock" id="kingDock" type="button" aria-label="Ask the AI coach" aria-controls="chat" aria-expanded="false"><span class="ring"></span><span class="nudge">Ask me!</span></button>
+
+<section class="chat" id="chat" role="dialog" aria-label="AI coach" hidden>
+  <header><b>Mate · your AI money coach</b><button type="button" id="chatClose" aria-label="Close">×</button></header>
+  <div class="msgs" id="msgs" aria-live="polite"></div>
+  <div class="sugg" id="sugg"></div>
+  <form id="chatForm"><input id="chatIn" placeholder="Ask about this customer…" autocomplete="off" aria-label="Your question"><button type="submit" aria-label="Send">↑</button></form>
+</section>
 <div class="tip" id="tip" role="tooltip" hidden></div>
+
 <script src="assets/vendor/three.min.js"></script>
-<script src="assets/mate3d.js"></script>
-<script src="assets/home.js"></script>
+<script src="assets/vendor/chart.umd.min.js"></script>
+<script src="assets/mate3d.js?v=1794143984"></script>
+<script src="assets/api.js?v=1794143984"></script>
+<script src="assets/home.js?v=1794143984"></script>
 </body>
 </html>

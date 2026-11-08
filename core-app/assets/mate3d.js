@@ -196,6 +196,36 @@ const GLYPH = { pawn: '♟', knight: '♞', bishop: '♝', rook: '♜', queen: '
 function flat(el, kind, cls = '') { el.innerHTML = `<span class="flat-piece ${cls}" aria-hidden="true">${GLYPH[kind] || GLYPH.pawn}︎</span>`; }
 const noop = () => {};
 
+/* ---------- the King: gold chess king with a face (landing hero + chat button) ---------- */
+function mountKing(el, o = {}) {
+  if (!OK) { flat(el, 'king', 'mate-flat'); return { squash: noop, hop: noop, celebrate: noop, look: noop, setMood: noop, talk: noop, think: noop, setSkin: noop }; }
+  const st = new Stage(el, { cam: o.cam || [0, 1.25, 6.4], look: o.look || [0, 1.0, 0], fov: o.fov || 27, exposure: 1.12, floor: o.floor });
+  const g = new T.Group(); st.scene.add(g);
+  const k = piece('king', o.pal || 'gold'); g.add(k);
+  const face = new T.Group(); face.position.set(0, 1.36, 0); g.add(face);
+  const ink = new T.MeshPhysicalMaterial({ color: 0x2a1a05, roughness: .15, clearcoat: 1 }), shine = new T.MeshBasicMaterial({ color: 0xffffff });
+  const eyes = [-1, 1].map(sx => { const e = new T.Group(); e.add(new T.Mesh(new T.SphereGeometry(.05, 20, 14), ink)); const sp = new T.Mesh(new T.SphereGeometry(.016, 10, 8), shine); sp.position.set(.016, .02, .042); e.add(sp); e.position.set(sx * .1, .04, .262); e.scale.z = .55; face.add(e); return e; });
+  const mouth = new T.Mesh(new T.TorusGeometry(.06, .014, 8, 20, Math.PI), new T.MeshBasicMaterial({ color: 0x2a1a05 })); mouth.position.set(0, -.05, .262); mouth.rotation.set(0, 0, Math.PI); face.add(mouth);
+  const cheek = new T.MeshBasicMaterial({ color: 0xff7a59, transparent: true, opacity: .45 });
+  [-1, 1].forEach(sx => { const c = new T.Mesh(new T.CircleGeometry(.038, 18), cheek); c.position.set(sx * .17, -.03, .228); c.rotation.y = sx * .6; face.add(c); });
+  const S = { sq: 0, v: 0, target: 0, hop: -1, hopH: o.hopH || .45, look: { x: 0, y: 0 }, cur: { x: 0, y: 0 }, blink: 1.5, t: 0 };
+  st.on((t, dt) => {
+    S.t = t;
+    // jelly: a damped spring chasing the squash target
+    const a = (S.target - S.sq) * 140 - S.v * 9; S.v += a * (dt || .016); S.sq += S.v * (dt || .016);
+    const q = S.sq; g.scale.set(1 + q * .22, 1 - q * .3, 1 + q * .22);
+    let y = Math.sin(t * 1.8) * .03;
+    if (S.hop >= 0) { const k2 = (t - S.hop) / .7; if (k2 >= 1) S.hop = -1; else { y += Math.sin(k2 * Math.PI) * S.hopH; g.scale.y *= 1 + Math.sin(k2 * Math.PI) * .06; } }
+    g.position.y = y;
+    const f = Math.min(1, (dt || .016) * 5); S.cur.x += (S.look.x - S.cur.x) * f; S.cur.y += (S.look.y - S.cur.y) * f;
+    g.rotation.y = S.cur.x * .35 + Math.sin(t * .6) * .12; g.rotation.x = S.cur.y * .08;
+    if (t > S.blink) { const b = (t - S.blink) / .14; eyes.forEach(e => e.scale.y = b < 1 ? Math.abs(1 - 2 * b) * .9 + .1 : 1); if (b >= 1) S.blink = t + 2.4 + Math.random() * 3; }
+  });
+  if (o.follow !== false) follow(el, { look: (x, y) => { S.look.x = clamp(x, -1, 1); S.look.y = clamp(y, -1, 1); } });
+  const hop = () => { if (!reduce) S.hop = S.t; };
+  return { squash(v) { S.target = clamp(v, 0, 1); }, hop, celebrate: hop, look(x, y) { S.look.x = x; S.look.y = y; }, setMood: noop, talk: noop, think: noop, setSkin: noop };
+}
+
 /* ---------- public mounts ---------- */
 function mountMate(el, o = {}) {
   if (!OK) { flat(el, 'rook', 'mate-flat'); return { setMood: noop, celebrate: noop, talk: noop, think: noop, look: noop, setSkin: noop }; }
@@ -426,5 +456,5 @@ function snapshot(items, size = 160) {
   return out;
 }
 
-window.CM3D = { ok: OK, PAL, mountMate, mountHero, mountRank, mountCoins, mountTerrain, snapshot };
+window.CM3D = { ok: OK, PAL, mountMate, mountKing, mountHero, mountRank, mountCoins, mountTerrain, snapshot };
 })();
