@@ -548,3 +548,30 @@ input[type="range"]:disabled { opacity: .4; }
 .live-check.off .lc-dot { background: var(--crit); }
 .live-check.wait .lc-dot { animation: lcpulse 1s ease-in-out infinite alternate; } @keyframes lcpulse { to { opacity: .3; } }
 @media (max-width: 600px) { .live-check { flex-wrap: wrap; } .live-check em { margin-left: 22px; } }
+
+/* ===== focus pass: one idea per card, less on screen ===== */
+section[data-view="paradox"] .panel:has(#scatter), section[data-view="paradox"] .panel:has(#whyTable), section[data-view="paradox"] #findings,
+section[data-view="customer"] .panel:has(#rings), section[data-view="customer"] .panel:has(#custInsights), section[data-view="customer"] #custStrips2,
+section[data-view="customer"] .sankey-panel, section[data-view="customer"] .panel:has(#balChart), section[data-view="customer"] .panel:has(#outBars),
+section[data-view="shock"] .coin-panel, section[data-view="shock"] .panel:has(#heat),
+section[data-view="plan"] .panel:has(#leverBars) { display: none !important; }
+section[data-view="paradox"] .g-main:has(#whyTable), section[data-view="customer"] .g-main:has(#custInsights) { grid-template-columns: minmax(0, 1fr); }
+section[data-view="customer"] .cust-hero { grid-template-columns: minmax(0, 1fr); max-width: 560px; }
+/* avatars and logo */
+.avatar { background: none !important; padding: 0; overflow: hidden; box-shadow: 0 4px 12px -4px rgba(0, 0, 0, .3); }
+.avatar svg { width: 100% !important; height: 100% !important; fill: initial; }
+.app-icon { background: linear-gradient(135deg, #FFB347, #FF2D55) !important; box-shadow: 0 3px 10px rgba(255, 45, 85, .35); }
+.app-icon svg { width: 74%; height: 74%; }
+
+/* customer hero: card + layoff answer side by side */
+section[data-view="customer"] .cust-hero { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr) !important; max-width: none !important; align-items: stretch; }
+section[data-view="customer"] .cust-hero .laid-off { display: flex; flex-direction: column; justify-content: center; }
+@media (max-width: 900px) { section[data-view="customer"] .cust-hero { grid-template-columns: minmax(0, 1fr) !important; } }
+#ledger { margin-top: 16px; }
+/* calmer live banner on phones */
+@media (max-width: 700px) { .rr-live > span:not(.dot) { display: none; } .rr-live { padding: 8px 16px !important; } }
+.live-check { padding: 10px 14px; } .live-check > div b { font-size: 14px; }
+/* coach has a tip: soft pulse instead of a popup */
+.mate-dock.nudge { animation: nudge 1.4s ease-in-out 2; }
+@keyframes nudge { 0%, 100% { transform: scale(1); } 40% { transform: scale(1.12) rotate(-6deg); } 70% { transform: scale(1.04) rotate(4deg); } }
+@media (prefers-reduced-motion: reduce) { .mate-dock.nudge { animation: none; } }

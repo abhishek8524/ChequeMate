@@ -17,6 +17,7 @@ const PAL = {
   gold: ['#FFE9A8', '#B97A08'],
   good: ['#86EFA6', '#0A7A5A'],
   ghost: ['#D5D9E2', '#8A90A0'],
+  rookie: ['#FFB067', '#FF3D6E'],
 };
 const MOOD = { good: '#30D158', warn: '#FF9F0A', crit: '#FF453A', info: '#0A84FF' };
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -119,39 +120,47 @@ class Stage {
   on(f) { this.fns.push(f); }
 }
 
-/* ---------- Mate: a pawn with a face ---------- */
+/* ---------- Rookie: a little rook with a face (the coach) ---------- */
+const ROOK_BODY = [...BASE, [.37, .38], [.3, .6], [.285, .86], [.4, .92], [.42, .97], [0, .97]];
 function makeMate() {
-  const g = new T.Group(), mat = glossy(), H = 1.52, pal = PAL.accent;
+  const g = new T.Group(), mat = glossy(), H = 1.62, pal = PAL.rookie;
   const bodyG = new T.Group(); g.add(bodyG);
-  const bodyGeo = paint(lathe(PAWN_BODY), pal, 0, H); const body = new T.Mesh(bodyGeo, mat); body.castShadow = true; bodyG.add(body);
-  const head = new T.Group(); head.position.set(0, 1.2, 0); bodyG.add(head);
-  const hs = new T.SphereGeometry(.31, 48, 32).translate(0, 1.2, 0); paint(hs, pal, 0, H); hs.translate(0, -1.2, 0);
-  const hm = new T.Mesh(hs, mat); hm.castShadow = true; head.add(hm);
+  const bodyGeo = paint(lathe(ROOK_BODY), pal, 0, H); const body = new T.Mesh(bodyGeo, mat); body.castShadow = true; bodyG.add(body);
+  const head = new T.Group(); head.position.set(0, 1.0, 0); bodyG.add(head);
+  // tower top: a short drum with battlements; painted in place, then moved into the head group
+  const drum = new T.CylinderGeometry(.4, .37, .4, 64).translate(0, 1.2, 0); paint(drum, pal, 0, H); drum.translate(0, -1.0, 0);
+  const hm = new T.Mesh(drum, mat); hm.castShadow = true; head.add(hm);
+  const crown = [];
+  for (let i = 0; i < 6; i++) { const a = i / 6 * Math.PI * 2 + Math.PI / 6, b = new T.BoxGeometry(.19, .17, .12); b.rotateY(a); b.translate(Math.sin(a) * .31, 1.485, Math.cos(a) * .31); paint(b, pal, 0, H); b.translate(0, -1.0, 0); const m = new T.Mesh(b, mat); m.castShadow = true; head.add(m); crown.push(m); }
   const SKIN = {
     classic: mat,
-    glass: new T.MeshPhysicalMaterial({ color: lin('#A9D4FF'), transparent: true, opacity: .62, roughness: .03, metalness: .05, clearcoat: 1, clearcoatRoughness: .02, envMapIntensity: 2.2, depthWrite: false }),
+    glass: new T.MeshPhysicalMaterial({ color: lin('#FFC9B8'), transparent: true, opacity: .62, roughness: .03, metalness: .05, clearcoat: 1, clearcoatRoughness: .02, envMapIntensity: 2.2, depthWrite: false }),
     holo: new T.MeshPhysicalMaterial({ color: lin('#7CF7FF'), emissive: lin('#1B8CFF'), emissiveIntensity: .9, transparent: true, opacity: .8, roughness: .35, depthWrite: false }),
     gold: new T.MeshPhysicalMaterial({ color: lin('#F2C14E'), metalness: 1, roughness: .2, clearcoat: 1, clearcoatRoughness: .05 }),
   };
-  function setSkin(k) { const m = SKIN[k] || mat; body.material = m; hm.material = m; }
+  function setSkin(k) { const m = SKIN[k] || mat; body.material = m; hm.material = m; crown.forEach(c => c.material = m); }
   const eyeMat = new T.MeshPhysicalMaterial({ color: 0x14151a, roughness: .12, clearcoat: 1 }), shine = new T.MeshBasicMaterial({ color: 0xffffff });
   const eyes = [-1, 1].map(sx => {
-    const e = new T.Group(); e.add(new T.Mesh(new T.SphereGeometry(.058, 24, 16), eyeMat));
-    const sp = new T.Mesh(new T.SphereGeometry(.019, 12, 8), shine); sp.position.set(.018, .024, .05); e.add(sp);
-    e.position.set(sx * .112, .05, .272); e.scale.z = .6; head.add(e); return e;
+    const e = new T.Group(); e.add(new T.Mesh(new T.SphereGeometry(.062, 24, 16), eyeMat));
+    const sp = new T.Mesh(new T.SphereGeometry(.02, 12, 8), shine); sp.position.set(.02, .026, .05); e.add(sp);
+    e.position.set(sx * .13, .25, .37); e.scale.z = .55; head.add(e); return e;
   });
-  const mouth = new T.Mesh(new T.TorusGeometry(.075, .017, 10, 24, Math.PI), new T.MeshBasicMaterial({ color: 0x14151a }));
-  mouth.position.set(0, -.07, .29); mouth.rotation.set(-.25, 0, Math.PI); head.add(mouth);
-  const cheekMat = new T.MeshBasicMaterial({ color: 0xff6b8a, transparent: true, opacity: .42 });
-  [-1, 1].forEach(sx => { const c = new T.Mesh(new T.CircleGeometry(.046, 20), cheekMat); c.position.set(sx * .19, -.04, .247); c.rotation.y = sx * .666; head.add(c); });
+  // eyebrows give him attitude
+  const browMat = new T.MeshBasicMaterial({ color: 0x14151a });
+  [-1, 1].forEach(sx => { const b = new T.Mesh(new T.BoxGeometry(.1, .018, .01), browMat); b.position.set(sx * .13, .345, .378); b.rotation.z = sx * -.22; head.add(b); });
+  const mouth = new T.Mesh(new T.TorusGeometry(.08, .018, 10, 24, Math.PI), new T.MeshBasicMaterial({ color: 0x14151a }));
+  mouth.position.set(0, .13, .385); mouth.rotation.set(0, 0, Math.PI); head.add(mouth);
+  const cheekMat = new T.MeshBasicMaterial({ color: 0xff3d6e, transparent: true, opacity: .4 });
+  [-1, 1].forEach(sx => { const c = new T.Mesh(new T.CircleGeometry(.05, 20), cheekMat); c.position.set(sx * .245, .16, .31); c.rotation.y = sx * .66; head.add(c); });
   const ringMat = new T.MeshBasicMaterial({ color: lin(MOOD.good), transparent: true, opacity: .5, depthWrite: false });
   const ring = new T.Mesh(new T.RingGeometry(.68, .8, 72), ringMat); ring.rotation.x = -Math.PI / 2; ring.position.y = .004; g.add(ring);
 
   const S = { mood: 'good', look: { x: 0, y: 0 }, cur: { x: 0, y: 0 }, blinkAt: 1.5, jump: -1, talkUntil: 0, talking: false, think: false, t: 0 };
+  const MY = .13;
   function mouthFor(m) {
-    if (m === 'crit') { mouth.rotation.z = 0; mouth.scale.set(.85, .75, 1); mouth.position.y = -.125; }
-    else if (m === 'warn') { mouth.rotation.z = Math.PI; mouth.scale.set(.85, .28, 1); mouth.position.y = -.09; }
-    else { mouth.rotation.z = Math.PI; mouth.scale.set(1, 1, 1); mouth.position.y = -.07; }
+    if (m === 'crit') { mouth.rotation.z = 0; mouth.scale.set(.85, .75, 1); mouth.position.y = MY - .055; }
+    else if (m === 'warn') { mouth.rotation.z = Math.PI; mouth.scale.set(.85, .28, 1); mouth.position.y = MY - .02; }
+    else { mouth.rotation.z = Math.PI; mouth.scale.set(1, 1, 1); mouth.position.y = MY; }
   }
   function setMood(m) { S.mood = m in MOOD ? m : 'good'; ringMat.color.copy(lin(MOOD[S.mood])); if (!S.talking) mouthFor(S.mood); }
   function update(t, dt) {
@@ -160,9 +169,9 @@ function makeMate() {
     if (S.jump >= 0) { const k = (t - S.jump) / .9; if (k >= 1) S.jump = -1; else { y += Math.sin(k * Math.PI) * .55; spin = ease(k) * Math.PI * 2; } }
     const f = Math.min(1, dt * 6); S.cur.x += (S.look.x - S.cur.x) * f; S.cur.y += (S.look.y - S.cur.y) * f;
     bodyG.position.y = y; bodyG.rotation.y = spin + S.cur.x * .3; bodyG.rotation.z = Math.sin(t * 1.3) * .03;
-    head.rotation.y = S.cur.x * .55; head.rotation.x = S.think ? -.32 + Math.sin(t * 3) * .05 : S.cur.y * .35; head.rotation.z = S.think ? .2 : 0;
+    head.rotation.y = S.cur.x * .5; head.rotation.x = S.think ? -.25 + Math.sin(t * 3) * .05 : S.cur.y * .25; head.rotation.z = S.think ? .15 : 0;
     if (t > S.blinkAt) { const k = (t - S.blinkAt) / .14; eyes.forEach(e => e.scale.y = k < 1 ? Math.abs(1 - 2 * k) * .9 + .1 : 1); if (k >= 1) S.blinkAt = t + 2.2 + Math.random() * 3; }
-    if (performance.now() < S.talkUntil) { S.talking = true; mouth.rotation.z = Math.PI; mouth.position.y = -.075; mouth.scale.set(.9, .55 + 1.1 * Math.abs(Math.sin(t * 13)), 1); }
+    if (performance.now() < S.talkUntil) { S.talking = true; mouth.rotation.z = Math.PI; mouth.position.y = MY - .005; mouth.scale.set(.9, .55 + 1.1 * Math.abs(Math.sin(t * 13)), 1); }
     else if (S.talking) { S.talking = false; mouthFor(S.mood); }
     ringMat.opacity = .32 + .2 * Math.sin(t * 2.4); ring.scale.setScalar(1 - y * .3);
   }
@@ -189,7 +198,7 @@ const noop = () => {};
 
 /* ---------- public mounts ---------- */
 function mountMate(el, o = {}) {
-  if (!OK) { flat(el, 'pawn', 'mate-flat'); return { setMood: noop, celebrate: noop, talk: noop, think: noop, look: noop, setSkin: noop }; }
+  if (!OK) { flat(el, 'rook', 'mate-flat'); return { setMood: noop, celebrate: noop, talk: noop, think: noop, look: noop, setSkin: noop }; }
   const st = new Stage(el, { cam: o.cam || [0, 1.15, 4.4], look: o.look || [0, .8, 0], fov: o.fov || 27, exposure: 1.1 });
   const m = makeMate(); st.scene.add(m.group); st.on(m.update); follow(el, m);
   return m;

@@ -42,6 +42,7 @@ function hover(el, html) {
 
 /* ---------- charts ---------- */
 function cols(el, items, { max = 100, fmt = v => v + '%', table } = {}) {
+  if (!el) return;
   el.innerHTML = `<div class="cols">${items.map((d, i) => `<div class="col${d.alt ? ' alt' : ''}${d.hot ? ' hot' : ''}" tabindex="0" style="--h:${(d.v / max * 100).toFixed(1)}%" data-i="${i}"><span class="v">${esc(fmt(d.v))}</span><span class="bar"></span></div>`).join('')}</div>
     <div class="xl">${items.map(d => `<span>${d.x}</span>`).join('')}</div>${d3legend(items)}${table ? tbl(table) : ''}`;
   $$('.col', el).forEach((c, i) => hover(c, items[i].tip));
@@ -71,12 +72,15 @@ function render(S) {
   hItems.legend = '<span><i class="hot"></i>Runs out before month 6</span><span><i class="alt"></i>Lasts 6 months or more</span>';
   cols($('#chHist'), hItems, { max: 45, table: [['Savings last', 'Share of customers'], hist.map(h => [h.label, h.pct + '%'])] });
 
+  if ($('#chRegion')) {
   const reg = S.regions, rmax = Math.max(...reg.map(r => r.ei_short6));
   $('#chRegion').innerHTML = `<div class="hbars">${reg.map(r => `<div class="hrow${r.region === 'Prague' ? ' hl' : ''}" tabindex="0"><span>${esc(r.region[0].toUpperCase() + r.region.slice(1))}<small>unemployment ${r.unemp}%</small></span><span class="track"><span class="bar" style="--w:${(r.ei_short6 / rmax * 100).toFixed(1)}%"></span></span><b>${r.ei_short6}%</b></div>`).join('')}</div>
     <p class="note">Share who run out before month 6 on EI. Unemployment is the 2023 district average.</p>`;
   $$('#chRegion .hrow').forEach((row, i) => hover(row, `<b>${reg[i].ei_short6}% fall short</b>${esc(reg[i].region)} · ${reg[i].n} accounts · unemployment ${reg[i].unemp}%`));
 
+  }
   const t = S.twists;
+  if ($('#twResults'))
   $('#twResults').innerHTML = [
     [`${t.ei55_make6}%`, 'make it to month 6', 'Laid off, EI at 55%', '#007AFF', '<rect x="3.5" y="7.5" width="17" height="12" rx="2.5"/><path d="M9 7.5V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v1.5"/>'],
     [`${t.furnace_zero}%`, 'wiped out on day one', 'Furnace costs a month of spending', '#FF9500', '<path d="M12 21c-3.6 0-6-2.4-6-5.6 0-3.4 3-5.4 3.6-9.4 2 1.4 3 3.2 3.2 5 1-.6 1.7-1.6 2-3 1.6 1.6 3.2 4 3.2 7.2 0 3.4-2.4 5.8-6 5.8z"/>'],

@@ -1,7 +1,7 @@
 <div class="app">
   <aside class="sidebar" aria-label="ChequeMate">
     <a class="brand" href="#paradox" aria-label="ChequeMate home">
-      <span class="app-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 19h8M9.2 16.6h5.6l-.8-5h-4zM9.6 11.6C8.2 10.8 7.8 9.2 8.7 8c.8-1 2.3-1.3 3.3-.4.9-.9 2.4-.6 3.3.4.9 1.2.5 2.8-.9 3.6"/></svg></span>
+      <span class="app-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.8 8.4 7.4 15.6h9.2l3.6-7.2-4.5 3.4L12 5.2l-3.7 6.6z" fill="#fff" stroke="none"/><rect x="7.2" y="16.7" width="9.6" height="2.5" rx="1.25" fill="#fff" stroke="none"/><path d="M9.7 12.3l1.6 1.6 3-3.3" fill="none" stroke="#FF5E62" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       <span class="brand-name">ChequeMate</span>
     </a>
     <nav class="nav" id="nav">
@@ -32,7 +32,7 @@
         <button type="button" data-theme-set="light">Light</button>
         <button type="button" data-theme-set="dark">Dark</button>
       </div>
-      <span id="srcLabel">Data: Tangerine track sample, 4,500 accounts</span>
+      <span id="srcLabel">Data: 4,500 real, anonymized accounts</span>
     </div>
   </aside>
 
@@ -182,21 +182,21 @@
 
       <!-- CUSTOMER -->
       <section class="view" data-view="customer" hidden>
-        <div class="head"><h1>Customer</h1><p>Typical month, savings buffer and runway, from this account's own history. Numbers use the judges' definitions.</p></div>
+        <div class="head"><h1>Customer</h1><p>Typical month, savings buffer and runway, from this account's own history. Every number comes from their own records.</p></div>
         <div class="cust-hero">
           <div id="wcard"></div>
-          <div class="panel">
-            <div class="panel-head"><h2>Resilience</h2><p>Each ring closes when the goal is met</p></div>
-            <div id="rings"></div>
-          </div>
-        </div>
-        <div id="scorePanel"></div>
-        <div class="ledger" id="ledger"></div>
-        <div class="grid g-main">
-          <div class="panel">
+          <div class="panel laid-off">
             <div class="panel-head"><h2>If laid off tomorrow</h2><p id="rwSub"></p></div>
             <div id="custStrip"></div>
             <div class="grid g-2" id="custStrips2"></div>
+          </div>
+        </div>
+        <div class="ledger" id="ledger"></div>
+        <div id="scorePanel"></div>
+        <div class="grid g-main">
+          <div class="panel" hidden>
+            <div class="panel-head"><h2>Resilience</h2></div>
+            <div id="rings"></div>
           </div>
           <div class="panel">
             <div class="panel-head"><h2>What stands out</h2></div>
@@ -225,7 +225,7 @@
 
       <!-- SHOCK LAB -->
       <section class="view" data-view="shock" hidden>
-        <div class="head"><h1>Shock lab</h1><p>Pick a scenario or size your own. Runway recalculates with the judges' formula, and every step of the math is shown.</p></div>
+        <div class="head"><h1>Shock lab</h1><p>Pick a scenario or size your own. Runway recalculates instantly, and every step of the math is shown.</p></div>
         <div class="micr" data-micr></div>
         <div class="boss-bar" id="bossBar"></div>
         <div class="twists" id="twists"></div>
@@ -354,7 +354,7 @@
       <section class="view" data-view="coach" hidden>
         <div class="coach-hero">
           <div class="mate-big" id="mateBig" aria-hidden="true"></div>
-          <div class="head" style="padding:0"><span class="eyebrow">Meet Mate</span><h1>Your coach is a pawn with big plans.</h1><p>Ask about this customer's numbers. With a Gemini key in Profile, answers come from Gemini with the account and shock attached. Without one, the built-in coach answers from the same numbers.</p></div>
+          <div class="head" style="padding:0"><span class="eyebrow">Meet Rookie</span><h1>Small tower. Big plans.</h1><p>Ask about this customer's numbers. With a Gemini key in Profile, answers come from Gemini with the account and shock attached. Without one, the built-in coach answers from the same numbers.</p></div>
         </div>
         <div class="coach">
           <div class="chat">
@@ -476,7 +476,7 @@
           </div>
         </div>
         <div class="panel">
-          <div class="panel-head"><h2>Mate's wardrobe</h2><p>New looks unlock as you rank up</p></div>
+          <div class="panel-head"><h2>Rookie's wardrobe</h2><p>New looks unlock as you rank up</p></div>
           <div class="skins" id="skins"></div>
         </div>
         <div class="panel">
@@ -586,11 +586,11 @@
 <div class="mate-dock-wrap" id="mateWrap">
   <div class="mate-bubble" id="mateBubble" role="status" hidden>
     <button class="mb-x" type="button" id="mateClose" aria-label="Close tip"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
-    <strong class="mb-name">Mate</strong>
+    <strong class="mb-name">Rookie</strong>
     <p id="mateText"></p>
     <div class="mb-act" id="mateAct"></div>
   </div>
-  <button class="mate-dock" id="mateDock" type="button" aria-label="Mate, your coach. Show a tip" aria-controls="mateBubble"><span class="mate-small" id="mateSmall"></span></button>
+  <button class="mate-dock" id="mateDock" type="button" aria-label="Rookie, your coach. Show a tip" aria-controls="mateBubble"><span class="mate-small" id="mateSmall"></span></button>
 </div>
 <div class="achv" id="achv" role="status" aria-live="polite"></div>
 <div class="xp-pop" id="xpPop" aria-hidden="true"></div>

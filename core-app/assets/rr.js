@@ -99,7 +99,7 @@ function closeMenus(except) {
 /* ---------------- search (/ shortcut, grouped, keyboard) ---------------- */
 const PAGES = [['overview', 'Overview', 'Your accounts and resilience'], ['situations', 'Situations', 'Job loss, bills, repairs: test your runway'], ['saving', 'Saving plan', 'Safety-net savings and recovery options'], ['investing', 'Investing', 'Order to fill things, growth calculator'], ['yourdata', 'Your money', 'Score, history, compare, budget rule'],
   ['paradox', 'Findings', 'The paycheque paradox across 4,500 customers'], ['customer', 'Customer deep-dive', 'Score, money flow'], ['shock', 'Shock lab', 'Situations and stress grid'], ['plan', 'Plan builder', 'Goal and backup plans'],
-  ['budget', 'Budget rules', '50/30/20 and more'], ['coach', 'Coach Mate', 'Ask the 3D coach'], ['arena', 'Quests', 'XP and badges'], ['play', 'Play', 'Runway Run, quiz'], ['data', 'Upload your data', 'CSV portfolio'], ['resources', 'Resources', 'Official sources'], ['profile', 'Profile', 'Your details']];
+  ['budget', 'Budget rules', '50/30/20 and more'], ['coach', 'Rookie', 'Ask the 3D coach'], ['arena', 'Quests', 'XP and badges'], ['play', 'Play', 'Runway Run, quiz'], ['data', 'Upload your data', 'CSV portfolio'], ['resources', 'Resources', 'Official sources'], ['profile', 'Profile', 'Your details']];
 const HELP = [['How do I apply for EI?', 'Apply the week your job ends, even before your record of employment arrives.'], ['What is my runway?', 'How many months your savings last if a situation hits.'],
   ['How much should my emergency fund be?', 'Three to six months of money out is a common target.'], ['TFSA or RRSP?', 'It depends on your tax rate now and later.'], ['Can my bank pause a loan payment?', 'Many lenders offer deferrals if you call before missing one.']];
 let sel = -1, results = [];
@@ -322,7 +322,7 @@ const CANNED = {
 let waiting = false;
 function chatRender() {
   const pf = CM.profile(), nm = /^Customer \d+$/.test(pf.name) ? 'there' : pf.name.split(' ')[0];
-  const msgs = CM.st.chat.filter(m => !(m.role === 'model' && m.src === 'ChequeMate Coach'));
+  const msgs = CM.st.chat.filter(m => !(m.role === 'model' && (m.src === 'Rookie' || m.src === 'ChequeMate Coach')));
   let h = `<div class="rr-msg"><p>Hi ${esc(nm)}! I'm your AI money helper. Tell me what's not working and I'll walk you through it.</p></div><div class="rr-topics">${TOPICS.map(t => `<button type="button">${esc(t)}</button>`).join('')}</div>`;
   h += msgs.map(m => m.role === 'user' ? `<div class="rr-msg me">${esc(m.text)}</div>` : m.typing ? '' : `<div class="rr-msg">${CM.mdLite(m.text)}${m.src ? `<div class="src">${esc(m.src)}</div>` : ''}</div>`).join('');
   if (waiting) h += '<img class="rr-typing" src="assets/rr/typing.svg" width="57" height="31" alt="Typing">';

@@ -1,5 +1,5 @@
 /* ChequeMate — financial resilience engine (static, no backend).
-   Runway math follows the Tangerine track judges' definitions exactly. */
+   Runway math follows the standard runway definitions exactly. */
 (() => {
 'use strict';
 
@@ -61,7 +61,7 @@ const status = v => v < 3 ? 'crit' : v < 6 ? 'warn' : 'good';
 let DATA = window.CM_ACCOUNTS || {};
 const BUILTIN = DATA;
 const INS = window.CM_INSIGHTS || {};
-let SRC = { kind: 'builtin', label: 'Tangerine track sample' };
+let SRC = { kind: 'builtin', label: 'bank sample' };
 let IDS = [], POP = null;
 const st = {
   id: null,
@@ -208,10 +208,23 @@ function animateStrips(root) {
 }
 
 /* ---------------- shell: account bar, router, theme ---------------- */
-function initials(p, id) {
-  if (!p.name || /^Customer \d+$/.test(p.name)) return '<svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="4"/><path d="M4 21c1.3-4.2 4.4-6.2 8-6.2s6.7 2 8 6.2z"/></svg>';
-  return esc(p.name.split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase());
+/* Every customer gets their own chess-piece avatar: piece, colours and expression come from the account number. */
+const AV_PAL = [['#6CBBFF', '#3A2FD6'], ['#FFC56B', '#FF5E62'], ['#7BE495', '#0A8C6A'], ['#E3B0FF', '#6A2BD0'], ['#FF9DB0', '#D6205A'], ['#8EF5EE', '#0A8C9A'], ['#FFE07A', '#E07A00'], ['#B7C4FF', '#4B4FD8']];
+const AV_PIECE = [
+  'M12 4.2a2.9 2.9 0 1 1 0 5.8 2.9 2.9 0 0 1 0-5.8zM9.6 11h4.8l1.1 6.4H8.5zM7.4 17.8h9.2a1 1 0 0 1 1 1V20H6.4v-1.2a1 1 0 0 1 1-1z',
+  'M7.2 4.5h2v1.6h1.8V4.5h2v1.6h1.8V4.5h2V9l-1.6 1.2.8 7.2H8l.8-7.2L7.2 9zM6.4 18h11.2v2H6.4z',
+  'M9 19.2c0-3 1.6-4.4 2.2-6.4-1.5.8-3 .6-4-.3l2.2-4.3c1-1.9 2.4-3.2 4.4-3.6l.6-1.4 1 1.8c2 1 3 3.4 3 6.6v7.6zM6.6 18.4h10.8v1.8H6.6z',
+  'M12 3.4c.8 0 1.4.6 1.4 1.4 0 .3-.1.6-.3.8 1.9 1.2 3 3 3 5 0 1.4-.7 2.6-1.8 3.3l.8 3.6H8.9l.8-3.6c-1.1-.7-1.8-1.9-1.8-3.3 0-2 1.1-3.8 3-5a1.4 1.4 0 0 1 1.1-2.2zM6.8 18h10.4v2H6.8z',
+  'M5.2 7.6a1.3 1.3 0 1 1 1.2 1.6L8 14l2-6.2a1.3 1.3 0 1 1 2 0 1.3 1.3 0 1 1 2 0L16 14l1.6-4.8a1.3 1.3 0 1 1 1.2-1.6L16.6 17H7.4zM7 17.6h10V20H7z',
+];
+function avatarSVG(id) {
+  let h = 2166136261; for (const ch of String(id)) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); } h >>>= 0;
+  const [c1, c2] = AV_PAL[h % AV_PAL.length], piece = AV_PIECE[(h >>> 4) % AV_PIECE.length], g = 'av' + id, face = (h >>> 9) % 3;
+  const eyeY = [7.2, 7.4, 8.4, 9.2, 13][(h >>> 4) % AV_PIECE.length];
+  const mouth = ['M10.6 ' + (eyeY + 1.5) + 'q1.4 1.1 2.8 0', 'M10.8 ' + (eyeY + 1.6) + 'h2.4', 'M10.6 ' + (eyeY + 1.9) + 'q1.4-1 2.8 0'][face];
+  return `<svg viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="${g}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></linearGradient></defs><circle cx="12" cy="12" r="12" fill="url(#${g})"/><circle cx="18.4" cy="5.4" r="1" fill="#fff" opacity=".7"/><path d="${piece}" fill="#fff"/><circle cx="10.9" cy="${eyeY}" r=".55" fill="${c2}"/><circle cx="13.1" cy="${eyeY}" r=".55" fill="${c2}"/><path d="${mouth}" stroke="${c2}" stroke-width=".6" fill="none" stroke-linecap="round"/></svg>`;
 }
+function initials(p, id) { return avatarSVG(id); }
 function micrHTML(a) {
   const p = profile(a.id);
   const ei = runway(a.B, a.I, a.S, { mult: .55 });
@@ -752,7 +765,7 @@ function contextText() {
     `Bank-wide facts: high-income customers spend ~96% of income vs 69% for low-income, so they run out faster on EI (68% vs 4% within 6 months). Runway predicts real defaults better than income (AUC 0.72 vs 0.62). Joint accounts: 0 of 145 loans defaulted. January spending is ~45% above an average month.`,
   ].join('\n');
 }
-const SYS = `You are ChequeMate Coach, a financial resilience coach inside a Canadian bank's tool. You explain one customer's numbers to a bank employee or the customer.
+const SYS = `You are Rookie, ChequeMate's coach, a cheerful little chess rook (upbeat, a little witty, never silly about money), a financial resilience coach inside a Canadian bank's tool. You explain one customer's numbers to a bank employee or the customer.
 Rules: Use only the numbers in the context; if you calculate, show the short arithmetic. Amounts are Canadian dollars. Be concise: under 170 words, plain language, short paragraphs or up to 5 bullets, bold the key number once. Give concrete next steps tied to their numbers. Mention official resources (EI on canada.ca, FCAC, Credit Counselling Canada) when relevant. Never recommend specific stocks or funds.
 Refer to the customer by their name or as "they"; don't restate their age, sex or province unless the question is about them. Answer the question asked first, in the first sentence, then support it. Backup-plan runways stack: never present a later step's runway as if that step worked alone. Don't add disclaimers about being an advisor unless asked for specific investment picks.`;
 function mdLite(t) {
@@ -840,9 +853,9 @@ async function send(q) {
   catch (e) {
     console.warn('[coach] Gemini failed:', e.message);
     pending.text = offlineAnswer(q); pending.offline = true;
-    pending.src = e.message === 'nokey' ? 'Built-in coach. Start the site with server.py, or add a Gemini key in Profile, for open-ended answers.'
-      : /fetch|network|Failed/i.test(e.message) ? "Built-in coach. Gemini couldn't be reached from here. Check the connection and ask again."
-      : `Built-in coach, because Gemini said: ${e.message}`;
+    pending.src = e.message === 'nokey' ? 'Rookie (built-in answers). Start the site with server.py, or add a Gemini key in Profile, for open-ended answers.'
+      : /fetch|network|Failed/i.test(e.message) ? "Rookie (built-in answers). Gemini couldn't be reached from here. Check the connection and ask again."
+      : `Rookie (built-in answers), because Gemini said: ${e.message}`;
   }
   pending.typing = false; renderMsgs();
   renderChips(q);
@@ -913,7 +926,7 @@ function renderPrompts() {
 }
 RENDER.coach = () => {
   const a = acc(); if (!a) return; const pf = profile();
-  if (!st.chat.length) st.chat.push({ role: 'model', text: `Hi. I'm looking at **${pf.name}** (account ${a.id}). Ask me what their numbers mean, whether they survive a shock, or what to do next.`, src: 'ChequeMate Coach' });
+  if (!st.chat.length) st.chat.push({ role: 'model', text: `Hi. I'm looking at **${pf.name}** (account ${a.id}). Ask me what their numbers mean, whether they survive a shock, or what to do next.`, src: 'Rookie' });
   renderMsgs();
   renderPrompts();
   const lastUser = [...st.chat].reverse().find(m => m.role === 'user');
@@ -936,10 +949,10 @@ RENDER.data = () => {
   const out6 = POP.ei.filter(v => v < 6).length / n;
   $('#dataStatus').innerHTML = SRC.kind === 'upload'
     ? `<div class="verdict good">${ICON.check}<div><strong>Using ${esc(SRC.label)}</strong><p>${n.toLocaleString()} accounts loaded. Every page now reads from this file. <button class="btn ghost" type="button" id="backBuiltin">Switch back to the Tangerine sample</button></p></div></div>`
-    : `<div class="callout">Showing the <strong>Tangerine track sample</strong>: ${n.toLocaleString()} accounts, 2020 to 2025. Upload a file to analyse your own.</div>`;
+    : `<div class="callout">Showing the <strong>bank sample</strong>: ${n.toLocaleString()} accounts, 2020 to 2025. Upload a file to analyse your own.</div>`;
   const bb = $('#backBuiltin'); if (bb) bb.onclick = () => useBuiltin();
   $('#portLedger').innerHTML = [
-    ['Accounts', n.toLocaleString(), SRC.kind === 'upload' ? 'From your file' : 'Tangerine sample'],
+    ['Accounts', n.toLocaleString(), SRC.kind === 'upload' ? 'From your file' : 'Bank sample'],
     ['Median money in', money(median(accs.map(x => x.I))), 'Per month'],
     ['Median buffer', money(median(accs.map(x => x.B))), 'Avg balance, last 6 months'],
     ['Out within 6 months', pct(out6), 'If laid off on EI at 55%'],
@@ -965,10 +978,10 @@ RENDER.data = () => {
   $('#seasonNote').textContent = `Spending peaks in ${MONTHS[top[0][1]]} (${pct(top[0][0] - 1)} above average) and ${MONTHS[top[1][1]]} (${pct(top[1][0] - 1)}). Money in peaks in ${MONTHS[se.in.indexOf(Math.max(...se.in))]}.`;
 };
 function useBuiltin(quiet) {
-  DATA = BUILTIN; SRC = { kind: 'builtin', label: 'Tangerine track sample' }; prepDataset();
-  $('#srcLabel').textContent = 'Data: Tangerine track sample, 4,500 accounts';
+  DATA = BUILTIN; SRC = { kind: 'builtin', label: 'bank sample' }; prepDataset();
+  $('#srcLabel').textContent = 'Data: 4,500 real, anonymized accounts';
   setAccount(store.get('cm.last.builtin', 28754) in DATA ? store.get('cm.last.builtin', 28754) : 28754, true);
-  if (!quiet) { toast('Switched back to the Tangerine sample'); route(); }
+  if (!quiet) { toast('Switched back to the bank sample'); route(); }
 }
 function parseCSV(file) { return new Promise((res, rej) => Papa.parse(file, { header: true, dynamicTyping: true, skipEmptyLines: true, complete: r => res(r), error: rej })); }
 async function handleFiles(files) {
@@ -1049,7 +1062,7 @@ const RES = [
     ['Average weekly earnings', 'Table 14-10-0223-01.', 'https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410022301'],
   ]],
   ['About the data', [
-    ['PKDD\'99 Financial dataset', 'Real anonymized bank data from the CTU Prague Relational Dataset Repository, relabelled to CAD for the Tangerine track.', 'https://relational.fel.cvut.cz/dataset/Financial'],
+    ['PKDD\'99 Financial dataset', 'Real anonymized bank data from the CTU Prague Relational Dataset Repository, relabelled to CAD.', 'https://relational.fel.cvut.cz/dataset/Financial'],
     ['TFSA limit holds at $7,000 for 2026', 'Investment Executive, on the CRA announcement.', 'https://www.investmentexecutive.com/news/tfsa-dollar-limit-to-hold-steady-in-2026'],
   ]],
 ];

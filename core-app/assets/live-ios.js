@@ -46,7 +46,7 @@ function customer() {
     if (g !== gC) return;
     const keys = [['I', 'money in'], ['S', 'money out'], ['F', 'fixed costs'], ['H', 'household bills'], ['B', 'savings'], ['P', 'loan payment']];
     const off = keys.filter(([k]) => Math.abs(n(m[k]) - (a[k] || 0)) > 1);
-    strip(host, head, off.length ? 'warn' : 'ok', `<span class="lc-dot"></span><div><b>${off.length ? 'Live records differ' : 'Matches your live account records'}</b><span>${keys.map(([k, l]) => `${l} ${money(n(m[k]))}`).join(' · ')}</span></div><em>TigerData · live</em>`);
+    strip(host, head, off.length ? 'warn' : 'ok', `<span class="lc-dot"></span><div><b>${off.length ? `Live records differ: ${off.map(([, l]) => l).join(', ')}` : 'Matches the live bank records'}</b></div><em>Live</em>`);
   }, e => { if (g === gC) strip(host, head, 'off', offline(e)); });
 }
 
@@ -64,7 +64,7 @@ function shock() {
   }).then(r => {
     if (g !== gS) return;
     const ok = same(local, r), gap = n(r.calculation_breakdown && r.calculation_breakdown.gap_exact);
-    strip(host, anchor, ok ? 'ok' : 'warn', `<span class="lc-dot"></span><div><b>${ok ? 'Server agrees' : 'Server answer differs. Trust this one'}: ${esc(months(r))}</b><span>${isFinite(gap) && gap > 0 ? `Savings fall by ${money(gap)} a month after the shock. ` : ''}Worked out on the server with exact decimals, from your live records.</span></div><em>/api/simulate</em>`);
+    strip(host, anchor, ok ? 'ok' : 'warn', `<span class="lc-dot"></span><div><b>${ok ? 'Checked live' : 'Live answer differs. Trust this one'}: ${esc(months(r))}</b></div><em>Server</em>`);
   }, e => { if (g === gS) strip(host, anchor, 'off', offline(e)); });
 }
 

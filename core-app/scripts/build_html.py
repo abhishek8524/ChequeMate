@@ -12,6 +12,7 @@ index = f"""<!doctype html>
 <title>Resilience Rewired</title>
 {META}
 {FONTS}
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23FFB347'/%3E%3Cstop offset='1' stop-color='%23FF2D55'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='24' height='24' rx='6' fill='url(%23g)'/%3E%3Cpath d='M3.8 8.4 7.4 15.6h9.2l3.6-7.2-4.5 3.4L12 5.2l-3.7 6.6z' fill='%23fff'/%3E%3Crect x='7.2' y='16.7' width='9.6' height='2.5' rx='1.25' fill='%23fff'/%3E%3Cpath d='M9.7 12.3l1.6 1.6 3-3.3' fill='none' stroke='%23FF5E62' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="assets/styles.css">
 <link rel="stylesheet" href="assets/game.css">
 <link rel="stylesheet" href="assets/play.css">
