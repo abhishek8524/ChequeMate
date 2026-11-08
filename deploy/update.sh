@@ -3,6 +3,7 @@
 #   bash /opt/chequemate/deploy/update.sh
 set -euo pipefail
 APP=/opt/chequemate
+git config --global --get-all safe.directory | grep -qx "$APP" || git config --global --add safe.directory "$APP"
 git -C "$APP" pull --ff-only origin production
 "$APP/.venv/bin/pip" install -r "$APP/requirements.txt"
 chown -R chequemate:chequemate "$APP"

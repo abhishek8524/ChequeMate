@@ -7,6 +7,7 @@ set -euo pipefail
 REPO=https://github.com/abhishek8524/ChequeMate.git
 BRANCH=production
 APP=/opt/chequemate
+git config --global --get-all safe.directory | grep -qx "$APP" || git config --global --add safe.directory "$APP"
 
 export DEBIAN_FRONTEND=noninteractive
 apt-get update
