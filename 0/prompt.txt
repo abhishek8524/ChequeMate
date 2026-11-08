@@ -1,0 +1,73 @@
+We are continuing development of ChequeMate, our Financial Resilience Engine for Sheridan Datathon 2026.
+
+Our repository has Entire Sessions, Graph and Brain configured. Entire Graph and Brain are now successfully indexed.
+
+**First, understand our existing codebase:**
+
+1. Use Entire Graph to find `calculate_runway()` and all related calculations.
+2. Inspect the existing frontend calculations in `core-app/assets/app.js` and `core-app/scripts/build_data.py`.
+3. Use Entire Brain to retrieve relevant project history and architectural decisions. If Brain has no relevant memories yet, report that and use the documented Brain commands to store the verified decisions below.
+4. Identify any duplicated financial calculations and explain how the new backend should integrate without breaking the existing app.
+
+**Important architectural decisions:**
+
+- BigQuery Gold metrics imported into TigerData are our validated financial source.
+- Python performs all financial calculations deterministically.
+- Gemini may explain validated results but must never invent or modify financial numbers.
+- The frontend should not maintain conflicting runway formulas.
+- The simulator must match Tangerine's official judging rules.
+
+**Then implement the TigerData + FastAPI integration.**
+
+Requirements:
+
+1. Create `backend/database.py` using `psycopg` and environment variables.
+2. Retrieve the six official metrics from `public.gold_account_metrics`, with columns `account_id`, `"I"`, `"S"`, `"F"`, `"H"`, `"B"`, `"P"`.
+3. Implement:
+   - `GET /api/health`
+   - `GET /api/accounts/{account_id}`
+   - `POST /api/simulate`
+4. The simulation endpoint must support income retention, household-bill increases, one-off costs and combined scenarios.
+5. Reuse the existing tested `calculate_runway()` implementation.
+6. Return structured JSON containing original metrics, scenario assumptions, monthly shortfall, remaining buffer, runway and status.
+7. Return appropriate errors for missing accounts or invalid inputs.
+8. Create `.env.example` with placeholder values and keep `.env` private.
+9. Create automated tests that mock database access.
+10. Update dependencies and document how to start the API.
+
+**Restrictions:**
+
+- Do not modify `core-app/` or `data-engineering/`.
+- Do not hardcode credentials.
+- Do not overwrite existing working calculations without explaining why.
+- Review the existing project structure before creating new files.
+- Ask for permission before making changes.
+- Run all tests afterward.
+
+Explain what you implemented, how the frontend will connect, and how Entire Graph and Brain were used.
+
+---
+
+yes
+
+---
+
+q
+
+---
+
+Have you completed the TigerData and FastAPI integration?
+
+Please summarize what you implemented, run all existing and new automated tests, and check for errors or incomplete work.
+
+Verify that:
+- The database uses environment variables.
+- Account lookups use parameterized SQL.
+- All financial calculations reuse our tested simulator.
+- The FastAPI endpoints match our requirements.
+- No credentials are exposed.
+- The frontend and data-engineering folders remain unchanged.
+
+Also tell me which Entire Graph and Brain commands you actually used.
+
+Don't make additional changes unless they are necessary to fix errors. Let me know when the implementation is ready to commit.
